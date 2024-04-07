@@ -1,0 +1,23 @@
+{
+    "name": "Player",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f6b02f300f24246458d8c7d03e2be143",
+        "GUID:52977425d74ca894d9136256fa3a0510",
+        "GUID:a7a890c48d0e8d64e91194b4b8ae2bc1"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "LinuxStandalone64",
+        "WindowsStandalone32",
+        "WindowsStandalone64"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

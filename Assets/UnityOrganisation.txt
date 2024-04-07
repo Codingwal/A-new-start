@@ -1,0 +1,49 @@
+TODO:
+
+- Fix texture bug
+
+- Add swimming
+
+- Add stamina, health, hunger and thirst
+- Add falldamage
+
+- Improve world generation
+    - Less visible triangles
+    - Better balanced heights
+    - Biomes
+    - Improve water generation
+    - Trees, grass and rocks
+    - Better texturing
+        - Choose texture depending on steepness, biome and height
+        - Reduce texture stretching
+
+
+
+PROJECT SETUP:
+
+ASM DEPENDENCIES:
+
+Utility : None
+Management : Utility
+Player : Utility, Management
+Generation : Utility, Management
+UI: Utility, Management
+
+---------------------------------------
+
+EXECUTION ORDER:
+
+Awake
+    - Init Singleton classes
+Singleton Awake
+    - Initialize Manager classes
+Start
+    - Get Manager references
+    - Setup events
+[As soon as the game is started]
+LoadScene
+DataManager.LoadWorld
+    - Let each script get WorldData
+LoadWorld
+    - Generate chunks
+    - Update textures
