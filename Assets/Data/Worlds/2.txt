@@ -13,7 +13,7 @@
         }
     },
     "terrainData": {
-        "seed": -102209,
+        "seed": 911451,
         "chunks": {
             "keys": [],
             "values": []

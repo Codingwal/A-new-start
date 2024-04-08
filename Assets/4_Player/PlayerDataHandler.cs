@@ -5,17 +5,21 @@ public class PlayerDataHandler : MonoBehaviour, IDataCallbackReceiver
     private PlayerLook playerLookScript;
     private void Awake()
     {
+        if (!TryGetComponent(out playerLookScript)) Debug.Log("WTF");
+
         MainSystem.gameState = GameState.MainMenu;
         MainSystem.ChangeGameState(GameState.InGame);
 
-        playerLookScript = GetComponent<PlayerLook>();
 
     }
     public void LoadData(WorldData worldData)
     {
+        if (!TryGetComponent(out playerLookScript)) Debug.Log("WTF");
+
         PlayerData playerData = worldData.playerData;
 
         transform.position = playerData.position;
+        if (playerLookScript == null) Debug.Log("player");
         playerLookScript.xRotation = playerData.rotation.x;
         transform.localRotation = Quaternion.Euler(0, playerData.rotation.y, playerData.rotation.z);
     }
