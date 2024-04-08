@@ -1,0 +1,22 @@
+{
+    "worldSettingsName": "Default",
+    "playerData": {
+        "position": {
+            "x": 0.0,
+            "y": 150.0,
+            "z": 0.0
+        },
+        "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        }
+    },
+    "terrainData": {
+        "seed": -371042,
+        "chunks": {
+            "keys": [],
+            "values": []
+        }
+    }
+}

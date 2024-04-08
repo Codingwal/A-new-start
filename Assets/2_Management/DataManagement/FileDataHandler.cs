@@ -54,7 +54,13 @@ public class FileDataHandler
             throw exception;
         }
 
-        return JsonUtility.FromJson<T>(dataString);
+        T obj = JsonUtility.FromJson<T>(dataString);
+        if (obj == null && !forceReturn)
+        {
+            throw new($"Invalid Object in file {SaveFolder}{folder}/{fileName}.txt");
+        }
+
+        return obj;
     }
     public List<string> ListAllFilesInDirectory(string folder)
     {

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.5784543, g: 0.6157293, b: 0.6087265, a: 1}
+  m_IndirectSpecularColor: {r: 0.71180665, g: 0.6021209, b: 0.5773997, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -852,8 +852,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ScenePersistance
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedComponents:
+    - {fileID: 3037909530753849782, guid: c68e55ca86ce0b7468c827547bcbf012, type: 3}
+    m_RemovedGameObjects:
+    - {fileID: 7152438744598815099, guid: c68e55ca86ce0b7468c827547bcbf012, type: 3}
+    - {fileID: 3662883546816879082, guid: c68e55ca86ce0b7468c827547bcbf012, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c68e55ca86ce0b7468c827547bcbf012, type: 3}
@@ -1087,7 +1090,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99bb4b5dd07b2cb46bc9eaec67588bb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputManager: {fileID: 0}
   rb: {fileID: 965662057}
   jumpForce: 3
   walkSpeed: 5
@@ -1105,7 +1107,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75c4fc73bf21a424dbfe614b205a915c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputManager: {fileID: 0}
   cam: {fileID: 330585545}
   xRotation: 0
   xSensitivity: 30

@@ -3,24 +3,19 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class DataManager : Singleton<DataManager>
+public static class DataManager
 {
-    public string currentWorldName;
-    public string fileName;
+    public static string currentWorldName;
+    public static string fileName;
 
-    private FileDataHandler dataHandler;
+    private static FileDataHandler dataHandler = new();
 
-    private List<IDataCallbackReceiver> dataPersistanceObjects;
+    private static List<IDataCallbackReceiver> dataPersistanceObjects;
 
     [Space]
     [Header("Default Worldsettings meshHeightCurve")]
-    public AnimationCurve meshHeightCurve;
-
-    protected override void SingletonAwake()
-    {
-        dataHandler = new();
-    }
-    public void NewWorld(string worldName)
+    public static AnimationCurve meshHeightCurve;
+    public static void NewWorld(string worldName)
     {
         // Create a new WorldData
         WorldData worldData = WorldData.NewWorld("Default");
@@ -31,7 +26,7 @@ public class DataManager : Singleton<DataManager>
         // Save the WorldData
         dataHandler.Save(worldData, "Worlds", worldName);
     }
-    public Dictionary<string, WorldData> GetAllWorlds()
+    public static Dictionary<string, WorldData> GetAllWorlds()
     {
         Dictionary<string, WorldData> worlds = new();
         List<string> worldNames = dataHandler.ListAllFilesInDirectory("Worlds");
@@ -41,11 +36,11 @@ public class DataManager : Singleton<DataManager>
         }
         return worlds;
     }
-    public WorldSettings GetWorldSettings()
+    public static WorldSettings GetWorldSettings()
     {
         return WorldSettings.Default;
     }
-    public void LoadWorld()
+    public static void LoadWorld()
     {
         dataPersistanceObjects = FindAllDataPersistanceObjects();
 
@@ -64,7 +59,7 @@ public class DataManager : Singleton<DataManager>
         }
     }
 
-    public void SaveWorld()
+    public static void SaveWorld()
     {
         Debug.Log("Saving world");
         
@@ -83,9 +78,9 @@ public class DataManager : Singleton<DataManager>
         dataHandler.Save(worldData, "Worlds", currentWorldName);
     }
 
-    private List<IDataCallbackReceiver> FindAllDataPersistanceObjects()
+    private static List<IDataCallbackReceiver> FindAllDataPersistanceObjects()
     {
-        IEnumerable<IDataCallbackReceiver> dataPersistanceObjects = FindObjectsOfType<MonoBehaviour>().OfType<IDataCallbackReceiver>();
+        IEnumerable<IDataCallbackReceiver> dataPersistanceObjects = Object.FindObjectsOfType<MonoBehaviour>().OfType<IDataCallbackReceiver>();
 
         return new List<IDataCallbackReceiver>(dataPersistanceObjects);
     }

@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class InputManager : Singleton<InputManager>
 {
@@ -19,7 +16,7 @@ public class InputManager : Singleton<InputManager>
         playerInput = new();
         gameplay = playerInput.Gameplay;
 
-        MainSystem.Instance.GameStateChanged += OnGameStateChanged;
+        MainSystem.GameStateChanged += OnGameStateChanged;
     }
     private void OnGameStateChanged(GameState newGameState)
     {
@@ -40,7 +37,7 @@ public class InputManager : Singleton<InputManager>
     {
         if (gameplay.Pause.IsPressed())
         {
-            MainSystem.Instance.ChangeGameState(GameState.Paused);
+            MainSystem.ChangeGameState(GameState.Paused);
         }
         if (gameplay.Sprint.IsPressed())
         {

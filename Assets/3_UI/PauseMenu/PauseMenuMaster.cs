@@ -13,13 +13,13 @@ public class PauseMenuMaster : MonoBehaviour
     public Slider progressSlider;
     public TMP_Text progressText;
     private void Awake() {
-        SceneSystem.Instance.Loading += OnSceneLoading;
+        SceneSystem.Loading += OnSceneLoading;
     }
     private void Start()
     {
         Continue();
 
-        MainSystem.Instance.Pause += Pause;
+        MainSystem.Pause += Pause;
     }
     public void Pause()
     {
@@ -28,16 +28,12 @@ public class PauseMenuMaster : MonoBehaviour
     public void Continue()
     {
         pauseMenu.SetActive(false);
-        MainSystem.Instance.ChangeGameState(GameState.InGame);
+        MainSystem.ChangeGameState(GameState.InGame);
     }
     public void OpenMainMenu()
     {
         loadingScreen.SetActive(true);
-        if (SceneSystem.Instance == null)
-        {
-            Debug.LogWarning("SceneSystem.Instance == null");
-        }
-        SceneSystem.Instance.SwitchScene(SceneSystem.Scenes.MainMenu);
+        SceneSystem.SwitchScene(SceneSystem.Scenes.MainMenu, this);
     }
     public void OnSceneLoading(float progress)
     {

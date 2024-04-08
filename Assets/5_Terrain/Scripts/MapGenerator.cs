@@ -17,7 +17,7 @@ public class MapGenerator : Singleton<MapGenerator>
 
     private void Start()
     {
-        MainSystem.Instance.LoadWorld += LoadWorld;
+        MainSystem.LoadWorld += LoadWorld;
     }
     private void LoadWorld()
     {

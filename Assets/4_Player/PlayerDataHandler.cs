@@ -5,7 +5,11 @@ public class PlayerDataHandler : MonoBehaviour, IDataCallbackReceiver
     private PlayerLook playerLookScript;
     private void Awake()
     {
+        MainSystem.gameState = GameState.MainMenu;
+        MainSystem.ChangeGameState(GameState.InGame);
+
         playerLookScript = GetComponent<PlayerLook>();
+
     }
     public void LoadData(WorldData worldData)
     {
@@ -24,5 +28,10 @@ public class PlayerDataHandler : MonoBehaviour, IDataCallbackReceiver
         playerData.rotation = new(playerLookScript.xRotation, transform.eulerAngles.x, transform.eulerAngles.z);
 
         worldData.playerData = playerData;
+    }
+
+    private void OnApplicationQuit()
+    {
+        MainSystem.ChangeGameState(GameState.Quitting);
     }
 }

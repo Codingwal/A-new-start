@@ -59,7 +59,7 @@ public class TerrainSettings
         {
             return new()
             {
-                meshHeightCurve = DataManager.Instance.meshHeightCurve,
+                meshHeightCurve = DataManager.meshHeightCurve,
                 meshHeightMultiplier = 150,
                 noiseScale = 500,
                 octaves = 8,

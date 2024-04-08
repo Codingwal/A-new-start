@@ -1,35 +1,16 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MainSystem : SingletonPersistant<MainSystem>
+public static class MainSystem
 {
-    public GameState gameState;
-    public event Action<GameState> GameStateChanged;
-    public event Action LoadWorld;
-    public event Action Pause;
-    public event Action Continue;
-    protected override void SingletonAwake()
-    {
-        switch (SceneManager.GetActiveScene().ToString())
-        {
-            case "Singleplayer":
-                // Making the game think the game was loaded from the MainMenu to prevent unexpected behaviour
-                gameState = GameState.MainMenu;
-                ChangeGameState(GameState.InGame);
-                break;
-            case "MainMenu":
-                ChangeGameState(GameState.MainMenu);
-                break;
-        }
-    }
-    private void OnApplicationQuit()
-    {
-        ChangeGameState(GameState.Quitting);
-    }
-    public void ChangeGameState(GameState newGameState)
+    public static GameState gameState;
+    public static event Action<GameState> GameStateChanged;
+    public static event Action LoadWorld;
+    public static event Action Pause;
+    public static event Action Continue;
+    
+    public static void ChangeGameState(GameState newGameState)
     {
         switch (newGameState)
         {
@@ -42,21 +23,21 @@ public class MainSystem : SingletonPersistant<MainSystem>
                 else if (gameState == GameState.MainMenu)
                 {
                     Debug.Log("Starting game from MainMenu");
-                    DataManager.Instance.LoadWorld();
+                    DataManager.LoadWorld();
                     LoadWorld?.Invoke();
                     Debug.Log("Finished loading world");
                 }
                 break;
             case GameState.MainMenu:
                 Debug.Log("Loading MainMenu");
-                DataManager.Instance.SaveWorld();
+                DataManager.SaveWorld();
                 break;
             case GameState.Paused:
                 Pause?.Invoke();
                 break;
             case GameState.Quitting:
                 Debug.Log("Quitting");
-                DataManager.Instance.SaveWorld();
+                DataManager.SaveWorld();
                 break;
         }
 

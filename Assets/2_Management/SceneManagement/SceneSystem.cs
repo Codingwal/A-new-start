@@ -5,17 +5,17 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneSystem : Singleton<SceneSystem>
+public static class SceneSystem
 {
-    public event Action<Scenes> SceneSwitched;
+    public static event Action<Scenes> SceneSwitched;
 
-    public event Action<float> Loading;
-    public float progress;
-    public void SwitchScene(Scenes scene)
+    public static event Action<float> Loading;
+    public static float progress;
+    public static void SwitchScene(Scenes scene, MonoBehaviour justToExecCoroutine)
     {
-        StartCoroutine(Instance.LoadSceneAsynchronously(scene));
+        justToExecCoroutine.StartCoroutine(LoadSceneAsynchronously(scene));
     }
-    private IEnumerator LoadSceneAsynchronously(Scenes scene)
+    private static IEnumerator LoadSceneAsynchronously(Scenes scene)
     {
         AsyncOperation operation = SceneManager.LoadSceneAsync(scene.ToString());
 
@@ -33,10 +33,10 @@ public class SceneSystem : Singleton<SceneSystem>
         switch (scene)
         {
             case Scenes.MainMenu:
-                MainSystem.Instance.ChangeGameState(GameState.MainMenu);
+                MainSystem.ChangeGameState(GameState.MainMenu);
                 break;
             case Scenes.Singleplayer:
-                MainSystem.Instance.ChangeGameState(GameState.InGame);
+                MainSystem.ChangeGameState(GameState.InGame);
                 break;
         }
     }

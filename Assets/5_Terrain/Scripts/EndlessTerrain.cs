@@ -28,7 +28,7 @@ public class EndlessTerrain : Singleton<EndlessTerrain>
 
     private void Start()
     {
-        MainSystem.Instance.LoadWorld += LoadWorld;
+        MainSystem.LoadWorld += LoadWorld;
     }
     private void LoadWorld()
     {
@@ -40,7 +40,7 @@ public class EndlessTerrain : Singleton<EndlessTerrain>
     }
     private void Update()
     {
-        if (MainSystem.Instance.gameState != GameState.InGame)
+        if (MainSystem.gameState != GameState.InGame)
         {
             return;
         }

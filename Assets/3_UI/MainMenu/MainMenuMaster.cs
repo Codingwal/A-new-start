@@ -20,6 +20,8 @@ public class MainMenuMaster : MonoBehaviour
 
     private void Awake()
     {
+        MainSystem.gameState = GameState.MainMenu;
+
         // Setup the menu so that the player starts at the MainMenu
 
         // Deactivate all sub menus
@@ -32,7 +34,7 @@ public class MainMenuMaster : MonoBehaviour
         transform.GetChild(0).gameObject.SetActive(true);
 
         // Subscribe to the SceneLoading event to show the progress
-        SceneSystem.Instance.Loading += OnSceneLoading;
+        SceneSystem.Loading += OnSceneLoading;
     }
     public void Play()
     {
@@ -40,7 +42,7 @@ public class MainMenuMaster : MonoBehaviour
         loadingScreen.SetActive(true);
 
         // Load the Singleplayer scene
-        SceneSystem.Instance.SwitchScene(SceneSystem.Scenes.Singleplayer);
+        SceneSystem.SwitchScene(SceneSystem.Scenes.Singleplayer, this);
     }
     public void OnSceneLoading(float progress)
     {
@@ -62,7 +64,7 @@ public class MainMenuMaster : MonoBehaviour
         }
 
         // Create a new world
-        DataManager.Instance.NewWorld(worldName);
+        DataManager.NewWorld(worldName);
 
         // Start the game
         Play();
@@ -75,7 +77,7 @@ public class MainMenuMaster : MonoBehaviour
         worldsavesDropdown.ClearOptions();
 
         // Load all worldSaves names
-        List<string> worldSaves = new(DataManager.Instance.GetAllWorlds().Keys);
+        List<string> worldSaves = new(DataManager.GetAllWorlds().Keys);
 
         // Add all worldSave names as options
         foreach (string saveName in worldSaves)
@@ -97,9 +99,14 @@ public class MainMenuMaster : MonoBehaviour
         }
 
         // Set the currentWorldName to the selected world that should be loaded
-        DataManager.Instance.currentWorldName = worldsavesDropdown.options[worldsavesDropdown.value].text;
+        DataManager.currentWorldName = worldsavesDropdown.options[worldsavesDropdown.value].text;
 
         // Start the game
         Play();
+    }
+
+    private void OnApplicationQuit()
+    {
+        MainSystem.ChangeGameState(GameState.Quitting);
     }
 }
