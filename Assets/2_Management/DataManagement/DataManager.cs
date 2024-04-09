@@ -13,6 +13,8 @@ public static class DataManager
 
     public static void NewWorld(string worldName)
     {
+        Debug.Log("Creating World");
+        
         // Create a new WorldData
         WorldData worldData = WorldData.NewWorld("Default");
 

@@ -21,6 +21,10 @@ public class PauseMenuMaster : MonoBehaviour
 
         MainSystem.Pause += Pause;
     }
+    private void OnDisable() {
+        SceneSystem.Loading -= OnSceneLoading;
+        MainSystem.Pause -= Pause;
+    }
     public void Pause()
     {
         pauseMenu.SetActive(true);

@@ -32,7 +32,7 @@ public class PlayerData
         {
             return new()
             {
-                position = new(0, 150, 0),
+                position = new(0, 200, 0),
                 rotation = new(),
             };
         }

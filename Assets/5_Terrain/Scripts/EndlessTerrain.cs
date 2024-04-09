@@ -29,6 +29,11 @@ public class EndlessTerrain : MonoBehaviour
     {
         MainSystem.LoadWorld += LoadWorld;
     }
+
+    private void OnDisable()
+    {
+        MainSystem.LoadWorld -= LoadWorld;
+    }
     private void LoadWorld()
     {
         maxViewDistance = detailLevels[^1].visibleDistanceThreshold;
@@ -36,6 +41,7 @@ public class EndlessTerrain : MonoBehaviour
         chunksVisibleInViewDistance = Mathf.RoundToInt(maxViewDistance / chunkSize);
 
         terrainChunksVisibleLastUpdate.Clear();
+        terrainChunkDictonary.Clear();
         UpdateVisibleChunks();
     }
     private void Update()
@@ -55,7 +61,7 @@ public class EndlessTerrain : MonoBehaviour
             UpdateVisibleChunks();
         }
     }
-    void UpdateVisibleChunks()
+    private void UpdateVisibleChunks()
     {
         for (int i = 0; i < terrainChunksVisibleLastUpdate.Count; i++)
         {
