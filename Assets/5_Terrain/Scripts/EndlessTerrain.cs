@@ -35,6 +35,7 @@ public class EndlessTerrain : MonoBehaviour
         chunkSize = MapGenerator.mapChunkSize - 1;
         chunksVisibleInViewDistance = Mathf.RoundToInt(maxViewDistance / chunkSize);
 
+        terrainChunksVisibleLastUpdate.Clear();
         UpdateVisibleChunks();
     }
     private void Update()

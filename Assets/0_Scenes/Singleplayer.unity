@@ -1472,7 +1472,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textureData: {fileID: 11400000, guid: d98a32990757f4f42b16e9528d9c040f, type: 2}
-  terrainMaterial: {fileID: 2100000, guid: e9a2f1f90689233428bf3532ca53af96, type: 2}
+  terrainMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
 --- !u!4 &1146475733
 Transform:
   m_ObjectHideFlags: 0
@@ -1516,7 +1516,7 @@ MonoBehaviour:
     visibleDistanceThreshold: 700
     useForCollider: 0
   viewer: {fileID: 965662050}
-  mapMaterial: {fileID: 2100000, guid: e9a2f1f90689233428bf3532ca53af96, type: 2}
+  mapMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
 --- !u!114 &1146475735
 MonoBehaviour:
   m_ObjectHideFlags: 0

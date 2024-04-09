@@ -15,7 +15,7 @@ public class MapGenerator : Singleton<MapGenerator>
     Queue<MapThreadInfo<MapData>> mapDataThreadInfoQueue = new();
     Queue<MapThreadInfo<MeshData>> meshDataThreadInfoQueue = new();
 
-    private void Start()
+    protected override void SingletonAwake()
     {
         MainSystem.LoadWorld += LoadWorld;
     }
@@ -87,7 +87,7 @@ public class MapGenerator : Singleton<MapGenerator>
     }
     MapData GenerateMapData(Vector2 center)
     {
-        Debug.Log("Generating MapData");
+        // Debug.Log("Generating MapData");
         
         MapDataHandler mapDataHandler = MapDataHandler.Instance;
 

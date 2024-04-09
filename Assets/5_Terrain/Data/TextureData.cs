@@ -7,7 +7,7 @@ using UnityEditor;
 [CreateAssetMenu()]
 public class TextureData : ScriptableObject
 {
-    const int textureSize = 512;
+    const int textureSize = 128;
     const TextureFormat textureFormat = TextureFormat.RGB565;
     public Layer[] layers;
 

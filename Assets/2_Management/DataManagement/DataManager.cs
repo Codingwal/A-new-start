@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public static class DataManager
 {
-    public static string currentWorldName;
+    public static string currentWorldName = "";
     public static string fileName;
 
     private static FileDataHandler dataHandler = new();
@@ -41,11 +40,8 @@ public static class DataManager
     {
         dataPersistanceObjects = FindAllDataPersistanceObjects();
 
-        if (currentWorldName == "")
-        {
-            Debug.Log("Canceled LoadWorld: CurrentWorldName is empty");
-            return;
-        }
+        if (currentWorldName == "") currentWorldName = "Default";
+
         // Load the WorldData
         WorldData worldData = dataHandler.Load<WorldData>("Worlds", currentWorldName);
 
