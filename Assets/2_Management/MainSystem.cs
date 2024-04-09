@@ -9,7 +9,7 @@ public static class MainSystem
     public static event Action LoadWorld;
     public static event Action Pause;
     public static event Action Continue;
-    
+
     public static void ChangeGameState(GameState newGameState)
     {
         switch (newGameState)

@@ -12,9 +12,6 @@ public static class DataManager
 
     private static List<IDataCallbackReceiver> dataPersistanceObjects;
 
-    [Space]
-    [Header("Default Worldsettings meshHeightCurve")]
-    public static AnimationCurve meshHeightCurve;
     public static void NewWorld(string worldName)
     {
         // Create a new WorldData

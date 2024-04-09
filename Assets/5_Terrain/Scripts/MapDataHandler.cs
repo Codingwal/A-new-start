@@ -11,11 +11,9 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
     public void LoadData(WorldData worldData)
     {
         // Prevent endlessTerrain from trying to load deleted chunks
-        EndlessTerrain.Instance.terrainChunkDictonary.Clear();
+        EndlessTerrain.terrainChunkDictonary.Clear();
         EndlessTerrain.terrainChunksVisibleLastUpdate.Clear();
-
-        if (MapGenerator.Instance == null) Debug.Log("A");
-        if (DataManager.GetWorldSettings() == null) Debug.Log("B");
+        
         MapGenerator.Instance.terrainSettings = DataManager.GetWorldSettings().terrainSettings;
 
         this.worldData = worldData;

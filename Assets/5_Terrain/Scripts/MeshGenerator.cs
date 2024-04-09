@@ -1,13 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public static class MeshGenerator
 {
-    public static MeshData GenerateTerrainMesh(float[,] heightMap, float heightMultiplier, AnimationCurve _heightCurve, int levelOfDetail)
+    public static MeshData GenerateTerrainMesh(float[,] heightMap, float heightMultiplier, int levelOfDetail)
     {
-        AnimationCurve heightCurve = new(_heightCurve.keys);
         int meshSize = heightMap.GetLength(0);
         float topLeftX = (meshSize - 1) / -2f;
         float topLeftZ = (meshSize - 1) / 2f;
@@ -22,7 +18,7 @@ public static class MeshGenerator
         {
             for (int x = 0; x < meshSize; x += meshSimplificationIncrement)
             {
-                meshData.vertices[vertexIndex] = new(topLeftX + x, heightCurve.Evaluate(heightMap[x, y]) * heightMultiplier, topLeftZ - y);
+                meshData.vertices[vertexIndex] = new(topLeftX + x, heightMap[x, y] * heightMultiplier, topLeftZ - y);
                 meshData.uvs[vertexIndex] = new(x / (float)meshSize, y / (float)meshSize);
 
                 if (x < meshSize - 1 && y < meshSize - 1)

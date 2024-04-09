@@ -13,21 +13,11 @@ public static class SceneSystem
     public static float progress;
     public static void SwitchScene(Scenes scene, MonoBehaviour justToExecCoroutine)
     {
-        justToExecCoroutine.StartCoroutine(LoadSceneAsynchronously(scene));
-    }
-    private static IEnumerator LoadSceneAsynchronously(Scenes scene)
-    {
         AsyncOperation operation = SceneManager.LoadSceneAsync(scene.ToString());
 
-        while (!operation.isDone)
-        {
-            progress = operation.progress / 0.9f;
+        justToExecCoroutine.StartCoroutine(LoadSceneAsynchronously(operation));
 
-            Loading?.Invoke(progress);
-            yield return null;
-        }
         Debug.Log(scene.ToString() + " has finished loading");
-        SceneManager.SetActiveScene(SceneManager.GetSceneByName(scene.ToString()));
         SceneSwitched?.Invoke(scene);
 
         switch (scene)
@@ -38,6 +28,18 @@ public static class SceneSystem
             case Scenes.Singleplayer:
                 MainSystem.ChangeGameState(GameState.InGame);
                 break;
+            default:
+                throw new();
+        }
+    }
+    private static IEnumerator LoadSceneAsynchronously(AsyncOperation operation)
+    {
+        while (!operation.isDone)
+        {
+            progress = operation.progress / 0.9f;
+
+            Loading?.Invoke(progress);
+            yield return null;
         }
     }
     public enum Scenes

@@ -1,8 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EndlessTerrain : Singleton<EndlessTerrain>
+public class EndlessTerrain : MonoBehaviour
 {
     public GameObject terrainChunkPrefab;
 
@@ -23,10 +22,10 @@ public class EndlessTerrain : Singleton<EndlessTerrain>
     int chunkSize;
     int chunksVisibleInViewDistance;
 
-    public Dictionary<Vector2, TerrainChunk> terrainChunkDictonary = new();
+    public static Dictionary<Vector2, TerrainChunk> terrainChunkDictonary = new();
     public static List<TerrainChunk> terrainChunksVisibleLastUpdate = new();
 
-    private void Start()
+    private void Awake()
     {
         MainSystem.LoadWorld += LoadWorld;
     }

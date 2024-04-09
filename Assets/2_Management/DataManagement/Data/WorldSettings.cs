@@ -31,7 +31,6 @@ public class PlayerSettings
 }
 public class TerrainSettings
 {
-    public AnimationCurve meshHeightCurve;
     public float meshHeightMultiplier;
     public float noiseScale;
     public float lacunarity;
@@ -59,7 +58,6 @@ public class TerrainSettings
         {
             return new()
             {
-                meshHeightCurve = DataManager.meshHeightCurve,
                 meshHeightMultiplier = 150,
                 noiseScale = 500,
                 octaves = 8,

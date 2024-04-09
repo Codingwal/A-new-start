@@ -2,6 +2,12 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
+
+# !!! This is not generated but added intentionally
+# World data gets big really fast and isn't needed on github
+/[Aa]ssets/Data/
+
+
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
