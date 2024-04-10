@@ -56,13 +56,14 @@ public class EndlessTerrain : MonoBehaviour
 
         if ((viewerPositionOld - viewerPosition).sqrMagnitude > sqrViewerMoveThresholdForChunkUpdate)
         {
-            Debug.Log("Updating visible chunks");
             viewerPositionOld = viewerPosition;
             UpdateVisibleChunks();
         }
     }
     private void UpdateVisibleChunks()
     {
+        Debug.Log("Updating visible chunks");
+
         for (int i = 0; i < terrainChunksVisibleLastUpdate.Count; i++)
         {
             terrainChunksVisibleLastUpdate[i].SetVisible(false);

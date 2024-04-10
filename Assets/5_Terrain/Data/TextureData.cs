@@ -11,6 +11,7 @@ public class TextureData : ScriptableObject
     const TextureFormat textureFormat = TextureFormat.RGB565;
     public Layer[] layers;
 
+    // TODO: Should these be used?
     float savedMinHeight;
     float savedMaxHeight;
 
@@ -38,7 +39,7 @@ public class TextureData : ScriptableObject
         Texture2DArray textureArray = new(textureSize, textureSize, textures.Length, textureFormat, true);
         for (int i = 0; i < textures.Length; i++)
         {
-            textureArray.SetPixels(textures[i].GetPixels(), i);
+            textureArray.SetPixels32(textures[i].GetPixels32(), i);     // SetPixels32 is faster than just SetPixels
         }
         textureArray.Apply();
         return textureArray;

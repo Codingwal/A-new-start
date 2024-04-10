@@ -19,15 +19,19 @@ public class MapGenerator : Singleton<MapGenerator>
     {
         MainSystem.LoadWorld += LoadWorld;
     }
+    private void OnDisable() {
+        MainSystem.LoadWorld -= LoadWorld;
+    }
     private void LoadWorld()
     {
         // Update the map
-        Debug.Log("Reloading textures");
         UpdateTextures();
     }
 
     public void UpdateTextures()
     {
+        Debug.Log("Reloading textures");
+
         textureData.UpdateMeshHeights(terrainMaterial, terrainSettings.MinHeight, terrainSettings.MaxHeight);
         textureData.ApplyToMaterial(terrainMaterial);
     }

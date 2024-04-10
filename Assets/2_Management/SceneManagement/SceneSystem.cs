@@ -26,7 +26,7 @@ public static class SceneSystem
                 MainSystem.ChangeGameState(GameState.MainMenu);
                 break;
             case Scenes.Singleplayer:
-                MainSystem.ChangeGameState(GameState.InGame);
+                // MainSystem.ChangeGameState(GameState.InGame);
                 break;
             default:
                 throw new();
