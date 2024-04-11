@@ -11,6 +11,7 @@ public class TextureData : ScriptableObject
     const TextureFormat textureFormat = TextureFormat.RGB565;
     public Layer[] layers;
 
+    // This is needed!?
     private Texture2DArray test;
 
     float savedMinHeight;
@@ -26,14 +27,7 @@ public class TextureData : ScriptableObject
         material.SetFloatArray("baseTextureScales", layers.Select(x => x.textureScale).ToArray());
         Texture2DArray texturesArray = GenerateTextureArray(layers.Select(x => x.texture).ToArray());
 
-        if (texturesArray == test)
-        {
-            Debug.Log("!");
-        }
-        else
-        {
-            Debug.Log("?");
-        }
+        // This is needed!?
         test = texturesArray;
 
         material.SetTexture("baseTextures", texturesArray);

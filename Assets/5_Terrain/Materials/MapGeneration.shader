@@ -131,12 +131,9 @@ Shader "SLE/MapGeneration/Terrain"
 					float3 baseColor    = baseColors[i] * baseColorStrengths[i];
 
 					float3 textureColor = triplanar(IN.worldPos, baseTextureScales[i], blendAxes, i) * (1 - baseColorStrengths[i]);
-					// textureColor = 0;
 					
 					col = col * (1 - drawStrength) + (baseColor + textureColor) * drawStrength;
 				}
-				// col = baseColors[2];
-				// col.r = 200;
 
 				_Color.rgb = col;
 
