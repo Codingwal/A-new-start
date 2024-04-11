@@ -52,7 +52,7 @@ Shader "SLE/MapGeneration/Terrain"
 			float3 baseColors[maxLayerCount];
 			float  baseStartHeights[maxLayerCount];
 			float  baseBlends[maxLayerCount];
-			float  baseColorStrength[maxLayerCount];
+			float  baseColorStrengths[maxLayerCount];
 			float  baseTextureScales[maxLayerCount];
 
 			float minHeight;
@@ -92,8 +92,8 @@ Shader "SLE/MapGeneration/Terrain"
 			{
 				v2f o;
 
-				o.worldPos    = mul(unity_ObjectToWorld, vertex);
-				o.vertex      = TransformObjectToHClip(vertex);
+				o.worldPos    = mul(unity_ObjectToWorld, vertex).xyz;
+				o.vertex      = TransformObjectToHClip(vertex.xyz);
 				o.worldNormal = TransformObjectToWorldNormal(normal);
 
 				Light mainLight = GetMainLight();
@@ -118,20 +118,26 @@ Shader "SLE/MapGeneration/Terrain"
 				
 				blendAxes /= blendAxes.x + blendAxes.y + blendAxes.z;
 
-				half3 col = _Color;
+				half3 col = _Color.xyz;
 				for (int i = 0; i < layerCount; i++) 
 				{
+					// - epsilon ensures that the first 2 arguments aren't zero (could lead to errors) even if baseBlends[i] is zero
 					float a = -baseBlends[i] / 2.0 - epsilon;
 					float b = baseBlends[i] / 2.0;
 					float t = heightPercent - baseStartHeights[i];
-
+					
 					float drawStrength = inverseLerp(a, b, t);
 
-					float3 baseColor    = baseColors[i] * baseColorStrength[i];
-					float3 textureColor = triplanar(IN.worldPos, baseTextureScales[i], blendAxes, i) * (1 - baseColorStrength[i]);
+					float3 baseColor    = baseColors[i] * baseColorStrengths[i];
 
+					float3 textureColor = triplanar(IN.worldPos, baseTextureScales[i], blendAxes, i) * (1 - baseColorStrengths[i]);
+					// textureColor = 0;
+					
 					col = col * (1 - drawStrength) + (baseColor + textureColor) * drawStrength;
 				}
+				// col = baseColors[2];
+				// col.r = 200;
+
 				_Color.rgb = col;
 
 				Light mainLight = GetMainLight();

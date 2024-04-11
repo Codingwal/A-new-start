@@ -11,23 +11,28 @@ public class InputManager : Singleton<InputManager>
     public event Action<Vector2> Look;
     public event Action Jump;
     
-    protected void Start()
+    protected override void SingletonAwake()
     {
         playerInput = new();
         gameplay = playerInput.Gameplay;
 
         MainSystem.GameStateChanged += OnGameStateChanged;
     }
+    private void OnDisable() {
+        MainSystem.GameStateChanged -= OnGameStateChanged;
+    }   
     private void OnGameStateChanged(GameState newGameState)
     {
         if (newGameState == GameState.InGame)
         {
+            Debug.Log("Enabling Gameplay");
             gameplay.Enable();
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
         else
         {
+            Debug.Log("Disabling Gameplay");
             gameplay.Disable();
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
