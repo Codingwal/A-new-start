@@ -11,12 +11,12 @@ public static class DataManager
 
     private static List<IDataCallbackReceiver> dataPersistanceObjects;
 
-    public static void NewWorld(string worldName)
+    public static void NewWorld(string worldName, TerrainSettingsObject terrainSettingsObj, PlayerSettingsObject playerSettingsObj)
     {
         Debug.Log("Creating World");
         
         // Create a new WorldData
-        WorldData worldData = WorldData.NewWorld("Default");
+        WorldData worldData = WorldData.NewWorld(new(terrainSettingsObj), new(playerSettingsObj));
 
         // Set the current world to the new world
         currentWorldName = worldName;
@@ -33,10 +33,6 @@ public static class DataManager
             worlds[worldName] = dataHandler.Load<WorldData>("Worlds", worldName);
         }
         return worlds;
-    }
-    public static WorldSettings GetWorldSettings()
-    {
-        return WorldSettings.Default;
     }
     public static void LoadWorld()
     {

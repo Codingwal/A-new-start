@@ -4,17 +4,19 @@ using System.Collections.Generic;
 
 public class WorldData
 {
-    public string worldSettingsName;
+    public PlayerSettings playerSettings;
     public PlayerData playerData;
+    public TerrainSettings terrainSettings;
     public TerrainData terrainData;
-    
 
-    public static WorldData NewWorld(string worldSettingsName)
+
+    public static WorldData NewWorld(TerrainSettings terrainSettings, PlayerSettings playerSettings)
     {
-        
+
         return new()
         {
-            worldSettingsName = worldSettingsName,
+            terrainSettings = terrainSettings,
+            playerSettings = playerSettings,
             terrainData = TerrainData.Default,
             playerData = PlayerData.Default
         };
@@ -51,7 +53,7 @@ public class TerrainData
             System.Random random = new();
             return new()
             {
-                seed = random.Next(-1000000, 1000000), 
+                seed = random.Next(-1000000, 1000000),
                 chunks = new()
             };
         }

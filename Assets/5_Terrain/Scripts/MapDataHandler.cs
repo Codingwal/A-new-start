@@ -14,7 +14,7 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
         EndlessTerrain.terrainChunkDictonary.Clear();
         EndlessTerrain.terrainChunksVisibleLastUpdate.Clear();
         
-        MapGenerator.Instance.terrainSettings = DataManager.GetWorldSettings().terrainSettings;
+        MapGenerator.Instance.terrainSettings = worldData.terrainSettings;
 
         this.worldData = worldData;
         chunks = worldData.terrainData.chunks;

@@ -1471,6 +1471,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 888815b657ee7e546886ebcd2973d750, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  terrainSettings: {fileID: 11400000, guid: 61e9dc3fce8eb9a4680952bdc1c557ac, type: 2}
   textureData: {fileID: 11400000, guid: d98a32990757f4f42b16e9528d9c040f, type: 2}
   terrainMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
 --- !u!4 &1146475733

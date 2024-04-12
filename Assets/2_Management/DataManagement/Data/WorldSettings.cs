@@ -1,70 +1,58 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-public class WorldSettings
-{
-    public PlayerSettings playerSettings;
-    public TerrainSettings terrainSettings;
-
-    public static WorldSettings Default
-    {
-        get
-        {
-            return new()
-            {
-                playerSettings = PlayerSettings.Default,
-                terrainSettings = TerrainSettings.Default
-            };
-        }
-    }
-}
+[Serializable]
 public class PlayerSettings
 {
-    public static PlayerSettings Default
+    public PlayerSettings(PlayerSettingsObject obj)
     {
-        get
-        {
-            return new();
-        }
+
     }
 }
+
+[CreateAssetMenu()]
+[Serializable]
+public class PlayerSettingsObject : ScriptableObject
+{
+
+}
+
+
+[Serializable]
 public class TerrainSettings
 {
-    public float meshHeightMultiplier;
-    public float noiseScale;
-    public float lacunarity;
-    public int octaves;
-    public float persistance;
-    public float uniformScale;
+    public float meshHeightMultiplier = 150;
+    public float noiseScale = 500;
+    public float lacunarity = 2;
+    public int octaves = 8;
+    public float persistance = 0.5f;
+    public float uniformScale = 1;
+    public float minHeight = 0;
+    public float maxHeight = 150;
+    public TerrainSettings(TerrainSettingsObject obj)
+    {
+        meshHeightMultiplier = obj.meshHeightMultiplier;
+        noiseScale = obj.noiseScale;
+        lacunarity = obj.lacunarity;
+        octaves = obj.octaves;
+        persistance = obj.persistance;
+        uniformScale = obj.uniformScale;
+        minHeight = obj.minHeight;
+        maxHeight = obj.maxHeight;
+    }
+}
 
-    public float MinHeight
-    {
-        get
-        {
-            return 0;
-        }
-    }
-    public float MaxHeight
-    {
-        get
-        {
-            return 150;
-        }
-    }
-    public static TerrainSettings Default
-    {
-        get
-        {
-            return new()
-            {
-                meshHeightMultiplier = 150,
-                noiseScale = 500,
-                octaves = 8,
-                lacunarity = 2f,
-                persistance = 0.5f,
-                uniformScale = 1f
-            };
-        }
-    }
+[CreateAssetMenu()]
+[Serializable]
+public class TerrainSettingsObject : ScriptableObject
+{
+    public float meshHeightMultiplier = 150;
+    public float noiseScale = 500;
+    public float lacunarity = 2;
+    public int octaves = 8;
+    public float persistance = 0.5f;
+    public float uniformScale = 1;
+
+    public float minHeight = 0;
+    public float maxHeight = 150;
 }

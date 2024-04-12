@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class MapGenerator : Singleton<MapGenerator>
 {
-    public TerrainSettings terrainSettings;
+    // This is set by the MapDataHandler script
+    [HideInInspector] public TerrainSettings terrainSettings;
     public TextureData textureData;
 
     public Material terrainMaterial;
@@ -32,7 +33,7 @@ public class MapGenerator : Singleton<MapGenerator>
     {
         Debug.Log("Reloading textures");
 
-        textureData.UpdateMeshHeights(terrainMaterial, terrainSettings.MinHeight, terrainSettings.MaxHeight);
+        textureData.UpdateMeshHeights(terrainMaterial, terrainSettings.minHeight, terrainSettings.maxHeight);
         textureData.ApplyToMaterial(terrainMaterial);
     }
 

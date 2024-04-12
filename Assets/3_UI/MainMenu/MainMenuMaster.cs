@@ -18,6 +18,11 @@ public class MainMenuMaster : MonoBehaviour
     public Slider progressSlider;
     public TMP_Text progressText; 
 
+
+    [Header ("Worldsettings scriptable objects")]
+    [SerializeField] TerrainSettingsObject terrainSettingsObj;
+    [SerializeField] PlayerSettingsObject playerSettingsObj;
+
     private void Awake()
     {
         MainSystem.gameState = GameState.MainMenu;
@@ -64,7 +69,7 @@ public class MainMenuMaster : MonoBehaviour
         }
 
         // Create a new world
-        DataManager.NewWorld(worldName);
+        DataManager.NewWorld(worldName, terrainSettingsObj, playerSettingsObj);
 
         // Start the game
         Play();
