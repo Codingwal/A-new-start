@@ -43,6 +43,8 @@ public static class DataManager
         // Load the WorldData
         WorldData worldData = dataHandler.Load<WorldData>("Worlds", currentWorldName);
 
+        Debug.Log(worldData.terrainSettings.slopeImpact);
+
         // Let each IDataPersistance object load the WorldData
         foreach (IDataCallbackReceiver dataPersistanceObject in dataPersistanceObjects)
         {

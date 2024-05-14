@@ -5855,7 +5855,7 @@ MonoBehaviour:
   progressSlider: {fileID: 1585736756}
   progressText: {fileID: 1382448093}
   terrainSettingsObj: {fileID: 11400000, guid: 81d60164a90d9564195daf0946245d4f, type: 2}
-  playerSettingsObj: {fileID: 11400000, guid: 0f1805289579b6c4ca99f4ad9195d212, type: 2}
+  playerSettingsObj: {fileID: 11400000, guid: df9cff62162f7b04ba889d2f5dee4eff, type: 2}
 --- !u!1 &1585736754
 GameObject:
   m_ObjectHideFlags: 0

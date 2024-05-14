@@ -1,5 +1,11 @@
 using UnityEngine;
+using UnityEngine.TestTools;
 
+// Sources:
+// Procedural terrain generation by Sebastian Lauge:
+// https://www.youtube.com/watch?v=wbpMiKiSKm8&list=PLFt_AvWsXl0eBW2EiBtl_sxmDtSgZBxB3
+// Improvement concept from Josh's Channel
+// https://www.youtube.com/watch?v=gsJHzBTPG0Y
 public static class Noise
 {
     public enum NormalizeMode
@@ -7,8 +13,9 @@ public static class Noise
         Local,
         Global
     }
-    public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset)
+    public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, float slopeImpact, Vector2 offset)
     {
+        Debug.Log(slopeImpact);
         // This will be returned
         float[,] noiseMap = new float[mapWidth, mapHeight];
 
@@ -54,6 +61,7 @@ public static class Noise
                 float amplitude = 1;
                 float frequency = 1;
                 float noiseHeight = 0;
+                float slopesSum = 0;
 
                 // For each octave at that point...
                 for (int i = 0; i < octaves; i++)
@@ -69,8 +77,25 @@ public static class Noise
                     // Get the perlin value for the point and change the range from (0, 1) to (-1, 1)
                     float perlinValue = Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1;
 
+                    // Approximate the slope at the point using the derivative and the pythagorean theorem
+                    float slopeX = (Mathf.PerlinNoise(sampleX + 0.0001f, sampleY) * 2 - 1 - perlinValue) / float.Epsilon;
+                    float slopeY = (Mathf.PerlinNoise(sampleX, sampleY + 0.0001f) * 2 - 1 - perlinValue) / float.Epsilon;
+                    float slope = Mathf.Sqrt(slopeX * slopeX + slopeY * slopeY);
+
+                    // Each layer's influence is affected by the slope of this layer and all previous layers
+                    slopesSum += slope;
+
+                    // This result in a value between 0 and 1, a higher slopesSum results in a lower value -> less impact
+                    Debug.Log("1 " + slopesSum);
+                    Debug.Log("2 " + slopeImpact);
+                    // Debug.Assert(slopesSum * slopeImpact == -1, "weird shit");
+                    float layerInfluence = 1 / (1 + slopesSum * slopeImpact);
+
+                    Debug.LogWarning(layerInfluence);
+
                     // Add the perlin value times the vertical scale factor (amplitude) to the total height of the point
-                    noiseHeight += perlinValue * amplitude;
+
+                    noiseHeight += perlinValue * amplitude * layerInfluence;
 
                     // TODO: Change this?
                     amplitude *= persistance;
@@ -87,11 +112,12 @@ public static class Noise
         {
             for (int x = 0; x < mapWidth; x++)
             {
-
-                float normalizedHeight = (noiseMap[x, y] + 1) / (maxPossibleHeight * 2 / 1.75f);
-
-                // Ensure a positive height value for the point
-                noiseMap[x, y] = Mathf.Clamp(normalizedHeight, 0, int.MaxValue);
+                // Calculate the normalized height (range 0 to 1) by using 0 and maxPossibleHeight
+                // +1 / 2 to reverse the operation done to change the range from (0, 1) to (-1, 1)
+                // /maxPossibleHeight to normalize
+                // *1.75 because realistically, maxPossibleHeight will never be reached
+                float normalizedHeight = (noiseMap[x, y] + 1) / (2 * maxPossibleHeight / 1.75f);
+                noiseMap[x, y] = Mathf.Clamp(normalizedHeight, 0, 1);
 
             }
         }

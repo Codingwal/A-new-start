@@ -17,6 +17,7 @@ MonoBehaviour:
   lacunarity: 2
   octaves: 8
   persistance: 0.5
+  slopeImpact: 1
   uniformScale: 1
   minHeight: 0
   maxHeight: 150
