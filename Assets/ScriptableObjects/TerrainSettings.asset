@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: TerrainSettings
   m_EditorClassIdentifier: Management::TerrainSettingsObject
-  meshHeightMultiplier: 150
+  meshHeightMultiplier: 300
   noiseScale: 500
   lacunarity: 2
   octaves: 8
   persistance: 0.5
-  slopeImpact: 1
+  slopeImpact: 0.75
   uniformScale: 1
   minHeight: 0
   maxHeight: 150

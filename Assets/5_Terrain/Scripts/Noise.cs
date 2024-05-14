@@ -78,20 +78,15 @@ public static class Noise
                     float perlinValue = Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1;
 
                     // Approximate the slope at the point using the derivative and the pythagorean theorem
-                    float slopeX = (Mathf.PerlinNoise(sampleX + 0.0001f, sampleY) * 2 - 1 - perlinValue) / float.Epsilon;
-                    float slopeY = (Mathf.PerlinNoise(sampleX, sampleY + 0.0001f) * 2 - 1 - perlinValue) / float.Epsilon;
+                    float slopeX = (Mathf.PerlinNoise(sampleX + 0.0001f, sampleY) * 2 - 1 - perlinValue) / 0.0001f;
+                    float slopeY = (Mathf.PerlinNoise(sampleX, sampleY + 0.0001f) * 2 - 1 - perlinValue) / 0.0001f;
                     float slope = Mathf.Sqrt(slopeX * slopeX + slopeY * slopeY);
 
                     // Each layer's influence is affected by the slope of this layer and all previous layers
                     slopesSum += slope;
 
                     // This result in a value between 0 and 1, a higher slopesSum results in a lower value -> less impact
-                    Debug.Log("1 " + slopesSum);
-                    Debug.Log("2 " + slopeImpact);
-                    // Debug.Assert(slopesSum * slopeImpact == -1, "weird shit");
                     float layerInfluence = 1 / (1 + slopesSum * slopeImpact);
-
-                    Debug.LogWarning(layerInfluence);
 
                     // Add the perlin value times the vertical scale factor (amplitude) to the total height of the point
 
