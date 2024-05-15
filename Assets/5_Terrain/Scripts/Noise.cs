@@ -15,7 +15,6 @@ public static class Noise
     }
     public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, float slopeImpact, Vector2 offset)
     {
-        Debug.Log(slopeImpact);
         // This will be returned
         float[,] noiseMap = new float[mapWidth, mapHeight];
 
@@ -75,11 +74,13 @@ public static class Noise
                     float sampleY = (y - halfHeight + octaveOffsets[i].y) / scale * frequency;
 
                     // Get the perlin value for the point and change the range from (0, 1) to (-1, 1)
-                    float perlinValue = Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1;
+                    float perlinValue = Mathf.PerlinNoise(sampleX, sampleY);
+
+                    float epsilon = 0.01f;
 
                     // Approximate the slope at the point using the derivative and the pythagorean theorem
-                    float slopeX = (Mathf.PerlinNoise(sampleX + 0.0001f, sampleY) * 2 - 1 - perlinValue) / 0.0001f;
-                    float slopeY = (Mathf.PerlinNoise(sampleX, sampleY + 0.0001f) * 2 - 1 - perlinValue) / 0.0001f;
+                    float slopeX = (Mathf.PerlinNoise(sampleX + epsilon, sampleY) - perlinValue) / epsilon;
+                    float slopeY = (Mathf.PerlinNoise(sampleX, sampleY + epsilon) - perlinValue) / epsilon;
                     float slope = Mathf.Sqrt(slopeX * slopeX + slopeY * slopeY);
 
                     // Each layer's influence is affected by the slope of this layer and all previous layers
@@ -89,6 +90,9 @@ public static class Noise
                     float layerInfluence = 1 / (1 + slopesSum * slopeImpact);
 
                     // Add the perlin value times the vertical scale factor (amplitude) to the total height of the point
+
+                    if (i != 0)
+                        perlinValue = perlinValue * 2 - 1;
 
                     noiseHeight += perlinValue * amplitude * layerInfluence;
 
@@ -111,7 +115,7 @@ public static class Noise
                 // +1 / 2 to reverse the operation done to change the range from (0, 1) to (-1, 1)
                 // /maxPossibleHeight to normalize
                 // *1.75 because realistically, maxPossibleHeight will never be reached
-                float normalizedHeight = (noiseMap[x, y] + 1) / (2 * maxPossibleHeight / 1.75f);
+                float normalizedHeight = noiseMap[x, y] / (maxPossibleHeight / 1.75f);
                 noiseMap[x, y] = Mathf.Clamp(normalizedHeight, 0, 1);
 
             }

@@ -101,8 +101,6 @@ public class MapGenerator : Singleton<MapGenerator>
             return new(mapDataHandler.chunks[center].heightMap);
         }
 
-        Debug.Log(terrainSettings.slopeImpact);
-
         float[,] noiseMap = Noise.GenerateNoiseMap
         (mapChunkSize, mapChunkSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.noiseScale, terrainSettings.octaves,
         terrainSettings.persistance, terrainSettings.lacunarity, terrainSettings.slopeImpact, center);
