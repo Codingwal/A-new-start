@@ -1539,6 +1539,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8da0d64861c223f478c364dc46bfea01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  worldData:
+    playerData:
+      position: {x: 0, y: 200, z: 0}
+      rotation: {x: 0, y: 0, z: 0}
+    terrainSettings:
+      meshHeightMultiplier: 150
+      noiseScale: 500
+      lacunarity: 2
+      octaves: 8
+      persistance: 0.5
+      slopeImpact: 1
+      uniformScale: 1
+      minHeight: 0
+      maxHeight: 150
+    terrainData:
+      seed: -954678
+      chunks:
+        keys: []
+        values: []
 --- !u!1 &1237361014
 GameObject:
   m_ObjectHideFlags: 0
