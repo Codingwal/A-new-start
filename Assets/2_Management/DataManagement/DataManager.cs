@@ -24,6 +24,10 @@ public static class DataManager
         // Save the WorldData
         dataHandler.Save(worldData, "Worlds", worldName);
     }
+    public static List<string> GetAllWorldNames()
+    {
+        return dataHandler.ListAllFilesInDirectory("Worlds");
+    }
     public static Dictionary<string, WorldData> GetAllWorlds()
     {
         Dictionary<string, WorldData> worlds = new();

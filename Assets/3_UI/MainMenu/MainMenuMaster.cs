@@ -82,12 +82,12 @@ public class MainMenuMaster : MonoBehaviour
         worldsavesDropdown.ClearOptions();
 
         // Load all worldSaves names
-        List<string> worldSaves = new(DataManager.GetAllWorlds().Keys);
+        List<string> worldNames = DataManager.GetAllWorldNames();
 
         // Add all worldSave names as options
-        foreach (string saveName in worldSaves)
+        foreach (string worldName in worldNames)
         {
-            worldsavesDropdown.options.Add(new(saveName));
+            worldsavesDropdown.options.Add(new(worldName));
         }
         // Reset the dropdown value
         worldsavesDropdown.value = 0;
