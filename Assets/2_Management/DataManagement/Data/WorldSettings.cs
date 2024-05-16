@@ -4,6 +4,10 @@ using UnityEngine;
 [Serializable]
 public class PlayerSettings
 {
+    public PlayerSettings()
+    {
+
+    }
     public PlayerSettings(PlayerSettingsObject obj)
     {
 
@@ -30,6 +34,10 @@ public class TerrainSettings
     public float uniformScale = 1;
     public float minHeight = 0;
     public float maxHeight = 150;
+    public TerrainSettings()
+    {
+
+    }
     public TerrainSettings(TerrainSettingsObject obj)
     {
         meshHeightMultiplier = obj.meshHeightMultiplier;

@@ -13,8 +13,7 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
         // Prevent endlessTerrain from trying to load deleted chunks
         EndlessTerrain.terrainChunkDictonary.Clear();
         EndlessTerrain.terrainChunksVisibleLastUpdate.Clear();
-        
-        Debug.Log(worldData.terrainSettings.slopeImpact);
+    
         MapGenerator.Instance.terrainSettings = worldData.terrainSettings;
 
         this.worldData = worldData;
@@ -25,7 +24,6 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
     }
     public void SaveData(WorldData worldData)
     {
-        worldData.terrainData.chunks = new SerializableDictonary<Vector2, ChunkData>();
         worldData.terrainData.chunks = (SerializableDictonary<Vector2, ChunkData>)chunks;
 
         Debug.Log($"Saved {worldData.terrainData.chunks.Count} chunks");

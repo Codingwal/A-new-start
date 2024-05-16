@@ -1,7 +1,6 @@
 TODO:
 
-- More efficient world name listing (without loading all the data)
-- Custom binary serializer
+- Rivers
 
 - Add swimming
 

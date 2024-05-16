@@ -10,7 +10,6 @@ public class WorldData
     public TerrainSettings terrainSettings;
     public TerrainData terrainData;
 
-
     public static WorldData NewWorld(TerrainSettings terrainSettings, PlayerSettings playerSettings)
     {
 
@@ -22,12 +21,25 @@ public class WorldData
             playerData = PlayerData.Default
         };
     }
+    public WorldData()
+    {
+        terrainSettings = new();
+        playerSettings = new();
+        terrainData = TerrainData.Default;
+        playerData = PlayerData.Default;
+    }
 }
 [Serializable]
 public class PlayerData
 {
     [SerializeField] public Vector3 position;
     [SerializeField] public Vector3 rotation;
+
+    public PlayerData()
+    {
+        position = new(0, 200, 0);
+        rotation = new();
+    }
 
     public static PlayerData Default
     {

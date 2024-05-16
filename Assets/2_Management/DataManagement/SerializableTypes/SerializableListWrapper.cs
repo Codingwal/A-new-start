@@ -7,4 +7,12 @@ using System;
 public class ListWrapper<T>
 {
     public List<T> list = new();
+    public ListWrapper()
+    {
+        
+    }
+    public ListWrapper(List<T> list)
+    {
+        this.list = list;
+    }
 }

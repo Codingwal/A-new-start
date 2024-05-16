@@ -37,6 +37,7 @@ public static class MainSystem
                 break;
             case GameState.Quitting:
                 Debug.Log("Quitting");
+                if (gameState == GameState.MainMenu) break;
                 DataManager.SaveWorld();
                 break;
         }
