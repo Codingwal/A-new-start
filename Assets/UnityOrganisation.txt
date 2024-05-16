@@ -1,6 +1,6 @@
 TODO:
 
-- Fix texture bug
+- More efficient world name listing (without loading all the data)
 
 - Add swimming
 

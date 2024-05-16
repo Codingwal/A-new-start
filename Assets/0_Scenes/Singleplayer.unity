@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.71180665, g: 0.6021209, b: 0.5773997, a: 1}
+  m_IndirectSpecularColor: {r: 0.52941215, g: 0.5205341, b: 0.5951225, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1471,7 +1471,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 888815b657ee7e546886ebcd2973d750, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrainSettings: {fileID: 11400000, guid: 61e9dc3fce8eb9a4680952bdc1c557ac, type: 2}
+  terrainSettings:
+    meshHeightMultiplier: 0
+    noiseScale: 0
+    lacunarity: 0
+    octaves: 0
+    persistance: 0
+    slopeImpact: 0
+    uniformScale: 0
+    minHeight: 0
+    maxHeight: 0
   textureData: {fileID: 11400000, guid: d98a32990757f4f42b16e9528d9c040f, type: 2}
   terrainMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
 --- !u!4 &1146475733

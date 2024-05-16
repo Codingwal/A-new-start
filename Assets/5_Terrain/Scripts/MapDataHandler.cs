@@ -26,7 +26,7 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
     public void SaveData(WorldData worldData)
     {
         worldData.terrainData.chunks = new SerializableDictonary<Vector2, ChunkData>();
-        // worldData.terrainData.chunks = (SerializableDictonary<Vector2, ChunkData>)chunks;
+        worldData.terrainData.chunks = (SerializableDictonary<Vector2, ChunkData>)chunks;
 
         Debug.Log($"Saved {worldData.terrainData.chunks.Count} chunks");
     }

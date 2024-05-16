@@ -4,10 +4,15 @@ using System.Linq;
 using System.IO;
 using System;
 using UnityEngine;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
 
 public class FileDataHandler
 {
     public static readonly string SaveFolder = $"{Application.dataPath}/Data/";
+
+    BinaryFormatter formatter = new();
+    SurrogateSelector surrogateSelector = new();
 
     public FileDataHandler()
     {
@@ -24,26 +29,45 @@ public class FileDataHandler
         {
             Directory.CreateDirectory(SaveFolder + "Worlds/");
         }
-    }
 
+        Vector3SerializationSurrogate v3ss = new();
+        surrogateSelector.AddSurrogate(typeof(Vector3), new StreamingContext(StreamingContextStates.All), v3ss);
+
+        Vector2SerializationSurrogate v2ss = new();
+        surrogateSelector.AddSurrogate(typeof(Vector2), new StreamingContext(StreamingContextStates.All), v2ss);
+
+        formatter.SurrogateSelector = surrogateSelector;
+
+    }
     public void Save<T>(T data, string folder, string fileName)
     {
-        folder += "/";
+        FileStream saveFile = File.Create($"{SaveFolder}{folder}/{fileName}.bin");
 
-        string dataString = JsonUtility.ToJson(data, true);
+        formatter.Serialize(saveFile, data);
 
-        File.WriteAllText($"{SaveFolder}{folder}/{fileName}.txt", dataString);
+        saveFile.Close();
     }
-
     public T Load<T>(string folder, string fileName, bool forceReturn = false)
     {
-        string dataString = "";
+        T data;
 
         try
         {
-            folder += "/";
+            FileStream saveFile = File.Open($"{SaveFolder}{folder}/{fileName}.bin", FileMode.Open);
 
-            dataString = File.ReadAllText($"{SaveFolder}{folder}/{fileName}.txt");
+            try
+            {
+                data = (T)formatter.Deserialize(saveFile);
+            }
+            catch (Exception exception)
+            {
+                if (forceReturn)
+                {
+                    return default;
+                }
+                throw exception;
+            }
+            saveFile.Close();
         }
         catch (Exception exception)
         {
@@ -54,14 +78,9 @@ public class FileDataHandler
             throw exception;
         }
 
-        T obj = JsonUtility.FromJson<T>(dataString);
-        if (obj == null && !forceReturn)
-        {
-            throw new($"Invalid Object in file {SaveFolder}{folder}/{fileName}.txt");
-        }
-
-        return obj;
+        return data;
     }
+
     public List<string> ListAllFilesInDirectory(string folder)
     {
         string[] files = Directory.GetFiles(Path.Combine(SaveFolder, folder));
@@ -76,4 +95,41 @@ public class FileDataHandler
         }
         return reworkedFileNames;
     }
+
+    // Old code
+
+    // public void SaveJSON<T>(T data, string folder, string fileName)
+    // {
+    //     folder += "/";
+
+    //     string dataString = JsonUtility.ToJson(data, false);
+
+    //     File.WriteAllText($"{SaveFolder}{folder}/{fileName}.txt", dataString);
+    // }
+    // public T LoadJSON<T>(string folder, string fileName, bool forceReturn = false)
+    // {   
+    //     string dataString;
+    //     try
+    //     {
+    //         folder += "/";
+
+    //         dataString = File.ReadAllText($"{SaveFolder}{folder}/{fileName}.txt");
+    //     }
+    //     catch (Exception exception)
+    //     {
+    //         if (forceReturn)
+    //         {
+    //             return default;
+    //         }
+    //         throw exception;
+    //     }
+
+    //     T obj = JsonUtility.FromJson<T>(dataString);
+    //     if (obj == null && !forceReturn)
+    //     {
+    //         throw new($"Invalid Object in file {SaveFolder}{folder}/{fileName}.txt");
+    //     }
+
+    //     return obj;
+    // }
 }

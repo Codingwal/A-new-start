@@ -1,7 +1,8 @@
-using UnityEngine;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
+[Serializable]
 public class WorldData
 {
     public PlayerSettings playerSettings;
@@ -25,8 +26,8 @@ public class WorldData
 [Serializable]
 public class PlayerData
 {
-    public Vector3 position;
-    public Vector3 rotation;
+    [SerializeField] public Vector3 position;
+    [SerializeField] public Vector3 rotation;
 
     public static PlayerData Default
     {
@@ -44,7 +45,7 @@ public class PlayerData
 public class TerrainData
 {
     public int seed;
-    public SerializableDictonary<Vector2, ChunkData> chunks;
+    [SerializeField] public SerializableDictonary<Vector2, ChunkData> chunks;
 
     public static TerrainData Default
     {
@@ -69,4 +70,3 @@ public class ChunkData
         this.heightMap = heightMap;
     }
 }
-
