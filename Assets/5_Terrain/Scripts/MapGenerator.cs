@@ -117,20 +117,20 @@ public class MapGenerator : Singleton<MapGenerator>
         float amount;
         Vector2 velocity;
     }
-    // void GenerateRivers2(float[,] noiseMap, float minWaterSourceHeight)
-    // {
-    //     // parameters
-    //     int mapWidth = noiseMap.GetLength(0);
-    //     int mapHeight = noiseMap.GetLength(1);
-    //     VertexWaterInfo[,] riverMap = new VertexWaterInfo[mapWidth, mapHeight];
+    void GenerateRivers2(float[,] noiseMap, float minWaterSourceHeight)
+    {
+        // parameters
+        int mapWidth = noiseMap.GetLength(0);
+        int mapHeight = noiseMap.GetLength(1);
+        VertexWaterInfo[,] riverMap = new VertexWaterInfo[mapWidth, mapHeight];
 
-    //     // Try to generate a water source at a random position
-    //     System.Random rnd = new();
-    //     Vector2Int pos = new(rnd.Next(1, mapWidth - 1), rnd.Next(1, mapHeight - 1));
-    //     float value = noiseMap[pos.x, pos.y];
+        // Try to generate a water source at a random position
+        System.Random rnd = new();
+        Vector2Int pos = new(rnd.Next(1, mapWidth - 1), rnd.Next(1, mapHeight - 1));
+        float value = noiseMap[pos.x, pos.y];
 
 
-    // }
+    }
     void GenerateRivers(float[,] noiseMap, float minWaterSourceHeight)
     {
         // parameters
@@ -154,7 +154,7 @@ public class MapGenerator : Singleton<MapGenerator>
             {
                 // get direction and height of lowest adjacent vertex
                 float lowestNeighbourHeight = float.PositiveInfinity;
-                Vector2 lowestNeighbourOffset = new();
+                Vector2Int lowestNeighbourOffset = new();
 
                 if (noiseMap[pos.x + 1, pos.y] < lowestNeighbourHeight)
                 {
