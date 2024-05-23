@@ -126,6 +126,7 @@ public class FileDataHandler
         bw.Write(terrainSettings.uniformScale);
         bw.Write(terrainSettings.minHeight);
         bw.Write(terrainSettings.maxHeight);
+        bw.Write(terrainSettings.minWaterSourceHeight);
 
         TerrainData terrainData = data.terrainData;
         bw.Write(terrainData.seed);
@@ -179,6 +180,7 @@ public class FileDataHandler
         data.terrainSettings.uniformScale = br.ReadSingle();
         data.terrainSettings.minHeight = br.ReadSingle();
         data.terrainSettings.maxHeight = br.ReadSingle();
+        data.terrainSettings.minWaterSourceHeight = br.ReadSingle();
 
         data.terrainData.seed = br.ReadInt32();
 

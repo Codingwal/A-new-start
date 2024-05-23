@@ -34,6 +34,7 @@ public class TerrainSettings
     public float uniformScale = 1;
     public float minHeight = 0;
     public float maxHeight = 150;
+    public float minWaterSourceHeight = 0.7f;
     public TerrainSettings()
     {
 
@@ -49,6 +50,7 @@ public class TerrainSettings
         slopeImpact = obj.slopeImpact;
         minHeight = obj.minHeight;
         maxHeight = obj.maxHeight;
+        minWaterSourceHeight = obj.minWaterSourceHeight;
     }
 }
 
@@ -65,4 +67,5 @@ public class TerrainSettingsObject : ScriptableObject
     public float uniformScale = 1;
     public float minHeight = 0;
     public float maxHeight = 150;
+    public float minWaterSourceHeight = 0.7f;
 }
