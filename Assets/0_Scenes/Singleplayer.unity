@@ -1481,6 +1481,7 @@ MonoBehaviour:
     uniformScale: 0
     minHeight: 0
     maxHeight: 0
+    minWaterSourceHeight: 0.7
   textureData: {fileID: 11400000, guid: d98a32990757f4f42b16e9528d9c040f, type: 2}
   terrainMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
 --- !u!4 &1146475733
@@ -1516,15 +1517,6 @@ MonoBehaviour:
   - lod: 0
     visibleDistanceThreshold: 100
     useForCollider: 1
-  - lod: 2
-    visibleDistanceThreshold: 250
-    useForCollider: 0
-  - lod: 4
-    visibleDistanceThreshold: 400
-    useForCollider: 0
-  - lod: 6
-    visibleDistanceThreshold: 700
-    useForCollider: 0
   viewer: {fileID: 965662050}
   mapMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
 --- !u!114 &1146475735
@@ -1553,6 +1545,7 @@ MonoBehaviour:
       uniformScale: 1
       minHeight: 0
       maxHeight: 150
+      minWaterSourceHeight: 0.7
     terrainData:
       seed: -954678
       chunks:

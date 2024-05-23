@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System;
 using System.Threading;
 using UnityEngine;
+using UnityEditor.Search;
 
 public class MapGenerator : Singleton<MapGenerator>
 {
@@ -106,7 +107,7 @@ public class MapGenerator : Singleton<MapGenerator>
         (mapChunkSize, mapChunkSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.noiseScale, terrainSettings.octaves,
         terrainSettings.persistance, terrainSettings.lacunarity, terrainSettings.slopeImpact, center);
 
-        GenerateRivers(noiseMap, terrainSettings.minWaterSourceHeight);
+        GenerateRivers2(noiseMap, terrainSettings.minWaterSourceHeight, 100);
 
         mapDataHandler.AddChunk(center, noiseMap);
 
@@ -114,22 +115,164 @@ public class MapGenerator : Singleton<MapGenerator>
     }
     struct VertexWaterInfo
     {
-        float amount;
-        Vector2 velocity;
+        public float amount;
+        public Vector2 velocity;
+        public VertexWaterInfo(float amount, Vector2 velocity)
+        {
+            this.amount = amount;
+            this.velocity = velocity;
+        }
+        public static VertexWaterInfo operator +(VertexWaterInfo a, VertexWaterInfo b)
+        {
+            return new(a.amount + b.amount, a.velocity + b.velocity);
+        }
     }
-    void GenerateRivers2(float[,] noiseMap, float minWaterSourceHeight)
+    struct VertexToCalcInfo
     {
+        public Vector2Int pos;
+        public VertexWaterInfo source;
+        public float sourceInfluence;
+        public VertexToCalcInfo(Vector2Int pos, VertexWaterInfo source, float sourceInfluence)
+        {
+            this.pos = pos;
+            this.source = source;
+            this.sourceInfluence = sourceInfluence;
+        }
+    }
+    void GenerateRivers2(float[,] noiseMap, float minWaterSourceHeight, float waterSlopeSpeedImpact)
+    {
+        // Temp (garantuees a water source in every chunk)
+        minWaterSourceHeight = -1;
+
         // parameters
         int mapWidth = noiseMap.GetLength(0);
         int mapHeight = noiseMap.GetLength(1);
         VertexWaterInfo[,] riverMap = new VertexWaterInfo[mapWidth, mapHeight];
 
+        Queue<VertexToCalcInfo> verticesToCalc = new();
+
         // Try to generate a water source at a random position
-        System.Random rnd = new();
-        Vector2Int pos = new(rnd.Next(1, mapWidth - 1), rnd.Next(1, mapHeight - 1));
-        float value = noiseMap[pos.x, pos.y];
+        {
+            System.Random rnd = new();
+            Vector2Int pos = new(rnd.Next(1, mapWidth - 1), rnd.Next(1, mapHeight - 1));
+            float value = noiseMap[pos.x, pos.y];
 
+            // Only generate if all requirements are met
+            if (value > minWaterSourceHeight)
+            {
+                int t = 0;
+                // 5 * 5 area with the pos in the center
+                for (int x = -2; x <= 2; x++)
+                {
+                    for (int y = -2; y <= 2; y++)
+                    {
+                        // 25% chance
+                        if (rnd.Next(1) == 0)
+                        {
+                            t++;
+                            // generate source
+                            verticesToCalc.Enqueue(new(new(pos.x + x, pos.y + y), new(1, new()), 1));
+                        }
+                    }
+                }
+                Debug.Log($"Watersource count: {t}");
+            }
+        }
 
+        int i = 0;
+        while (verticesToCalc.Count > 0)
+        {
+            i++;
+            if (i > 1000)
+            {
+                break;
+            }
+
+            // Get next vertex
+            VertexToCalcInfo info = verticesToCalc.Dequeue();
+            Vector2Int pos = info.pos;
+
+            VertexWaterInfo data = new();
+
+            // Get the velocity and the water from the neighbour that functions as the source
+            VertexWaterInfo neighbour = info.source;
+
+            data.amount += neighbour.amount * info.sourceInfluence;
+            data.velocity += neighbour.velocity;
+
+            // Get the direction and the height of lowest adjacent vertex
+            float lowestNeighbourHeight = float.PositiveInfinity;
+            Vector2 lowestNeighbourOffset = new();
+
+            if (noiseMap[pos.x + 1, pos.y] < lowestNeighbourHeight)
+            {
+                lowestNeighbourHeight = noiseMap[pos.x + 1, pos.y];
+                lowestNeighbourOffset = new(1, 0);
+            }
+            if (noiseMap[pos.x - 1, pos.y] < lowestNeighbourHeight)
+            {
+                lowestNeighbourHeight = noiseMap[pos.x - 1, pos.y];
+                lowestNeighbourOffset = new(-1, 0);
+            }
+            if (noiseMap[pos.x, pos.y + 1] < lowestNeighbourHeight)
+            {
+                lowestNeighbourHeight = noiseMap[pos.x, pos.y + 1];
+                lowestNeighbourOffset = new(0, 1);
+            }
+            if (noiseMap[pos.x, pos.y - 1] < lowestNeighbourHeight)
+            {
+                lowestNeighbourHeight = noiseMap[pos.x, pos.y - 1];
+                lowestNeighbourOffset = new(0, -1);
+            }
+
+            // Calculate the slope from this vertex to the lowest adjacent vertex
+            float slope = noiseMap[pos.x, pos.y] - lowestNeighbourHeight;
+
+            // If the lowest adjacent vertex is higher, stop the generation
+            if (slope < 0)
+            {
+                riverMap[pos.x, pos.y] = new(data.amount, new());
+                continue;
+            }
+
+            // add the acceleration because of the slope, set magnitude to the calculated speed (the speed also depends on the slope)
+            float speed = slope * waterSlopeSpeedImpact;
+            data.velocity = (data.velocity + speed * lowestNeighbourOffset).normalized * speed;
+
+            // store the data in the array
+            riverMap[pos.x, pos.y] = riverMap[pos.x, pos.y] + data;
+
+            // Enqueue all effected vertices
+
+            if (Mathf.Abs(data.velocity.x) > 0.01)
+            {
+                Vector2Int affectedVertexPos = new(pos.x + Mathf.CeilToInt(Mathf.Clamp01(data.velocity.x)), pos.y);
+                if (affectedVertexPos.x > 0 && affectedVertexPos.x + 1 < mapWidth && affectedVertexPos.y > 0 && affectedVertexPos.y + 1 < mapHeight)
+                    verticesToCalc.Enqueue(new(affectedVertexPos, data, data.velocity.normalized.x));
+            }
+
+            if (Mathf.Abs(data.velocity.y) > 0.01)
+            {
+                Vector2Int affectedVertexPos = new(pos.x, pos.y + Mathf.CeilToInt(Mathf.Clamp01(data.velocity.y)));
+                if (affectedVertexPos.x > 0 && affectedVertexPos.x + 1 < mapWidth && affectedVertexPos.y > 0 && affectedVertexPos.y + 1 < mapHeight)
+                    verticesToCalc.Enqueue(new(affectedVertexPos, data, data.velocity.normalized.y));
+            }
+        }
+
+        int c = 0;
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                noiseMap[x, y] -= riverMap[x, y].amount / 50;
+
+                if (riverMap[x, y].amount != 0)
+                {
+                    c++;
+                }
+            }
+        }
+        Debug.Log($"WaterVertices: {c}");
     }
     void GenerateRivers(float[,] noiseMap, float minWaterSourceHeight)
     {
