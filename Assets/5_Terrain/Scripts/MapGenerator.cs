@@ -105,9 +105,9 @@ public class MapGenerator : Singleton<MapGenerator>
 
         float[,] noiseMap = Noise.GenerateNoiseMap
         (mapChunkSize, mapChunkSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.noiseScale, terrainSettings.octaves,
-        terrainSettings.persistance, terrainSettings.lacunarity, terrainSettings.slopeImpact, center);
+        terrainSettings.persistance, terrainSettings.lacunarity, terrainSettings.slopeImpact, terrainSettings.meshHeightMultiplier, center);
 
-        GenerateRivers2(noiseMap, terrainSettings.minWaterSourceHeight, 100);
+        GenerateRivers2(noiseMap, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.minWaterSourceHeight, 1);
 
         mapDataHandler.AddChunk(center, noiseMap);
 
@@ -139,10 +139,11 @@ public class MapGenerator : Singleton<MapGenerator>
             this.sourceInfluence = sourceInfluence;
         }
     }
-    void GenerateRivers2(float[,] noiseMap, float minWaterSourceHeight, float waterSlopeSpeedImpact)
+    void GenerateRivers2(float[,] noiseMap, int seed, float minWaterSourceHeight, float waterSlopeSpeedImpact)
     {
         // Temp (garantuees a water source in every chunk)
         minWaterSourceHeight = -1;
+        float slopeTolerance = 1;
 
         // parameters
         int mapWidth = noiseMap.GetLength(0);
@@ -153,44 +154,45 @@ public class MapGenerator : Singleton<MapGenerator>
 
         // Try to generate a water source at a random position
         {
-            System.Random rnd = new();
-            Vector2Int pos = new(rnd.Next(1, mapWidth - 1), rnd.Next(1, mapHeight - 1));
+            System.Random rnd = new(seed);
+            // Vector2Int pos = new(rnd.Next(1, mapWidth - 1), rnd.Next(1, mapHeight - 1));
+            Vector2Int pos = new(mapWidth / 2, mapHeight / 2);
             float value = noiseMap[pos.x, pos.y];
 
             // Only generate if all requirements are met
             if (value > minWaterSourceHeight)
             {
-                int t = 0;
                 // 5 * 5 area with the pos in the center
                 for (int x = -2; x <= 2; x++)
                 {
                     for (int y = -2; y <= 2; y++)
                     {
-                        // 25% chance
+                        // 100% chance
                         if (rnd.Next(1) == 0)
                         {
-                            t++;
                             // generate source
                             verticesToCalc.Enqueue(new(new(pos.x + x, pos.y + y), new(1, new()), 1));
                         }
                     }
                 }
-                Debug.Log($"Watersource count: {t}");
             }
         }
 
         int i = 0;
         while (verticesToCalc.Count > 0)
         {
-            i++;
-            if (i > 1000)
-            {
-                break;
-            }
-
             // Get next vertex
             VertexToCalcInfo info = verticesToCalc.Dequeue();
             Vector2Int pos = info.pos;
+
+            if (riverMap[pos.x, pos.y].amount != 0) continue;
+
+            i++;
+            if (i > 100000)
+            {
+                Debug.LogError("Limit reached!");
+                break;
+            }
 
             VertexWaterInfo data = new();
 
@@ -204,22 +206,22 @@ public class MapGenerator : Singleton<MapGenerator>
             float lowestNeighbourHeight = float.PositiveInfinity;
             Vector2 lowestNeighbourOffset = new();
 
-            if (noiseMap[pos.x + 1, pos.y] < lowestNeighbourHeight)
+            if (VertexHeight(noiseMap, riverMap, pos + new Vector2Int(1, 0)) < lowestNeighbourHeight)
             {
                 lowestNeighbourHeight = noiseMap[pos.x + 1, pos.y];
                 lowestNeighbourOffset = new(1, 0);
             }
-            if (noiseMap[pos.x - 1, pos.y] < lowestNeighbourHeight)
+            if (VertexHeight(noiseMap, riverMap, pos + new Vector2Int(-1, 0)) < lowestNeighbourHeight)
             {
                 lowestNeighbourHeight = noiseMap[pos.x - 1, pos.y];
                 lowestNeighbourOffset = new(-1, 0);
             }
-            if (noiseMap[pos.x, pos.y + 1] < lowestNeighbourHeight)
+            if (VertexHeight(noiseMap, riverMap, pos + new Vector2Int(0, 1)) < lowestNeighbourHeight)
             {
                 lowestNeighbourHeight = noiseMap[pos.x, pos.y + 1];
                 lowestNeighbourOffset = new(0, 1);
             }
-            if (noiseMap[pos.x, pos.y - 1] < lowestNeighbourHeight)
+            if (VertexHeight(noiseMap, riverMap, pos + new Vector2Int(0, -1)) < lowestNeighbourHeight)
             {
                 lowestNeighbourHeight = noiseMap[pos.x, pos.y - 1];
                 lowestNeighbourOffset = new(0, -1);
@@ -229,9 +231,10 @@ public class MapGenerator : Singleton<MapGenerator>
             float slope = noiseMap[pos.x, pos.y] - lowestNeighbourHeight;
 
             // If the lowest adjacent vertex is higher, stop the generation
-            if (slope < 0)
+            if (slope < -slopeTolerance)
             {
                 riverMap[pos.x, pos.y] = new(data.amount, new());
+                Debug.LogWarning($"Local low! h={noiseMap[pos.x, pos.y]}, ah={lowestNeighbourHeight}, p=[{pos.x}, {pos.y}], o=[{lowestNeighbourOffset.x},{lowestNeighbourOffset.y}]");
                 continue;
             }
 
@@ -243,108 +246,58 @@ public class MapGenerator : Singleton<MapGenerator>
             riverMap[pos.x, pos.y] = riverMap[pos.x, pos.y] + data;
 
             // Enqueue all effected vertices
-
             if (Mathf.Abs(data.velocity.x) > 0.01)
             {
-                Vector2Int affectedVertexPos = new(pos.x + Mathf.CeilToInt(Mathf.Clamp01(data.velocity.x)), pos.y);
+                int roundedVelocity = (int)Mathf.Sign(data.velocity.x) * Mathf.CeilToInt(Math.Abs(data.velocity.x));
+                Vector2Int affectedVertexPos = new(pos.x + Mathf.Clamp(roundedVelocity, -1, 1), pos.y);
                 if (affectedVertexPos.x > 0 && affectedVertexPos.x + 1 < mapWidth && affectedVertexPos.y > 0 && affectedVertexPos.y + 1 < mapHeight)
-                    verticesToCalc.Enqueue(new(affectedVertexPos, data, data.velocity.normalized.x));
+                    if (riverMap[affectedVertexPos.x, affectedVertexPos.y].amount == 0)
+                    {
+                        verticesToCalc.Enqueue(new(affectedVertexPos, data, Mathf.Abs(data.velocity.normalized.x)));
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"LoopPrevention x {Mathf.Clamp(roundedVelocity, -1, 1)}");
+                    }
             }
-
             if (Mathf.Abs(data.velocity.y) > 0.01)
             {
-                Vector2Int affectedVertexPos = new(pos.x, pos.y + Mathf.CeilToInt(Mathf.Clamp01(data.velocity.y)));
+                int roundedVelocity = (int)Mathf.Sign(data.velocity.y) * Mathf.CeilToInt(Math.Abs(data.velocity.y));
+                Vector2Int affectedVertexPos = new(pos.x, pos.y + Mathf.Clamp(roundedVelocity, -1, 1));
                 if (affectedVertexPos.x > 0 && affectedVertexPos.x + 1 < mapWidth && affectedVertexPos.y > 0 && affectedVertexPos.y + 1 < mapHeight)
-                    verticesToCalc.Enqueue(new(affectedVertexPos, data, data.velocity.normalized.y));
+                    if (riverMap[affectedVertexPos.x, affectedVertexPos.y].amount == 0)
+                    {
+                        verticesToCalc.Enqueue(new(affectedVertexPos, data, Mathf.Abs(data.velocity.normalized.y)));
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"LoopPrevention y {Mathf.Clamp(roundedVelocity, -1, 1)}");
+                    }
+            }
+
+            if (Mathf.Abs(data.velocity.x) <= 0.01 && Mathf.Abs(data.velocity.y) <= 0.01)
+            {
+                Debug.LogWarning("Velocity to low");
             }
         }
 
-        int c = 0;
+        i = 0;
         for (int y = 0; y < mapHeight; y++)
         {
             for (int x = 0; x < mapWidth; x++)
             {
-                noiseMap[x, y] -= riverMap[x, y].amount / 50;
-
-                if (riverMap[x, y].amount != 0)
+                noiseMap[x, y] -= riverMap[x, y].amount * 4f;
+                if (riverMap[x, y].amount > 0)
                 {
-                    c++;
+                    i++;
                 }
             }
         }
-        Debug.Log($"WaterVertices: {c}");
+        Debug.Log($"Water vertices count: {i}");
     }
-    void GenerateRivers(float[,] noiseMap, float minWaterSourceHeight)
+    float VertexHeight(float[,] map, VertexWaterInfo[,] riverMap, Vector2Int pos)
     {
-        // parameters
-        int mapWidth = noiseMap.GetLength(0);
-        int mapHeight = noiseMap.GetLength(1);
-        float[,] riverMap = new float[mapWidth, mapHeight];
-
-        // Try to generate a water source at a random position
-        System.Random rnd = new();
-        Vector2Int pos = new(rnd.Next(1, mapWidth - 1), rnd.Next(1, mapHeight - 1));
-        float value = noiseMap[pos.x, pos.y];
-
-        // if a water source can be spawned at that point...
-        // if (value > minWaterSourceHeight)
-        if (true)
-        {
-            AddIndent(riverMap, 3, pos);
-
-            int i = 0;
-            while (true)
-            {
-                // get direction and height of lowest adjacent vertex
-                float lowestNeighbourHeight = float.PositiveInfinity;
-                Vector2Int lowestNeighbourOffset = new();
-
-                if (noiseMap[pos.x + 1, pos.y] < lowestNeighbourHeight)
-                {
-                    lowestNeighbourHeight = noiseMap[pos.x + 1, pos.y];
-                    lowestNeighbourOffset = new(1, 0);
-                }
-                if (noiseMap[pos.x - 1, pos.y] < lowestNeighbourHeight)
-                {
-                    lowestNeighbourHeight = noiseMap[pos.x - 1, pos.y];
-                    lowestNeighbourOffset = new(-1, 0);
-                }
-                if (noiseMap[pos.x, pos.y + 1] < lowestNeighbourHeight)
-                {
-                    lowestNeighbourHeight = noiseMap[pos.x, pos.y + 1];
-                    lowestNeighbourOffset = new(0, 1);
-                }
-                if (noiseMap[pos.x, pos.y - 1] < lowestNeighbourHeight)
-                {
-                    lowestNeighbourHeight = noiseMap[pos.x, pos.y - 1];
-                    lowestNeighbourOffset = new(0, -1);
-                }
-
-                // lowest neighbour is the next vertex
-                value = lowestNeighbourHeight;
-                pos += lowestNeighbourOffset;
-
-                if (pos.x < 1 || pos.x + 1 >= mapWidth || pos.y < 1 || pos.y + 1 >= mapHeight)
-                    break;
-
-                AddIndent(riverMap, 2, pos);
-
-                i++;
-                if (i > 50)
-                {
-                    break;
-                }
-            }
-
-
-            for (int y = 0; y < mapHeight; y++)
-            {
-                for (int x = 0; x < mapWidth; x++)
-                {
-                    noiseMap[x, y] -= riverMap[x, y] / 50;
-                }
-            }
-        }
+        return map[pos.x, pos.y] + riverMap[pos.x, pos.y].amount * 1;
     }
     void AddIndent(float[,] map, float strength, Vector2 pos)
     {

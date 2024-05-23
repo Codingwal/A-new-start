@@ -14,7 +14,7 @@ public static class Noise
         Local,
         Global
     }
-    public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, float slopeImpact, Vector2 offset)
+    public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, float slopeImpact, float heightMultiplier, Vector2 offset)
     {
         // This will be returned
         float[,] noiseMap = new float[mapWidth, mapHeight];
@@ -117,7 +117,7 @@ public static class Noise
                 // /maxPossibleHeight to normalize
                 // *1.75 because realistically, maxPossibleHeight will never be reached
                 float normalizedHeight = noiseMap[x, y] / (maxPossibleHeight / 1.75f);
-                noiseMap[x, y] = Mathf.Clamp(normalizedHeight, 0, 1);
+                noiseMap[x, y] = Mathf.Clamp(normalizedHeight, 0, 1) * heightMultiplier;
 
             }
         }

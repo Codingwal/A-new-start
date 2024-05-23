@@ -18,7 +18,8 @@ public static class MeshGenerator
         {
             for (int x = 0; x < meshSize; x += meshSimplificationIncrement)
             {
-                meshData.vertices[vertexIndex] = new(topLeftX + x, heightMap[x, y] * heightMultiplier, topLeftZ - y);
+                // meshData.vertices[vertexIndex] = new(topLeftX + x, heightMap[x, y] * heightMultiplier, topLeftZ - y);
+                meshData.vertices[vertexIndex] = new(topLeftX + x, heightMap[x, y], topLeftZ - y);
                 meshData.uvs[vertexIndex] = new(x / (float)meshSize, y / (float)meshSize);
 
                 if (x < meshSize - 1 && y < meshSize - 1)
