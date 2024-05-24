@@ -11,7 +11,9 @@ public class MapGenerator : Singleton<MapGenerator>
 
     public Material terrainMaterial;
 
-    public const int mapChunkSize = 241;
+    readonly int[] possibleMapChunkSizes = {121, 241};
+    [Dropdown("possibleMapChunkSizes")]
+    public int mapChunkSize = 241;
 
     Queue<MapThreadInfo<MapData>> mapDataThreadInfoQueue = new();
     Queue<MapThreadInfo<MeshData>> meshDataThreadInfoQueue = new();
@@ -98,7 +100,7 @@ public class MapGenerator : Singleton<MapGenerator>
         (mapChunkSize, mapChunkSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.noiseScale, terrainSettings.octaves,
         terrainSettings.persistance, terrainSettings.lacunarity, terrainSettings.slopeImpact, terrainSettings.meshHeightMultiplier, center);
 
-        VertexWaterInfo[,] riverMap = GenerateRivers2(noiseMap, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.minWaterSourceHeight, 1);
+        VertexWaterInfo[,] riverMap = GenerateRivers(noiseMap, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.minWaterSourceHeight, 1);
 
         mapDataHandler.AddChunk(center, noiseMap, riverMap);
 
@@ -116,7 +118,7 @@ public class MapGenerator : Singleton<MapGenerator>
             this.sourceInfluence = sourceInfluence;
         }
     }
-    VertexWaterInfo[,] GenerateRivers2(float[,] noiseMap, int seed, float minWaterSourceHeight, float waterSlopeSpeedImpact)
+    VertexWaterInfo[,] GenerateRivers(float[,] noiseMap, int seed, float minWaterSourceHeight, float waterSlopeSpeedImpact)
     {
         // Temp (garantuees a water source in every chunk)
         minWaterSourceHeight = -1;
@@ -307,19 +309,19 @@ public struct MapData
 
     public MapData(List<ListWrapper<float>> heightMapList, List<ListWrapper<VertexWaterInfo>> riverMapList)
     {
-        heightMap = new float[MapGenerator.mapChunkSize, MapGenerator.mapChunkSize];
-        for (int x = 0; x < MapGenerator.mapChunkSize; x++)
+        heightMap = new float[MapGenerator.Instance.mapChunkSize, MapGenerator.Instance.mapChunkSize];
+        for (int x = 0; x < MapGenerator.Instance.mapChunkSize; x++)
         {
-            for (int y = 0; y < MapGenerator.mapChunkSize; y++)
+            for (int y = 0; y < MapGenerator.Instance.mapChunkSize; y++)
             {
                 heightMap[x, y] = heightMapList[x].list[y];
             }
         }
 
-        riverMap = new VertexWaterInfo[MapGenerator.mapChunkSize, MapGenerator.mapChunkSize];
-        for (int x = 0; x < MapGenerator.mapChunkSize; x++)
+        riverMap = new VertexWaterInfo[MapGenerator.Instance.mapChunkSize, MapGenerator.Instance.mapChunkSize];
+        for (int x = 0; x < MapGenerator.Instance.mapChunkSize; x++)
         {
-            for (int y = 0; y < MapGenerator.mapChunkSize; y++)
+            for (int y = 0; y < MapGenerator.Instance.mapChunkSize; y++)
             {
                 riverMap[x, y] = riverMapList[x].list[y];
             }

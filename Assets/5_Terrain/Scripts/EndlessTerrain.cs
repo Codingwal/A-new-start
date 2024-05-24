@@ -37,7 +37,7 @@ public class EndlessTerrain : MonoBehaviour
     private void LoadWorld()
     {
         maxViewDistance = detailLevels[^1].visibleDistanceThreshold;
-        chunkSize = MapGenerator.mapChunkSize - 1;
+        chunkSize = MapGenerator.Instance.mapChunkSize - 1;
         chunksVisibleInViewDistance = Mathf.RoundToInt(maxViewDistance / chunkSize);
 
         terrainChunksVisibleLastUpdate.Clear();

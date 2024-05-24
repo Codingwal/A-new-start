@@ -1484,6 +1484,7 @@ MonoBehaviour:
     maxHeight: 0
     minWaterSourceHeight: 0.7
   terrainMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
+  mapChunkSize: 241
 --- !u!4 &1146475733
 Transform:
   m_ObjectHideFlags: 0
