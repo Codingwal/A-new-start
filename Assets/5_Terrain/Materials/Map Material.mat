@@ -209,7 +209,7 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _GrassHeight: 12.28
+    - _GrassHeight: 14
     - _GrassMinHeight: 8.24
     - _HeightTransition: 0
     - _Metallic: 0
@@ -224,7 +224,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _RocksHeight: 99.3
+    - _RocksHeight: 89.6
     - _SampleGI: 0
     - _Smoothness: -2.45
     - _Smoothness0: 0.5
@@ -236,7 +236,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
-    - _StonyGroundHeight: 78.6
+    - _StonyGroundHeight: 68.4
     - _Surface: 0
     - _UVSec: 0
     - _WorkflowMode: 1

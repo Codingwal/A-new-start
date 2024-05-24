@@ -8,7 +8,6 @@ public class MapGenerator : Singleton<MapGenerator>
 {
     // This is set by the MapDataHandler script
     [HideInInspector] public TerrainSettings terrainSettings;
-    public TextureData textureData;
 
     public Material terrainMaterial;
 
@@ -28,15 +27,7 @@ public class MapGenerator : Singleton<MapGenerator>
     private void LoadWorld()
     {
         // Update the map
-        UpdateTextures();
-    }
 
-    public void UpdateTextures()
-    {
-        Debug.Log("Reloading textures");
-
-        textureData.UpdateMeshHeights(terrainMaterial, terrainSettings.minHeight, terrainSettings.maxHeight);
-        textureData.ApplyToMaterial(terrainMaterial);
     }
 
     public void RequestMapData(Vector2 center, Action<MapData> callback)
