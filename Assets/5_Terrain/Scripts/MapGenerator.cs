@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System;
 using System.Threading;
 using UnityEngine;
-using UnityEditor.Search;
 
 public class MapGenerator : Singleton<MapGenerator>
 {
@@ -10,7 +9,6 @@ public class MapGenerator : Singleton<MapGenerator>
     [HideInInspector] public TerrainSettings terrainSettings;
 
     public Material terrainMaterial;
-
     readonly int[] possibleMapChunkSizes = {121, 241};
     [Dropdown("possibleMapChunkSizes")]
     public int mapChunkSize = 241;
