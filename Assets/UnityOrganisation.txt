@@ -1,9 +1,12 @@
 TODO:
 
+- Add slope to terrain shader
+
 - Rivers
 
-119
-122
+- lake shader
+- river shader
+
 
 FUTURE PLANS:
 

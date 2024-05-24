@@ -20,7 +20,27 @@ public static class MeshGenerator
             {
                 // meshData.vertices[vertexIndex] = new(topLeftX + x, heightMap[x, y] * heightMultiplier, topLeftZ - y);
                 meshData.vertices[vertexIndex] = new(topLeftX + x, heightMap[x, y], topLeftZ - y);
-                meshData.uvs[vertexIndex] = new(x / (float)meshSize, y / (float)meshSize);
+                // meshData.uvs[vertexIndex] = new(x / (float)meshSize, y / (float)meshSize);  
+                float slopeX;
+                if (x + 1 < meshSize)
+                {
+                    slopeX = Mathf.Abs(heightMap[x + 1, y] - heightMap[x, y]);
+                }
+                else
+                {
+                    slopeX = Mathf.Abs(heightMap[x - 1, y] - heightMap[x, y]);
+                }
+                float slopeY;
+                if (y + 1 < meshSize)
+                {
+                    slopeY = Mathf.Abs(heightMap[x, y + 1] - heightMap[x, y]);
+                }
+                else
+                {
+                    slopeY = Mathf.Abs(heightMap[x, y - 1] - heightMap[x, y]);
+                }
+                float slope = (slopeX + slopeY) / 2;
+                meshData.uvs[vertexIndex] = new(slope, 0);
 
                 if (x < meshSize - 1 && y < meshSize - 1)
                 {

@@ -237,6 +237,7 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _StonyGroundHeight: 68.4
+    - _StonyGroundSlope: 17.38
     - _Surface: 0
     - _UVSec: 0
     - _WorkflowMode: 1
