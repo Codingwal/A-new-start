@@ -74,11 +74,28 @@ public class TerrainData
 }
 
 [Serializable]
+public struct VertexWaterInfo
+{
+    public float amount;
+    public Vector2 velocity;
+    public VertexWaterInfo(float amount, Vector2 velocity)
+    {
+        this.amount = amount;
+        this.velocity = velocity;
+    }
+    public static VertexWaterInfo operator +(VertexWaterInfo a, VertexWaterInfo b)
+    {
+        return new(a.amount + b.amount, a.velocity + b.velocity);
+    }
+}
+[Serializable]
 public class ChunkData
 {
     public List<ListWrapper<float>> heightMap;
-    public ChunkData(List<ListWrapper<float>> heightMap)
+    public List<ListWrapper<VertexWaterInfo>> riverMap;
+    public ChunkData(List<ListWrapper<float>> heightMap, List<ListWrapper<VertexWaterInfo>> riverMap)
     {
         this.heightMap = heightMap;
+        this.riverMap = riverMap;
     }
 }

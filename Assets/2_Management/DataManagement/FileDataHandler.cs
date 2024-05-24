@@ -143,6 +143,16 @@ public class FileDataHandler
                 WriteClose(bw);
             }
             WriteClose(bw);
+            foreach (ListWrapper<VertexWaterInfo> element in pair.Value.riverMap)
+            {
+                foreach (VertexWaterInfo info in element.list)
+                {
+                    bw.Write(info.amount);
+                    Write(bw, info.velocity);
+                }
+                WriteClose(bw);
+            }
+            WriteClose(bw);
         }
         WriteClose(bw);
 
@@ -186,7 +196,7 @@ public class FileDataHandler
 
         float readData = br.ReadSingle();
 
-        // dict
+        // chunks dict
         while (readData != 2.1059140958881314e+37)
         {
             SerializableDictonary<Vector2, ChunkData> chunks = new();
@@ -197,8 +207,8 @@ public class FileDataHandler
             key.y = readData;
             readData = br.ReadSingle();
 
-            // list
-            List<ListWrapper<float>> list = new();
+            // heightMapList
+            List<ListWrapper<float>> heightMapList = new();
             while (readData != 2.1059140958881314e+37)
             {
                 List<float> list2 = new();
@@ -208,10 +218,29 @@ public class FileDataHandler
                     list2.Add(readData);
                     readData = br.ReadSingle();
                 }
-                list.Add(new(list2));
+                heightMapList.Add(new(list2));
                 readData = br.ReadSingle();
             }
-            chunks.TryAdd(key, new(list));
+            // heightMapList
+            List<ListWrapper<VertexWaterInfo>> riverMapList = new();
+            while (readData != 2.1059140958881314e+37)
+            {
+                List<VertexWaterInfo> list2 = new();
+                // 2nd list
+                while (readData != 2.1059140958881314e+37)
+                {
+                    VertexWaterInfo info = new()
+                    {
+                        amount = readData,
+                        velocity = Read<Vector2>(br)
+                    };
+                    list2.Add(info);
+                    readData = br.ReadSingle();
+                }
+                riverMapList.Add(new(list2));
+                readData = br.ReadSingle();
+            }
+            chunks.TryAdd(key, new(heightMapList, riverMapList));
             readData = br.ReadSingle();
         }
 

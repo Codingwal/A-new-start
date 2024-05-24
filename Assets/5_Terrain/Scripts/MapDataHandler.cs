@@ -13,7 +13,7 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
         // Prevent endlessTerrain from trying to load deleted chunks
         EndlessTerrain.terrainChunkDictonary.Clear();
         EndlessTerrain.terrainChunksVisibleLastUpdate.Clear();
-    
+
         MapGenerator.Instance.terrainSettings = worldData.terrainSettings;
 
         this.worldData = worldData;
@@ -30,7 +30,7 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
     }
 
     // EndlessTerrain uses this to add chunks
-    public void AddChunk(Vector2 center, float[,] heightMap)
+    public void AddChunk(Vector2 center, float[,] heightMap, VertexWaterInfo[,] riverMap)
     {
         List<ListWrapper<float>> tempHeightMap = new();
         for (int x = 0; x < heightMap.GetLength(0); x++)
@@ -42,7 +42,17 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
             }
             tempHeightMap.Add(temp);
         }
-        chunks[center] = new(tempHeightMap);
+        List<ListWrapper<VertexWaterInfo>> tempRiverMap = new();
+        for (int x = 0; x < heightMap.GetLength(0); x++)
+        {
+            ListWrapper<VertexWaterInfo> temp = new();
+            for (int y = 0; y < heightMap.GetLength(1); y++)
+            {
+                temp.list.Add(riverMap[x, y]);
+            }
+            tempRiverMap.Add(temp);
+        }
+        chunks[center] = new(tempHeightMap, tempRiverMap);
     }
 }
 

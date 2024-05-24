@@ -100,32 +100,18 @@ public class MapGenerator : Singleton<MapGenerator>
 
         if (mapDataHandler.chunks.ContainsKey(center))
         {
-            return new(mapDataHandler.chunks[center].heightMap);
+            return new(mapDataHandler.chunks[center].heightMap, mapDataHandler.chunks[center].riverMap);
         }
 
         float[,] noiseMap = Noise.GenerateNoiseMap
         (mapChunkSize, mapChunkSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.noiseScale, terrainSettings.octaves,
         terrainSettings.persistance, terrainSettings.lacunarity, terrainSettings.slopeImpact, terrainSettings.meshHeightMultiplier, center);
 
-        GenerateRivers2(noiseMap, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.minWaterSourceHeight, 1);
+        VertexWaterInfo[,] riverMap = GenerateRivers2(noiseMap, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.minWaterSourceHeight, 1);
 
-        mapDataHandler.AddChunk(center, noiseMap);
+        mapDataHandler.AddChunk(center, noiseMap, riverMap);
 
-        return new(noiseMap);
-    }
-    struct VertexWaterInfo
-    {
-        public float amount;
-        public Vector2 velocity;
-        public VertexWaterInfo(float amount, Vector2 velocity)
-        {
-            this.amount = amount;
-            this.velocity = velocity;
-        }
-        public static VertexWaterInfo operator +(VertexWaterInfo a, VertexWaterInfo b)
-        {
-            return new(a.amount + b.amount, a.velocity + b.velocity);
-        }
+        return new(noiseMap, riverMap);
     }
     struct VertexToCalcInfo
     {
@@ -139,7 +125,7 @@ public class MapGenerator : Singleton<MapGenerator>
             this.sourceInfluence = sourceInfluence;
         }
     }
-    void GenerateRivers2(float[,] noiseMap, int seed, float minWaterSourceHeight, float waterSlopeSpeedImpact)
+    VertexWaterInfo[,] GenerateRivers2(float[,] noiseMap, int seed, float minWaterSourceHeight, float waterSlopeSpeedImpact)
     {
         // Temp (garantuees a water source in every chunk)
         minWaterSourceHeight = -1;
@@ -234,7 +220,6 @@ public class MapGenerator : Singleton<MapGenerator>
             if (slope < -slopeTolerance)
             {
                 riverMap[pos.x, pos.y] = new(data.amount, new());
-                Debug.LogWarning($"Local low! h={noiseMap[pos.x, pos.y]}, ah={lowestNeighbourHeight}, p=[{pos.x}, {pos.y}], o=[{lowestNeighbourOffset.x},{lowestNeighbourOffset.y}]");
                 continue;
             }
 
@@ -255,10 +240,6 @@ public class MapGenerator : Singleton<MapGenerator>
                     {
                         verticesToCalc.Enqueue(new(affectedVertexPos, data, Mathf.Abs(data.velocity.normalized.x)));
                     }
-                    else
-                    {
-                        Debug.LogWarning($"LoopPrevention x {Mathf.Clamp(roundedVelocity, -1, 1)}");
-                    }
             }
             if (Mathf.Abs(data.velocity.y) > 0.01)
             {
@@ -269,15 +250,6 @@ public class MapGenerator : Singleton<MapGenerator>
                     {
                         verticesToCalc.Enqueue(new(affectedVertexPos, data, Mathf.Abs(data.velocity.normalized.y)));
                     }
-                    else
-                    {
-                        Debug.LogWarning($"LoopPrevention y {Mathf.Clamp(roundedVelocity, -1, 1)}");
-                    }
-            }
-
-            if (Mathf.Abs(data.velocity.x) <= 0.01 && Mathf.Abs(data.velocity.y) <= 0.01)
-            {
-                Debug.LogWarning("Velocity to low");
             }
         }
 
@@ -286,7 +258,7 @@ public class MapGenerator : Singleton<MapGenerator>
         {
             for (int x = 0; x < mapWidth; x++)
             {
-                noiseMap[x, y] -= riverMap[x, y].amount * 4f;
+                noiseMap[x, y] -= riverMap[x, y].amount * 1.5f;
                 if (riverMap[x, y].amount > 0)
                 {
                     i++;
@@ -294,6 +266,8 @@ public class MapGenerator : Singleton<MapGenerator>
             }
         }
         Debug.Log($"Water vertices count: {i}");
+
+        return riverMap;
     }
     float VertexHeight(float[,] map, VertexWaterInfo[,] riverMap, Vector2Int pos)
     {
@@ -332,21 +306,31 @@ public class MapGenerator : Singleton<MapGenerator>
 public struct MapData
 {
     public float[,] heightMap { get; private set; }
+    public VertexWaterInfo[,] riverMap;
 
-    public MapData(float[,] heightMap)
+    public MapData(float[,] heightMap, VertexWaterInfo[,] riverMap)
     {
         this.heightMap = heightMap;
+        this.riverMap = riverMap;
     }
 
-    public MapData(List<ListWrapper<float>> heightMapList)
+    public MapData(List<ListWrapper<float>> heightMapList, List<ListWrapper<VertexWaterInfo>> riverMapList)
     {
         heightMap = new float[MapGenerator.mapChunkSize, MapGenerator.mapChunkSize];
-
         for (int x = 0; x < MapGenerator.mapChunkSize; x++)
         {
             for (int y = 0; y < MapGenerator.mapChunkSize; y++)
             {
                 heightMap[x, y] = heightMapList[x].list[y];
+            }
+        }
+
+        riverMap = new VertexWaterInfo[MapGenerator.mapChunkSize, MapGenerator.mapChunkSize];
+        for (int x = 0; x < MapGenerator.mapChunkSize; x++)
+        {
+            for (int y = 0; y < MapGenerator.mapChunkSize; y++)
+            {
+                riverMap[x, y] = riverMapList[x].list[y];
             }
         }
     }
