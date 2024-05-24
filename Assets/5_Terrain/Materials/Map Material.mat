@@ -224,7 +224,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _RocksHeight: 48.3
+    - _RocksHeight: 99.3
     - _SampleGI: 0
     - _Smoothness: -2.45
     - _Smoothness0: 0.5
@@ -232,11 +232,11 @@ Material:
     - _Smoothness2: 0.5
     - _Smoothness3: 0.5
     - _SmoothnessTextureChannel: 0
-    - _SnowHeight: 57.1
+    - _SnowHeight: 139
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
-    - _StonyGroundHeight: 40
+    - _StonyGroundHeight: 78.6
     - _Surface: 0
     - _UVSec: 0
     - _WorkflowMode: 1
