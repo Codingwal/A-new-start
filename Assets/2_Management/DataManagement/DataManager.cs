@@ -17,7 +17,6 @@ public static class DataManager
         
         // Create a new WorldData
         WorldData worldData = WorldData.NewWorld(new(terrainSettingsObj), new(playerSettingsObj));
-        Debug.LogWarning(worldData.playerData.position.y);
 
         // Set the current world to the new world
         currentWorldName = worldName;
