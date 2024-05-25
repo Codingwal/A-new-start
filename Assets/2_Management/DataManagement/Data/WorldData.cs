@@ -37,7 +37,7 @@ public class PlayerData
 
     public PlayerData()
     {
-        position = new(0, 200, 0);
+        position = new(0, 30, 0);
         rotation = new();
     }
 
@@ -47,7 +47,7 @@ public class PlayerData
         {
             return new()
             {
-                position = new(0, 200, 0),
+                position = new(0, 30, 0),
                 rotation = new(),
             };
         }

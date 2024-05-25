@@ -25,6 +25,7 @@ public static class MainSystem
                     Debug.Log("Starting game from MainMenu");
                     DataManager.LoadWorld();
                     LoadWorld?.Invoke();
+
                     Debug.Log("Finished loading world");
                 }
                 break;

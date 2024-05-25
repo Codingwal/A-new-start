@@ -43,6 +43,7 @@ public class EndlessTerrain : MonoBehaviour
         terrainChunksVisibleLastUpdate.Clear();
         terrainChunkDictonary.Clear();
         UpdateVisibleChunks();
+        MapGenerator.Instance.ForceLoadAllChunks();
     }
     private void Update()
     {

@@ -15,21 +15,7 @@ public class MapGenerator : Singleton<MapGenerator>
     public int mapChunkSize = 241;
 
     Queue<MapThreadInfo<MapData>> mapDataThreadInfoQueue = new();
-    Queue<MapThreadInfo<MeshData>> meshDataThreadInfoQueue = new();
-
-    protected override void SingletonAwake()
-    {
-        MainSystem.LoadWorld += LoadWorld;
-    }
-    private void OnDisable()
-    {
-        MainSystem.LoadWorld -= LoadWorld;
-    }
-    private void LoadWorld()
-    {
-        // Update the map
-
-    }
+    public Queue<MapThreadInfo<MeshData>> meshDataThreadInfoQueue = new();
 
     public void RequestMapData(Vector2 center, Action<MapData> callback)
     {
@@ -64,7 +50,26 @@ public class MapGenerator : Singleton<MapGenerator>
             meshDataThreadInfoQueue.Enqueue(new MapThreadInfo<MeshData>(callback, meshData));
         }
     }
-
+    public void ForceLoadAllChunks()
+    {
+        if (mapDataThreadInfoQueue.Count > 0)
+        {
+            for (int i = 0; i < mapDataThreadInfoQueue.Count; i++)
+            {
+                MapThreadInfo<MapData> threadInfo = mapDataThreadInfoQueue.Dequeue();
+                threadInfo.callBack(threadInfo.parameter);
+            }
+        }
+        if (meshDataThreadInfoQueue.Count > 0)
+        {
+            for (int i = 0; i < meshDataThreadInfoQueue.Count; i++)
+            {
+                MapThreadInfo<MeshData> threadInfo = meshDataThreadInfoQueue.Dequeue();
+                threadInfo.callBack(threadInfo.parameter);
+            }
+        }
+        Debug.Log("Finished force loading all chunks");
+    }
     private void Update()
     {
         if (mapDataThreadInfoQueue.Count > 0)
@@ -286,7 +291,7 @@ public class MapGenerator : Singleton<MapGenerator>
             }
         }
     }
-    struct MapThreadInfo<T>
+    public struct MapThreadInfo<T>
     {
         public readonly Action<T> callBack;
         public readonly T parameter;
