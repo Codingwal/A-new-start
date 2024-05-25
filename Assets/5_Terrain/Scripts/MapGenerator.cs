@@ -173,6 +173,7 @@ public class MapGenerator : Singleton<MapGenerator>
             Vector2Int pos = info.pos;
 
             if (map[pos.x, pos.y].waterAmount != 0) continue;
+            if (map[pos.x, pos.y].height == 0) continue;
 
             i++;
             if (i > 100000)
@@ -187,20 +188,19 @@ public class MapGenerator : Singleton<MapGenerator>
             VertexData neighbour = info.source;
 
             data.waterAmount += neighbour.waterAmount * info.sourceInfluence;
-            data.waterVelocity += neighbour.waterVelocity;
 
             // Get the direction and the height of lowest adjacent vertex
             float lowestNeighbourHeight = float.PositiveInfinity;
-            Vector2 lowestNeighbourOffset = new();
+            Vector2Int lowestNeighbourOffset = new();
 
             if (VertexHeight(map, pos + new Vector2Int(1, 0)) < lowestNeighbourHeight)
             {
-                lowestNeighbourHeight = VertexHeight(map, pos + new Vector2Int(0, 1));
+                lowestNeighbourHeight = VertexHeight(map, pos + new Vector2Int(1, 0));
                 lowestNeighbourOffset = new(1, 0);
             }
             if (VertexHeight(map, pos + new Vector2Int(-1, 0)) < lowestNeighbourHeight)
             {
-                lowestNeighbourHeight = VertexHeight(map, pos + new Vector2Int(0, 1));
+                lowestNeighbourHeight = VertexHeight(map, pos + new Vector2Int(-1, 0));
                 lowestNeighbourOffset = new(-1, 0);
             }
             if (VertexHeight(map, pos + new Vector2Int(0, 1)) < lowestNeighbourHeight)
@@ -210,7 +210,7 @@ public class MapGenerator : Singleton<MapGenerator>
             }
             if (VertexHeight(map, pos + new Vector2Int(0, -1)) < lowestNeighbourHeight)
             {
-                lowestNeighbourHeight = VertexHeight(map, pos + new Vector2Int(0, 1));
+                lowestNeighbourHeight = VertexHeight(map, pos + new Vector2Int(0, -1));
                 lowestNeighbourOffset = new(0, -1);
             }
 
@@ -221,37 +221,33 @@ public class MapGenerator : Singleton<MapGenerator>
             if (slope < -slopeTolerance)
             {
                 map[pos.x, pos.y] = new(map[pos.x, pos.y].height, data.waterAmount, new());
+                Debug.LogWarning("Too flat");
                 continue;
             }
 
             // add the acceleration because of the slope, set magnitude to the calculated speed (the speed also depends on the slope)
             float speed = slope * waterSlopeSpeedImpact;
-            data.waterVelocity = (data.waterVelocity + speed * lowestNeighbourOffset).normalized * speed;
 
             // store the data in the array
             map[pos.x, pos.y] = map[pos.x, pos.y] + data;
 
             // Enqueue all effected vertices
-            if (Mathf.Abs(data.waterVelocity.x) > 0.01)
-            {
-                int roundedVelocity = (int)Mathf.Sign(data.waterVelocity.x) * Mathf.CeilToInt(Math.Abs(data.waterVelocity.x));
-                Vector2Int affectedVertexPos = new(pos.x + Mathf.Clamp(roundedVelocity, -1, 1), pos.y);
-                if (affectedVertexPos.x > 0 && affectedVertexPos.x + 1 < mapWidth && affectedVertexPos.y > 0 && affectedVertexPos.y + 1 < mapHeight)
-                    if (map[affectedVertexPos.x, affectedVertexPos.y].waterAmount == 0)
-                    {
-                        verticesToCalc.Enqueue(new(affectedVertexPos, data, Mathf.Abs(data.waterVelocity.normalized.x)));
-                    }
-            }
-            if (Mathf.Abs(data.waterVelocity.y) > 0.01)
-            {
-                int roundedVelocity = (int)Mathf.Sign(data.waterVelocity.y) * Mathf.CeilToInt(Math.Abs(data.waterVelocity.y));
-                Vector2Int affectedVertexPos = new(pos.x, pos.y + Mathf.Clamp(roundedVelocity, -1, 1));
-                if (affectedVertexPos.x > 0 && affectedVertexPos.x + 1 < mapWidth && affectedVertexPos.y > 0 && affectedVertexPos.y + 1 < mapHeight)
-                    if (map[affectedVertexPos.x, affectedVertexPos.y].waterAmount == 0)
-                    {
-                        verticesToCalc.Enqueue(new(affectedVertexPos, data, Mathf.Abs(data.waterVelocity.normalized.y)));
-                    }
-            }
+
+
+            Vector2Int affectedVertexPos = new(pos.x + lowestNeighbourOffset.x, pos.y);
+            if (affectedVertexPos.x > 0 && affectedVertexPos.x + 1 < mapWidth && affectedVertexPos.y > 0 && affectedVertexPos.y + 1 < mapHeight)
+                if (map[affectedVertexPos.x, affectedVertexPos.y].waterAmount == 0)
+                {
+                    verticesToCalc.Enqueue(new(affectedVertexPos, data, 1));
+                }
+
+            affectedVertexPos = new(pos.x, pos.y + lowestNeighbourOffset.y);
+            if (affectedVertexPos.x > 0 && affectedVertexPos.x + 1 < mapWidth && affectedVertexPos.y > 0 && affectedVertexPos.y + 1 < mapHeight)
+                if (map[affectedVertexPos.x, affectedVertexPos.y].waterAmount == 0)
+                {
+                    verticesToCalc.Enqueue(new(affectedVertexPos, data, 1));
+                }
+
         }
 
         i = 0;
@@ -259,7 +255,7 @@ public class MapGenerator : Singleton<MapGenerator>
         {
             for (int x = 0; x < mapWidth; x++)
             {
-                map[x, y].height -= map[x, y].waterAmount * 1.5f;
+                map[x, y].height -= map[x, y].waterAmount * 0.7f;
                 if (map[x, y].waterAmount > 0)
                 {
                     i++;
@@ -270,7 +266,7 @@ public class MapGenerator : Singleton<MapGenerator>
     }
     float VertexHeight(VertexData[,] map, Vector2Int pos)
     {
-        return map[pos.x, pos.y].height + map[pos.x, pos.y].waterAmount * 1;
+        return map[pos.x, pos.y].height + map[pos.x, pos.y].waterAmount * 10;
     }
     void AddIndent(float[,] map, float strength, Vector2 pos)
     {
