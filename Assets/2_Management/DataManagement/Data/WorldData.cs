@@ -74,28 +74,28 @@ public class TerrainData
 }
 
 [Serializable]
-public struct VertexWaterInfo
+public struct VertexData
 {
-    public float amount;
-    public Vector2 velocity;
-    public VertexWaterInfo(float amount, Vector2 velocity)
+    public float height;
+    public float waterAmount;
+    public Vector2 waterVelocity;
+    public VertexData(float height, float waterAmount, Vector2 waterVelocity)
     {
-        this.amount = amount;
-        this.velocity = velocity;
+        this.height = height;
+        this.waterAmount = waterAmount;
+        this.waterVelocity = waterVelocity;
     }
-    public static VertexWaterInfo operator +(VertexWaterInfo a, VertexWaterInfo b)
+    public static VertexData operator +(VertexData a, VertexData b)
     {
-        return new(a.amount + b.amount, a.velocity + b.velocity);
+        return new(a.height + b.height, a.waterAmount + b.waterAmount, a.waterVelocity + b.waterVelocity);
     }
 }
 [Serializable]
 public class ChunkData
 {
-    public List<ListWrapper<float>> heightMap;
-    public List<ListWrapper<VertexWaterInfo>> riverMap;
-    public ChunkData(List<ListWrapper<float>> heightMap, List<ListWrapper<VertexWaterInfo>> riverMap)
+    public List<ListWrapper<VertexData>> map;
+    public ChunkData(List<ListWrapper<VertexData>> map)
     {
-        this.heightMap = heightMap;
-        this.riverMap = riverMap;
+        this.map = map;
     }
 }

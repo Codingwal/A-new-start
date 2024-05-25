@@ -2,7 +2,7 @@ using UnityEngine;
 
 public static class MeshGenerator
 {
-    public static MeshData GenerateTerrainMesh(float[,] heightMap, float heightMultiplier, int levelOfDetail)
+    public static MeshData GenerateTerrainMesh(VertexData[,] heightMap, float heightMultiplier, int levelOfDetail)
     {
         int meshSize = heightMap.GetLength(0);
         float topLeftX = (meshSize - 1) / -2f;
@@ -18,26 +18,26 @@ public static class MeshGenerator
         {
             for (int x = 0; x < meshSize; x += meshSimplificationIncrement)
             {
-                // meshData.vertices[vertexIndex] = new(topLeftX + x, heightMap[x, y] * heightMultiplier, topLeftZ - y);
-                meshData.vertices[vertexIndex] = new(topLeftX + x, heightMap[x, y], topLeftZ - y);
+                // meshData.vertices[vertexIndex] = new(topLeftX + x, heightMap[x, y].height * heightMultiplier, topLeftZ - y);
+                meshData.vertices[vertexIndex] = new(topLeftX + x, heightMap[x, y].height, topLeftZ - y);
                 // meshData.uvs[vertexIndex] = new(x / (float)meshSize, y / (float)meshSize);  
                 float slopeX;
                 if (x + 1 < meshSize)
                 {
-                    slopeX = Mathf.Abs(heightMap[x + 1, y] - heightMap[x, y]);
+                    slopeX = Mathf.Abs(heightMap[x + 1, y].height - heightMap[x, y].height);
                 }
                 else
                 {
-                    slopeX = Mathf.Abs(heightMap[x - 1, y] - heightMap[x, y]);
+                    slopeX = Mathf.Abs(heightMap[x - 1, y].height - heightMap[x, y].height);
                 }
                 float slopeY;
                 if (y + 1 < meshSize)
                 {
-                    slopeY = Mathf.Abs(heightMap[x, y + 1] - heightMap[x, y]);
+                    slopeY = Mathf.Abs(heightMap[x, y + 1].height - heightMap[x, y].height);
                 }
                 else
                 {
-                    slopeY = Mathf.Abs(heightMap[x, y - 1] - heightMap[x, y]);
+                    slopeY = Mathf.Abs(heightMap[x, y - 1].height - heightMap[x, y].height);
                 }
                 float slope = (slopeX + slopeY) / 2;
                 meshData.uvs[vertexIndex] = new(slope, 0);

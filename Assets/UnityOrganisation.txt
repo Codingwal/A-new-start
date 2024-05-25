@@ -1,7 +1,5 @@
 TODO:
 
-- Add slope to terrain shader
-
 - Rivers
 
 - lake shader

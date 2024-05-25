@@ -134,21 +134,13 @@ public class FileDataHandler
         foreach (KeyValuePair<Vector2, ChunkData> pair in terrainData.chunks)
         {
             Write(bw, pair.Key);
-            foreach (ListWrapper<float> element in pair.Value.heightMap)
+            foreach (ListWrapper<VertexData> element in pair.Value.map)
             {
-                foreach (float value in element.list)
+                foreach (VertexData vertexData in element.list)
                 {
-                    bw.Write(value);
-                }
-                WriteClose(bw);
-            }
-            WriteClose(bw);
-            foreach (ListWrapper<VertexWaterInfo> element in pair.Value.riverMap)
-            {
-                foreach (VertexWaterInfo info in element.list)
-                {
-                    bw.Write(info.amount);
-                    Write(bw, info.velocity);
+                    bw.Write(vertexData.height);
+                    bw.Write(vertexData.waterAmount);
+                    Write(bw, vertexData.waterVelocity);
                 }
                 WriteClose(bw);
             }
@@ -208,52 +200,32 @@ public class FileDataHandler
             readData = br.ReadSingle();
 
             // heightMapList
-            List<ListWrapper<float>> heightMapList = new();
+            List<ListWrapper<VertexData>> map = new();
             while (readData != 2.1059140958881314e+37)
             {
-                List<float> list2 = new();
+                List<VertexData> list2 = new();
                 // 2nd list
                 while (readData != 2.1059140958881314e+37)
                 {
-                    list2.Add(readData);
-                    readData = br.ReadSingle();
-                }
-                heightMapList.Add(new(list2));
-                readData = br.ReadSingle();
-            }
-            // heightMapList
-            List<ListWrapper<VertexWaterInfo>> riverMapList = new();
-            while (readData != 2.1059140958881314e+37)
-            {
-                List<VertexWaterInfo> list2 = new();
-                // 2nd list
-                while (readData != 2.1059140958881314e+37)
-                {
-                    VertexWaterInfo info = new()
+                    VertexData vertexData = new()
                     {
-                        amount = readData,
-                        velocity = Read<Vector2>(br)
+                        height = readData,
+                        waterAmount = br.ReadSingle(),
+                        waterVelocity = Read<Vector2>(br)
                     };
-                    list2.Add(info);
+                    list2.Add(vertexData);
                     readData = br.ReadSingle();
                 }
-                riverMapList.Add(new(list2));
+                map.Add(new(list2));
                 readData = br.ReadSingle();
             }
-            chunks.TryAdd(key, new(heightMapList, riverMapList));
+            chunks.TryAdd(key, new(map));
             readData = br.ReadSingle();
         }
 
         saveFile.Close();
 
         return data;
-    }
-    void WriteOpen(BinaryWriter bw)
-    {
-        bw.Write('{');
-        bw.Write('{');
-        bw.Write('{');
-        bw.Write('{');
     }
     void WriteClose(BinaryWriter bw)
     {
