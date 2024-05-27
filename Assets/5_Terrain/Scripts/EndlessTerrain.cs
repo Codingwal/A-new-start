@@ -77,7 +77,7 @@ public class EndlessTerrain : MonoBehaviour
         {
             for (int xOffset = -chunksVisibleInViewDistance; xOffset <= chunksVisibleInViewDistance; xOffset++)
             {
-                Vector2 viewedChunkCoord = new(currentChunkCoordX + xOffset, currentChunkCoordY + yOffset);
+                Vector2Int viewedChunkCoord = new(currentChunkCoordX + xOffset, currentChunkCoordY + yOffset);
 
                 if (terrainChunkDictonary.ContainsKey(viewedChunkCoord))
                 {
@@ -95,7 +95,7 @@ public class EndlessTerrain : MonoBehaviour
     public class TerrainChunk
     {
         GameObject terrainChunk;
-        Vector2 position;
+        Vector2Int position;
         Bounds bounds;
 
         Transform meshChild;
@@ -112,12 +112,12 @@ public class EndlessTerrain : MonoBehaviour
         bool mapDataReceived;
         int previousLODIndex = -1;
 
-        public TerrainChunk(Vector2 coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject terrainChunkPrefab)
+        public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject terrainChunkPrefab)
         {
             this.detailLevels = detailLevels;
 
             position = coord * size;
-            bounds = new(position, Vector2.one * size);
+            bounds = new(new(position.x, 0, position.y), Vector2.one * size);
             Vector3 positionV3 = new Vector3(position.x, 0, position.y) * MapGenerator.Instance.terrainSettings.uniformScale;
 
             terrainChunk = Instantiate(terrainChunkPrefab, positionV3, Quaternion.identity, parent);

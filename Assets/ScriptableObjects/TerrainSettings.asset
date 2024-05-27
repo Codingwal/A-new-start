@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: TerrainSettings
   m_EditorClassIdentifier: Management::TerrainSettingsObject
-  meshHeightMultiplier: 200
+  meshHeightMultiplier: 125
   noiseScale: 500
   lacunarity: 2
   octaves: 8
@@ -21,3 +21,4 @@ MonoBehaviour:
   uniformScale: 1
   minHeight: 0
   maxHeight: 150
+  minWaterSourceHeight: 0.7

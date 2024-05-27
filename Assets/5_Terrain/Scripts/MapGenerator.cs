@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System;
 using System.Threading;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class MapGenerator : Singleton<MapGenerator>
 {
@@ -16,6 +15,7 @@ public class MapGenerator : Singleton<MapGenerator>
 
     Queue<MapThreadInfo<MapData>> mapDataThreadInfoQueue = new();
     Queue<MapThreadInfo<MeshData>> meshDataThreadInfoQueue = new();
+    Dictionary<Vector2Int, List<VertexToCalcInfo>> transferredWaterDict = new();
 
     protected override void SingletonAwake()
     {
@@ -31,7 +31,7 @@ public class MapGenerator : Singleton<MapGenerator>
 
     }
 
-    public void RequestMapData(Vector2 center, Action<MapData> callback)
+    public void RequestMapData(Vector2Int center, Action<MapData> callback)
     {
         ThreadStart threadStart = delegate
         {
@@ -39,7 +39,7 @@ public class MapGenerator : Singleton<MapGenerator>
         };
         new Thread(threadStart).Start();
     }
-    void MapDataThread(Vector2 center, Action<MapData> callback)
+    void MapDataThread(Vector2Int center, Action<MapData> callback)
     {
         MapData mapData = GenerateMapData(center);
         lock (mapDataThreadInfoQueue)
@@ -84,7 +84,7 @@ public class MapGenerator : Singleton<MapGenerator>
             }
         }
     }
-    MapData GenerateMapData(Vector2 center)
+    MapData GenerateMapData(Vector2Int center)
     {
         // Debug.Log("Generating MapData");
 
@@ -101,6 +101,10 @@ public class MapGenerator : Singleton<MapGenerator>
 
         VertexData[,] map = new VertexData[mapChunkSize, mapChunkSize];
 
+        List<VertexToCalcInfo> transferredWater = new();
+        if (transferredWaterDict.ContainsKey(center))
+            transferredWater = transferredWaterDict[center];
+
         for (int x = 0; x < mapChunkSize; x++)
         {
             for (int y = 0; y < mapChunkSize; y++)
@@ -109,7 +113,7 @@ public class MapGenerator : Singleton<MapGenerator>
             }
         }
 
-        GenerateRivers(map, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.minWaterSourceHeight, 1);
+        GenerateRivers(map, transferredWater, center / mapChunkSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.minWaterSourceHeight, 1);
 
         mapDataHandler.AddChunk(center, map);
 
@@ -127,7 +131,7 @@ public class MapGenerator : Singleton<MapGenerator>
             this.sourceInfluence = sourceInfluence;
         }
     }
-    void GenerateRivers(VertexData[,] map, int seed, float minWaterSourceHeight, float waterSlopeSpeedImpact)
+    void GenerateRivers(VertexData[,] map, List<VertexToCalcInfo> transferredWater, Vector2Int center, int seed, float minWaterSourceHeight, float waterSlopeSpeedImpact)
     {
         // Temp (garantuees a water source in every chunk)
         minWaterSourceHeight = -1;
@@ -165,6 +169,11 @@ public class MapGenerator : Singleton<MapGenerator>
             }
         }
 
+        foreach (VertexToCalcInfo vertexToCalcInfo in transferredWater)
+        {
+            verticesToCalc.Enqueue(vertexToCalcInfo);
+        }
+
         int i = 0;
         while (verticesToCalc.Count > 0)
         {
@@ -193,29 +202,29 @@ public class MapGenerator : Singleton<MapGenerator>
             float lowestNeighbourHeight = float.PositiveInfinity;
             Vector2Int lowestNeighbourOffset = new();
 
-            if (VertexHeight(map, pos + new Vector2Int(1, 0)) < lowestNeighbourHeight)
+            if (VertexHeightAtNeighbour(map, pos, new Vector2Int(1, 0)) < lowestNeighbourHeight)
             {
-                lowestNeighbourHeight = VertexHeight(map, pos + new Vector2Int(1, 0));
+                lowestNeighbourHeight = VertexHeightAtNeighbour(map, pos, new Vector2Int(1, 0));
                 lowestNeighbourOffset = new(1, 0);
             }
-            if (VertexHeight(map, pos + new Vector2Int(-1, 0)) < lowestNeighbourHeight)
+            if (VertexHeightAtNeighbour(map, pos, new Vector2Int(-1, 0)) < lowestNeighbourHeight)
             {
-                lowestNeighbourHeight = VertexHeight(map, pos + new Vector2Int(-1, 0));
+                lowestNeighbourHeight = VertexHeightAtNeighbour(map, pos, new Vector2Int(-1, 0));
                 lowestNeighbourOffset = new(-1, 0);
             }
-            if (VertexHeight(map, pos + new Vector2Int(0, 1)) < lowestNeighbourHeight)
+            if (VertexHeightAtNeighbour(map, pos, new Vector2Int(0, 1)) < lowestNeighbourHeight)
             {
-                lowestNeighbourHeight = VertexHeight(map, pos + new Vector2Int(0, 1));
+                lowestNeighbourHeight = VertexHeightAtNeighbour(map, pos, new Vector2Int(0, 1));
                 lowestNeighbourOffset = new(0, 1);
             }
-            if (VertexHeight(map, pos + new Vector2Int(0, -1)) < lowestNeighbourHeight)
+            if (VertexHeightAtNeighbour(map, pos, new Vector2Int(0, -1)) < lowestNeighbourHeight)
             {
-                lowestNeighbourHeight = VertexHeight(map, pos + new Vector2Int(0, -1));
+                lowestNeighbourHeight = VertexHeightAtNeighbour(map, pos, new Vector2Int(0, -1));
                 lowestNeighbourOffset = new(0, -1);
             }
 
             // Calculate the slope from this vertex to the lowest adjacent vertex
-            float slope = VertexHeight(map, pos) - lowestNeighbourHeight;
+            float slope = VertexHeightAtNeighbour(map, pos, new(0, 0)) - lowestNeighbourHeight;
 
             // If the lowest adjacent vertex is higher, stop the generation
             if (slope < -slopeTolerance)
@@ -232,21 +241,50 @@ public class MapGenerator : Singleton<MapGenerator>
             map[pos.x, pos.y] = map[pos.x, pos.y] + data;
 
             // Enqueue all effected vertices
-
-
             Vector2Int affectedVertexPos = new(pos.x + lowestNeighbourOffset.x, pos.y);
-            if (affectedVertexPos.x > 0 && affectedVertexPos.x + 1 < mapWidth && affectedVertexPos.y > 0 && affectedVertexPos.y + 1 < mapHeight)
-                if (map[affectedVertexPos.x, affectedVertexPos.y].waterAmount == 0)
+            if (affectedVertexPos.x >= 0)
+            {
+                if (affectedVertexPos.x < mapWidth)
                 {
-                    verticesToCalc.Enqueue(new(affectedVertexPos, data, 1));
+                    if (map[affectedVertexPos.x, affectedVertexPos.y].waterAmount == 0)
+                        verticesToCalc.Enqueue(new(affectedVertexPos, data, 1));
                 }
+                else
+                {
+                    if (!transferredWaterDict.ContainsKey(center + Vector2Int.right))
+                        transferredWaterDict[center + Vector2Int.right] = new();
+                    transferredWaterDict[center + Vector2Int.right].Add(new(new(0, affectedVertexPos.y), data, 1));
+                }
+            }
+            else
+            {
+                if (!transferredWaterDict.ContainsKey(center + Vector2Int.left))
+                    transferredWaterDict[center + Vector2Int.left] = new();
+                transferredWaterDict[center + Vector2Int.left].Add(new(new(map.GetLength(0) - 1, affectedVertexPos.y), data, 1));
+            }
 
             affectedVertexPos = new(pos.x, pos.y + lowestNeighbourOffset.y);
-            if (affectedVertexPos.x > 0 && affectedVertexPos.x + 1 < mapWidth && affectedVertexPos.y > 0 && affectedVertexPos.y + 1 < mapHeight)
-                if (map[affectedVertexPos.x, affectedVertexPos.y].waterAmount == 0)
+            if (affectedVertexPos.y >= 0)
+            {
+                if (affectedVertexPos.y < mapHeight)
                 {
-                    verticesToCalc.Enqueue(new(affectedVertexPos, data, 1));
+                    if (map[affectedVertexPos.x, affectedVertexPos.y].waterAmount == 0)
+                        verticesToCalc.Enqueue(new(affectedVertexPos, data, 1));
                 }
+                else
+                {
+                    if (!transferredWaterDict.ContainsKey(center + Vector2Int.up))
+                        transferredWaterDict[center + Vector2Int.up] = new();
+                    transferredWaterDict[center + Vector2Int.up].Add(new(new(affectedVertexPos.x, 0), data, 1));
+                }
+            }
+            else
+            {
+                if (!transferredWaterDict.ContainsKey(center + Vector2Int.down))
+                    transferredWaterDict[center + Vector2Int.down] = new();
+                transferredWaterDict[center + Vector2Int.down].Add(new(new(affectedVertexPos.x, map.GetLength(0) - 1), data, 1));
+            }
+
 
         }
 
@@ -264,9 +302,19 @@ public class MapGenerator : Singleton<MapGenerator>
         }
         Debug.Log($"Water vertices count: {i}");
     }
-    float VertexHeight(VertexData[,] map, Vector2Int pos)
+    float VertexHeightAtNeighbour(VertexData[,] map, Vector2Int pos, Vector2Int offset)
     {
-        return map[pos.x, pos.y].height + map[pos.x, pos.y].waterAmount * 10;
+        if (pos.x + offset.x < map.GetLength(0) && pos.x + offset.x >= 0 && pos.y + offset.y < map.GetLength(1) && pos.y + offset.y >= 0)
+        {
+            VertexData vertexData = map[pos.x + offset.x, pos.y + offset.y];
+            return vertexData.height + vertexData.waterAmount * 10;
+        }
+        else
+        {
+            // Estimate the position by continuing the slope of the vertex in the opposite direction
+            return 2 * map[pos.x, pos.y].height - map[pos.x - offset.x, pos.y - offset.y].height;
+        }
+
     }
     void AddIndent(float[,] map, float strength, Vector2 pos)
     {
