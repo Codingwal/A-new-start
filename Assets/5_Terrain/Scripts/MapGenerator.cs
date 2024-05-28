@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System;
 using System.Threading;
 using UnityEngine;
+using System.Collections.Concurrent;
 
 public class MapGenerator : Singleton<MapGenerator>
 {
@@ -15,7 +16,7 @@ public class MapGenerator : Singleton<MapGenerator>
 
     Queue<MapThreadInfo<MapData>> mapDataThreadInfoQueue = new();
     Queue<MapThreadInfo<MeshData>> meshDataThreadInfoQueue = new();
-    Dictionary<Vector2Int, List<VertexToCalcInfo>> transferredWaterDict = new();
+    ConcurrentDictionary<Vector2Int, List<VertexToCalcInfo>> transferredWaterDict = new();
 
     protected override void SingletonAwake()
     {

@@ -117,7 +117,7 @@ public class EndlessTerrain : MonoBehaviour
             this.detailLevels = detailLevels;
 
             position = coord * size;
-            bounds = new(new(position.x, 0, position.y), Vector2.one * size);
+            bounds = new(new(position.x, position.y), Vector2.one * size);
             Vector3 positionV3 = new Vector3(position.x, 0, position.y) * MapGenerator.Instance.terrainSettings.uniformScale;
 
             terrainChunk = Instantiate(terrainChunkPrefab, positionV3, Quaternion.identity, parent);
