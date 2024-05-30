@@ -103,8 +103,11 @@ public class MapGenerator : Singleton<MapGenerator>
         VertexData[,] map = new VertexData[mapChunkSize, mapChunkSize];
 
         List<VertexToCalcInfo> transferredWater = new();
-        if (transferredWaterDict.ContainsKey(center))
-            transferredWater = transferredWaterDict[center];
+        if (transferredWaterDict.ContainsKey(center / mapChunkSize))
+        {
+            Debug.Log($"Received water {center}");
+            transferredWater = transferredWaterDict[center / mapChunkSize]; 
+        }
 
         for (int x = 0; x < mapChunkSize; x++)
         {
@@ -172,6 +175,7 @@ public class MapGenerator : Singleton<MapGenerator>
 
         foreach (VertexToCalcInfo vertexToCalcInfo in transferredWater)
         {
+
             verticesToCalc.Enqueue(vertexToCalcInfo);
         }
 
@@ -255,6 +259,7 @@ public class MapGenerator : Singleton<MapGenerator>
                     if (!transferredWaterDict.ContainsKey(center + Vector2Int.right))
                         transferredWaterDict[center + Vector2Int.right] = new();
                     transferredWaterDict[center + Vector2Int.right].Add(new(new(0, affectedVertexPos.y), data, 1));
+                    Debug.Log($"Sent water R {center * 240}");
                 }
             }
             else
@@ -262,6 +267,7 @@ public class MapGenerator : Singleton<MapGenerator>
                 if (!transferredWaterDict.ContainsKey(center + Vector2Int.left))
                     transferredWaterDict[center + Vector2Int.left] = new();
                 transferredWaterDict[center + Vector2Int.left].Add(new(new(map.GetLength(0) - 1, affectedVertexPos.y), data, 1));
+                Debug.Log($"Sent water L {center * 240}");
             }
 
             affectedVertexPos = new(pos.x, pos.y + lowestNeighbourOffset.y);
@@ -277,6 +283,7 @@ public class MapGenerator : Singleton<MapGenerator>
                     if (!transferredWaterDict.ContainsKey(center + Vector2Int.up))
                         transferredWaterDict[center + Vector2Int.up] = new();
                     transferredWaterDict[center + Vector2Int.up].Add(new(new(affectedVertexPos.x, 0), data, 1));
+                    Debug.Log($"Sent water U {center * 240}");
                 }
             }
             else
@@ -284,6 +291,7 @@ public class MapGenerator : Singleton<MapGenerator>
                 if (!transferredWaterDict.ContainsKey(center + Vector2Int.down))
                     transferredWaterDict[center + Vector2Int.down] = new();
                 transferredWaterDict[center + Vector2Int.down].Add(new(new(affectedVertexPos.x, map.GetLength(0) - 1), data, 1));
+                Debug.Log($"Sent water D {center * 240}");
             }
 
 
@@ -301,7 +309,7 @@ public class MapGenerator : Singleton<MapGenerator>
                 }
             }
         }
-        Debug.Log($"Water vertices count: {i}");
+        // Debug.Log($"Water vertices count: {i}");
     }
     float VertexHeightAtNeighbour(VertexData[,] map, Vector2Int pos, Vector2Int offset)
     {
