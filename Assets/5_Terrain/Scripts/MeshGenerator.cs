@@ -5,8 +5,7 @@ public static class MeshGenerator
     public static MeshData GenerateTerrainMesh(VertexData[,] heightMap, int levelOfDetail)
     {
         int meshSize = heightMap.GetLength(0);
-        float topLeftX = (meshSize - 1) / -2f;
-        float topLeftZ = (meshSize - 1) / 2f;
+        float halfSize = (meshSize - 1) / 2f;
 
         int meshSimplificationIncrement = (levelOfDetail == 0) ? 1 : levelOfDetail * 2;
         int verticesPerLine = ((meshSize - 1) / meshSimplificationIncrement) + 1;
@@ -19,7 +18,7 @@ public static class MeshGenerator
             for (int x = 0; x < meshSize; x += meshSimplificationIncrement)
             {
                 // meshData.vertices[vertexIndex] = new(topLeftX + x, heightMap[x, y].height * heightMultiplier, topLeftZ - y);
-                meshData.vertices[vertexIndex] = new(topLeftX + x, heightMap[x, y].height, topLeftZ - y);
+                meshData.vertices[vertexIndex] = new(x - halfSize, heightMap[x, y].height, y - halfSize);
                 // meshData.uvs[vertexIndex] = new(x / (float)meshSize, y / (float)meshSize);  
                 float slopeX;
                 if (x + 1 < meshSize)
@@ -44,8 +43,8 @@ public static class MeshGenerator
 
                 if (x < meshSize - 1 && y < meshSize - 1)
                 {
-                    meshData.AddTriangle(vertexIndex, vertexIndex + verticesPerLine + 1, vertexIndex + verticesPerLine);
-                    meshData.AddTriangle(vertexIndex + verticesPerLine + 1, vertexIndex, vertexIndex + 1);
+                    meshData.AddTriangle(vertexIndex, vertexIndex + verticesPerLine, vertexIndex + 1);
+                    meshData.AddTriangle(vertexIndex + 1, vertexIndex + verticesPerLine, vertexIndex + verticesPerLine + 1);
                 }
 
                 vertexIndex++;

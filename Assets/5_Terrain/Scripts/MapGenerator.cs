@@ -98,9 +98,42 @@ public class MapGenerator : Singleton<MapGenerator>
 
         // Generate map data
         int seed = MapDataHandler.Instance.worldData.terrainData.seed;
-        
-        float biomeValue = Mathf.Clamp01(Noise.GenerateNoise(center, GenerateOctaveOffsets(seed, 2), 2000, 0.5f, 2, 0, 1.5f));
 
+        Vector2[] biomeOctaveOffsets = GenerateOctaveOffsets(seed, 2);
+        float biomeValue = Mathf.Clamp01(Noise.GenerateNoise(new Vector2(center.x, center.y), biomeOctaveOffsets, 2000, 0.5f, 2, 0, 1.5f));
+        BiomeSettings biomeSettings00 = GetBiomeSettings(biomeValue);
+        biomeValue = Mathf.Clamp01(Noise.GenerateNoise(new Vector2(center.x + mapChunkSize, center.y), biomeOctaveOffsets, 2000, 0.5f, 2, 0, 1.5f));
+        BiomeSettings biomeSettingsX0 = GetBiomeSettings(biomeValue);
+        biomeValue = Mathf.Clamp01(Noise.GenerateNoise(new Vector2(center.x, center.y + mapChunkSize), biomeOctaveOffsets, 2000, 0.5f, 2, 0, 1.5f));
+        BiomeSettings biomeSettings0Y = GetBiomeSettings(biomeValue);
+        biomeValue = Mathf.Clamp01(Noise.GenerateNoise(new Vector2(center.x + mapChunkSize, center.y + mapChunkSize), biomeOctaveOffsets, 2000, 0.5f, 2, 0, 1.5f));
+        BiomeSettings biomeSettingsXY = GetBiomeSettings(biomeValue);
+
+
+        VertexData[,] map = new VertexData[mapChunkSize, mapChunkSize];
+        for (int x = 0; x < mapChunkSize; x++)
+        {
+            for (int y = 0; y < mapChunkSize; y++)
+            {
+                BiomeSettings biomeSettings = BiomeSettings.Lerp(BiomeSettings.Lerp(biomeSettings00, biomeSettingsX0, x / mapChunkSize), BiomeSettings.Lerp(biomeSettings0Y, biomeSettingsXY, x / mapChunkSize), y / mapChunkSize);
+
+                // Generate the map using the biomeSettings
+                Vector2[] octaveOffsets = GenerateOctaveOffsets(seed, biomeSettings.octaves);
+
+                // 2 is the max possible height while using octaveAmplitudeFactor = 0.5f (1 + 1/2 + 1/4 + 1/8 + ... approaches 2)
+                map[x, y] = VertexGenerator.GenerateVertexData(new Vector2(x + center.x, y + center.y), octaveOffsets, biomeSettings, 2);
+                map[x, y].height += biomeSettings.heightOffset;
+            }
+        }
+
+        // GenerateRivers(map, transferredWater, center / mapChunkSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.minWaterSourceHeight, 1);
+
+        mapDataHandler.AddChunk(center, map);
+
+        return new(map);
+    }
+    BiomeSettings GetBiomeSettings(float biomeValue)
+    {
         // Get the biomes with a value directly above and below the received noise value
         KeyValuePair<float, BiomeSettings> biomeLowerValue = new(float.PositiveInfinity, new());
         KeyValuePair<float, BiomeSettings> biomeHigherValue = new(float.NegativeInfinity, new());
@@ -122,26 +155,7 @@ public class MapGenerator : Singleton<MapGenerator>
         Debug.Assert(biomeHigherValue.Key != float.NegativeInfinity, "No biome with a higher height found");
 
         // Calculate the biomeSettings of this chunk by lerping between the higher and the lower biomeSetting
-        BiomeSettings biomeSettings = BiomeSettings.Lerp(biomeLowerValue.Value, biomeHigherValue.Value, Mathf.InverseLerp(biomeLowerValue.Key, biomeHigherValue.Key, biomeValue));
-
-        // Generate the map using the biomeSettings
-        Vector2[] octaveOffsets = GenerateOctaveOffsets(seed, biomeSettings.octaves);
-        VertexData[,] map = new VertexData[mapChunkSize, mapChunkSize];
-        for (int x = 0; x < mapChunkSize; x++)
-        {
-            for (int y = 0; y < mapChunkSize; y++)
-            {
-                // 2 is the max possible height while using octaveAmplitudeFactor = 0.5f (1 + 1/2 + 1/4 + 1/8 + ... approaches 2)
-                map[x, y] = VertexGenerator.GenerateVertexData(new Vector2(x + center.x, y - center.y), octaveOffsets, biomeSettings, 2);
-                map[x, y].height += biomeSettings.heightOffset;
-            }
-        }
-
-        // GenerateRivers(map, transferredWater, center / mapChunkSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.minWaterSourceHeight, 1);
-
-        mapDataHandler.AddChunk(center, map);
-
-        return new(map);
+        return BiomeSettings.Lerp(biomeLowerValue.Value, biomeHigherValue.Value, Mathf.InverseLerp(biomeLowerValue.Key, biomeHigherValue.Key, biomeValue));
     }
     Vector2[] GenerateOctaveOffsets(int seed, int octaveCount)
     {
