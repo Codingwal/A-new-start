@@ -96,28 +96,17 @@ public class MapGenerator : Singleton<MapGenerator>
             return new(mapDataHandler.chunks[center].map);
         }
 
-        float[,] noiseMap = Noise.GenerateNoiseMap
-        (mapChunkSize, mapChunkSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.noiseScale, terrainSettings.octaves,
-        terrainSettings.persistance, terrainSettings.lacunarity, terrainSettings.slopeImpact, terrainSettings.meshHeightMultiplier, center);
-
         VertexData[,] map = new VertexData[mapChunkSize, mapChunkSize];
-
-        List<VertexToCalcInfo> transferredWater = new();
-        if (transferredWaterDict.ContainsKey(center / mapChunkSize))
-        {
-            Debug.Log($"Received water {center}");
-            transferredWater = transferredWaterDict[center / mapChunkSize]; 
-        }
-
         for (int x = 0; x < mapChunkSize; x++)
         {
             for (int y = 0; y < mapChunkSize; y++)
             {
-                map[x, y].height = noiseMap[x, y];
+                map[x, y].height = Noise.GenerateNoise(new Vector2(x + center.x, y - center.y), MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.noiseScale, terrainSettings.octaves,
+                terrainSettings.persistance, terrainSettings.lacunarity, terrainSettings.slopeImpact, terrainSettings.meshHeightMultiplier);
             }
         }
 
-        GenerateRivers(map, transferredWater, center / mapChunkSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.minWaterSourceHeight, 1);
+        // GenerateRivers(map, transferredWater, center / mapChunkSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.minWaterSourceHeight, 1);
 
         mapDataHandler.AddChunk(center, map);
 

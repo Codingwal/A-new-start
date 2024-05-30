@@ -1518,8 +1518,11 @@ MonoBehaviour:
   - lod: 0
     visibleDistanceThreshold: 100
     useForCollider: 1
-  - lod: 2
+  - lod: 1
     visibleDistanceThreshold: 250
+    useForCollider: 0
+  - lod: 15
+    visibleDistanceThreshold: 1500
     useForCollider: 0
   viewer: {fileID: 965662050}
   mapMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
