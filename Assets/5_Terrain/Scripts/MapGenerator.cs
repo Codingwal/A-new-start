@@ -11,7 +11,7 @@ public class MapGenerator : Singleton<MapGenerator>
 
     public Material terrainMaterial;
     readonly int[] possibleMapChunkSizes = { 121, 241 };
-    [Dropdown("possibleMapChunkSizes")]
+    // [Dropdown("possibleMapChunkSizes")]
     public int mapChunkSize = 241;
 
     Queue<MapThreadInfo<MapData>> mapDataThreadInfoQueue = new();
@@ -59,7 +59,7 @@ public class MapGenerator : Singleton<MapGenerator>
     void MeshDataThread(MapData mapData, int lod, Action<MeshData> callback)
     {
         MeshData meshData = MeshGenerator.GenerateTerrainMesh
-        (mapData.map, terrainSettings.meshHeightMultiplier, lod);
+        (mapData.map, lod);
         lock (meshDataThreadInfoQueue)
         {
             meshDataThreadInfoQueue.Enqueue(new MapThreadInfo<MeshData>(callback, meshData));
@@ -96,13 +96,44 @@ public class MapGenerator : Singleton<MapGenerator>
             return new(mapDataHandler.chunks[center].map);
         }
 
+        // Generate map data
+        int seed = MapDataHandler.Instance.worldData.terrainData.seed;
+        
+        float biomeValue = Mathf.Clamp01(Noise.GenerateNoise(center, GenerateOctaveOffsets(seed, 2), 2000, 0.5f, 2, 0, 1.5f));
+
+        // Get the biomes with a value directly above and below the received noise value
+        KeyValuePair<float, BiomeSettings> biomeLowerValue = new(float.PositiveInfinity, new());
+        KeyValuePair<float, BiomeSettings> biomeHigherValue = new(float.NegativeInfinity, new());
+        foreach (KeyValuePair<float, BiomeSettings> biome in terrainSettings.biomes)
+        {
+            // biomeHeight must be higher, currentLowerBiome height must be lower (greater distance)
+            if (biomeValue >= biome.Key && biome.Key < biomeLowerValue.Key)
+            {
+                biomeLowerValue = biome;
+            }
+
+            // biomeHeight must be lower, currentHigherBiome height must be higher (greater distance)   
+            if (biomeValue <= biome.Key && biome.Key > biomeHigherValue.Key)
+            {
+                biomeHigherValue = biome;
+            }
+        }
+        Debug.Assert(biomeLowerValue.Key != float.PositiveInfinity, "No biome with a lower height found");
+        Debug.Assert(biomeHigherValue.Key != float.NegativeInfinity, "No biome with a higher height found");
+
+        // Calculate the biomeSettings of this chunk by lerping between the higher and the lower biomeSetting
+        BiomeSettings biomeSettings = BiomeSettings.Lerp(biomeLowerValue.Value, biomeHigherValue.Value, Mathf.InverseLerp(biomeLowerValue.Key, biomeHigherValue.Key, biomeValue));
+
+        // Generate the map using the biomeSettings
+        Vector2[] octaveOffsets = GenerateOctaveOffsets(seed, biomeSettings.octaves);
         VertexData[,] map = new VertexData[mapChunkSize, mapChunkSize];
         for (int x = 0; x < mapChunkSize; x++)
         {
             for (int y = 0; y < mapChunkSize; y++)
             {
-                map[x, y].height = Noise.GenerateNoise(new Vector2(x + center.x, y - center.y), MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.noiseScale, terrainSettings.octaves,
-                terrainSettings.persistance, terrainSettings.lacunarity, terrainSettings.slopeImpact, terrainSettings.meshHeightMultiplier);
+                // 2 is the max possible height while using octaveAmplitudeFactor = 0.5f (1 + 1/2 + 1/4 + 1/8 + ... approaches 2)
+                map[x, y] = VertexGenerator.GenerateVertexData(new Vector2(x + center.x, y - center.y), octaveOffsets, biomeSettings, 2);
+                map[x, y].height += biomeSettings.heightOffset;
             }
         }
 
@@ -111,6 +142,25 @@ public class MapGenerator : Singleton<MapGenerator>
         mapDataHandler.AddChunk(center, map);
 
         return new(map);
+    }
+    Vector2[] GenerateOctaveOffsets(int seed, int octaveCount)
+    {
+        Vector2[] octaveOffsets = new Vector2[octaveCount];
+
+        System.Random rnd = new(seed);
+
+        for (int i = 0; i < octaveCount; i++)
+        {
+            // Get random offset for each octave, which will be added to the position, to get different noise depending on the seed
+
+            // Generate the random offsets
+            float offsetX = rnd.Next(-100000, 100000);
+            float offsetY = rnd.Next(-100000, 100000);
+
+            // Store the offset in an array
+            octaveOffsets[i] = new(offsetX, offsetY);
+        }
+        return octaveOffsets;
     }
     struct VertexToCalcInfo
     {

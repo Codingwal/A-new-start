@@ -117,12 +117,20 @@ public class FileDataHandler
         Write(bw, playerData.rotation);
 
         TerrainSettings terrainSettings = data.terrainSettings;
-        bw.Write(terrainSettings.meshHeightMultiplier);
-        bw.Write(terrainSettings.noiseScale);
-        bw.Write(terrainSettings.lacunarity);
-        bw.Write(terrainSettings.octaves);
-        bw.Write(terrainSettings.persistance);
-        bw.Write(terrainSettings.slopeImpact);
+        foreach (KeyValuePair<float, BiomeSettings> biome in terrainSettings.biomes)
+        {
+            bw.Write(biome.Key);
+
+            bw.Write(biome.Value.heightMultiplier);
+            bw.Write(biome.Value.octaves);
+            bw.Write(biome.Value.noiseScale);
+            bw.Write(biome.Value.octaveFrequencyFactor);
+            bw.Write(biome.Value.octaveAmplitudeFactor);
+            bw.Write(biome.Value.slopeImpact);
+            bw.Write(biome.Value.heightOffset);
+        }
+        WriteClose(bw);
+
         bw.Write(terrainSettings.uniformScale);
         bw.Write(terrainSettings.minHeight);
         bw.Write(terrainSettings.maxHeight);
@@ -173,12 +181,24 @@ public class FileDataHandler
         data.playerData.position = Read<Vector3>(br);
         data.playerData.rotation = Read<Vector3>(br);
 
-        data.terrainSettings.meshHeightMultiplier = br.ReadSingle();
-        data.terrainSettings.noiseScale = br.ReadSingle();
-        data.terrainSettings.lacunarity = br.ReadSingle();
-        data.terrainSettings.octaves = br.ReadInt32();
-        data.terrainSettings.persistance = br.ReadSingle();
-        data.terrainSettings.slopeImpact = br.ReadSingle();
+        float readData = br.ReadSingle();
+        while (readData != 2.1059140958881314e+37)
+        {
+            float key = readData;
+            BiomeSettings biomeSettings = new()
+            {
+                heightMultiplier = br.ReadSingle(),
+                octaves = br.ReadInt32(),
+                noiseScale = br.ReadSingle(),
+                octaveFrequencyFactor = br.ReadSingle(),
+                octaveAmplitudeFactor = br.ReadSingle(),
+                slopeImpact = br.ReadSingle(),
+                heightOffset = br.ReadSingle()
+            };
+            data.terrainSettings.biomes[key] = biomeSettings;
+            readData = br.ReadSingle();
+        }
+
         data.terrainSettings.uniformScale = br.ReadSingle();
         data.terrainSettings.minHeight = br.ReadSingle();
         data.terrainSettings.maxHeight = br.ReadSingle();
@@ -186,7 +206,7 @@ public class FileDataHandler
 
         data.terrainData.seed = br.ReadInt32();
 
-        float readData = br.ReadSingle();
+        readData = br.ReadSingle();
 
         // chunks dict
         while (readData != 2.1059140958881314e+37)

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public static class MeshGenerator
 {
-    public static MeshData GenerateTerrainMesh(VertexData[,] heightMap, float heightMultiplier, int levelOfDetail)
+    public static MeshData GenerateTerrainMesh(VertexData[,] heightMap, int levelOfDetail)
     {
         int meshSize = heightMap.GetLength(0);
         float topLeftX = (meshSize - 1) / -2f;

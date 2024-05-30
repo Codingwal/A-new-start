@@ -12,12 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: TerrainSettings
   m_EditorClassIdentifier: Management::TerrainSettingsObject
-  meshHeightMultiplier: 200
-  noiseScale: 500
-  lacunarity: 2
-  octaves: 8
-  persistance: 0.5
-  slopeImpact: 1
+  biomes:
+  - height: 0
+    biomeSettings:
+      heightMultiplier: 200
+      octaves: 8
+      noiseScale: 500
+      octaveFrequencyFactor: 2
+      octaveAmplitudeFactor: 0.5
+      slopeImpact: 1
+      heightOffset: -50
+  - height: 1
+    biomeSettings:
+      heightMultiplier: 300
+      octaves: 8
+      noiseScale: 500
+      octaveFrequencyFactor: 2
+      octaveAmplitudeFactor: 0.5
+      slopeImpact: 1
+      heightOffset: 200
   uniformScale: 1
   minHeight: 0
   maxHeight: 150

@@ -14,45 +14,20 @@ public static class Noise
         Local,
         Global
     }
-    public static float GenerateNoise(Vector2 pos, int seed, float scale, int octaves, float persistance, float lacunarity, float slopeImpact, float heightMultiplier)
+    public static float GenerateNoise(Vector2 pos, Vector2[] octaveOffsets, float scale, float persistance, float lacunarity, float slopeImpact, float maxPossibleHeight)
     {
-        Vector2[] octaveOffsets = new Vector2[octaves];
-
-        float maxPossibleHeight = 0;
-
-
-        System.Random prng = new(seed);
-        float amplitude = 1;
-
-        // For each octave...
-        for (int i = 0; i < octaves; i++)
-        {
-            // Get random offset for each octave, which will be added to the position, to get different noise depending on the seed
-
-            // Generate the random offsets and add the offset of the chunk to that value
-            float offsetX = prng.Next(-100000, 100000);
-            float offsetY = prng.Next(-100000, 100000);
-
-            // Store the offset in an array
-            octaveOffsets[i] = new(offsetX, offsetY);
-
-            maxPossibleHeight += amplitude;
-            amplitude *= persistance;
-        }
-
-
         if (scale <= 0)
         {
             scale = 0.0001f;
         }
 
-        amplitude = 1;
+        float amplitude = 1;
         float frequency = 1;
         float noiseHeight = 0;
         float slopesSum = 0;
 
         // For each octave...
-        for (int i = 0; i < octaves; i++)
+        for (int i = 0; i < octaveOffsets.Length; i++)
         {
             // Convert the point on the map [pos.x, pos.y] to the sample point on the perlin noise map [sampleX, sampleY]
             // + octaveOffsets[i].x / + octaveOffsets[i].y to get different noise value for each seed and for each octave in the same seed
@@ -89,10 +64,10 @@ public static class Noise
         }
 
         // Calculate the normalized height (range 0 to 1) by using 0 and maxPossibleHeight
-        // +1 / 2 to reverse the operation done to change the range from (0, 1) to (-1, 1)
-        // /maxPossibleHeight to normalize
-        // *1.75 because realistically, maxPossibleHeight will never be reached
-        float normalizedHeight = noiseHeight / (maxPossibleHeight / 1.75f);
-        return Mathf.Clamp(normalizedHeight, 0, 1) * heightMultiplier;
+        float normalizedHeight = noiseHeight / maxPossibleHeight;
+
+        // Clamp to prevent errors in edge cases
+        // return Mathf.Clamp(normalizedHeight, 0, 1);
+        return normalizedHeight;
     }
 }

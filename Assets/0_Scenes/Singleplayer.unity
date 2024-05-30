@@ -1473,18 +1473,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrainSettings:
-    meshHeightMultiplier: 0
-    noiseScale: 0
-    lacunarity: 0
-    octaves: 0
-    persistance: 0
-    slopeImpact: 0
+    biomes:
+      keys: []
+      values: []
     uniformScale: 0
     minHeight: 0
     maxHeight: 0
     minWaterSourceHeight: 0.7
   terrainMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
-  mapChunkSize: 241
+  mapChunkSize: 33
 --- !u!4 &1146475733
 Transform:
   m_ObjectHideFlags: 0
@@ -1492,7 +1489,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1146475730}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1521,8 +1518,11 @@ MonoBehaviour:
   - lod: 1
     visibleDistanceThreshold: 250
     useForCollider: 0
-  - lod: 15
-    visibleDistanceThreshold: 1500
+  - lod: 8
+    visibleDistanceThreshold: 700
+    useForCollider: 0
+  - lod: 16
+    visibleDistanceThreshold: 1200
     useForCollider: 0
   viewer: {fileID: 965662050}
   mapMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
@@ -1543,12 +1543,9 @@ MonoBehaviour:
       position: {x: 0, y: 200, z: 0}
       rotation: {x: 0, y: 0, z: 0}
     terrainSettings:
-      meshHeightMultiplier: 150
-      noiseScale: 500
-      lacunarity: 2
-      octaves: 8
-      persistance: 0.5
-      slopeImpact: 1
+      biomes:
+        keys: []
+        values: []
       uniformScale: 1
       minHeight: 0
       maxHeight: 150
