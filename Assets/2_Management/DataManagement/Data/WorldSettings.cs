@@ -53,10 +53,12 @@ public class BiomeSettings
 public class TerrainSettings
 {
     public SerializableDictonary<float, BiomeSettings> biomes = new();
+    public float biomeScale = 5000;
     public float uniformScale = 1;
     public float minHeight = 0;
     public float maxHeight = 150;
     public float minWaterSourceHeight = 0.7f;
+    public float terrainScale = 1;
     public TerrainSettings()
     {
 
@@ -67,10 +69,12 @@ public class TerrainSettings
         {
             biomes[biome.height] = biome.biomeSettings;
         }
+        biomeScale = obj.biomeScale;
         uniformScale = obj.uniformScale;
         minHeight = obj.minHeight;
         maxHeight = obj.maxHeight;
         minWaterSourceHeight = obj.minWaterSourceHeight;
+        terrainScale = obj.terrainScale;
     }
 }
 [Serializable]
@@ -84,8 +88,10 @@ public class BiomeWrapper
 public class TerrainSettingsObject : ScriptableObject
 {
     public List<BiomeWrapper> biomes;
+    public float biomeScale = 5000;
     public float uniformScale = 1;
     public float minHeight = 0;
     public float maxHeight = 150;
     public float minWaterSourceHeight = 0.7f;
+    public float terrainScale = 1;
 }

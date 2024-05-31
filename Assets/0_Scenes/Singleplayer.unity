@@ -1476,10 +1476,12 @@ MonoBehaviour:
     biomes:
       keys: []
       values: []
+    biomeScale: 5000
     uniformScale: 0
     minHeight: 0
     maxHeight: 0
     minWaterSourceHeight: 0.7
+    terrainScale: 1
   terrainMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
   mapChunkSize: 241
 --- !u!4 &1146475733
@@ -1512,20 +1514,11 @@ MonoBehaviour:
   terrainChunkPrefab: {fileID: 610096790558363399, guid: 0edc36ea1fadfc14d95f44d240d20224,
     type: 3}
   detailLevels:
-  - lod: 0
+  - lod: 10
     visibleDistanceThreshold: 100
     useForCollider: 1
-  - lod: 1
-    visibleDistanceThreshold: 200
-    useForCollider: 0
-  - lod: 2
-    visibleDistanceThreshold: 300
-    useForCollider: 0
-  - lod: 4
-    visibleDistanceThreshold: 400
-    useForCollider: 0
-  - lod: 8
-    visibleDistanceThreshold: 700
+  - lod: 60
+    visibleDistanceThreshold: 3000
     useForCollider: 0
   viewer: {fileID: 965662050}
   mapMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
@@ -1549,10 +1542,12 @@ MonoBehaviour:
       biomes:
         keys: []
         values: []
+      biomeScale: 5000
       uniformScale: 1
       minHeight: 0
       maxHeight: 150
       minWaterSourceHeight: 0.7
+      terrainScale: 1
     terrainData:
       seed: -954678
       chunks:

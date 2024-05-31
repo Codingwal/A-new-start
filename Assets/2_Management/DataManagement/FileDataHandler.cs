@@ -131,10 +131,12 @@ public class FileDataHandler
         }
         WriteClose(bw);
 
+        bw.Write(terrainSettings.biomeScale);
         bw.Write(terrainSettings.uniformScale);
         bw.Write(terrainSettings.minHeight);
         bw.Write(terrainSettings.maxHeight);
         bw.Write(terrainSettings.minWaterSourceHeight);
+        bw.Write(terrainSettings.terrainScale);
 
         TerrainData terrainData = data.terrainData;
         bw.Write(terrainData.seed);
@@ -147,8 +149,8 @@ public class FileDataHandler
                 foreach (VertexData vertexData in element.list)
                 {
                     bw.Write(vertexData.height);
-                    bw.Write(vertexData.waterAmount);
-                    Write(bw, vertexData.waterVelocity);
+                    // bw.Write(vertexData.waterAmount);
+                    // Write(bw, vertexData.waterVelocity);
                 }
                 WriteClose(bw);
             }
@@ -199,10 +201,12 @@ public class FileDataHandler
             readData = br.ReadSingle();
         }
 
+        data.terrainSettings.biomeScale = br.ReadSingle();
         data.terrainSettings.uniformScale = br.ReadSingle();
         data.terrainSettings.minHeight = br.ReadSingle();
         data.terrainSettings.maxHeight = br.ReadSingle();
         data.terrainSettings.minWaterSourceHeight = br.ReadSingle();
+        data.terrainSettings.terrainScale = br.ReadSingle();
 
         data.terrainData.seed = br.ReadInt32();
 
@@ -230,8 +234,8 @@ public class FileDataHandler
                     VertexData vertexData = new()
                     {
                         height = readData,
-                        waterAmount = br.ReadSingle(),
-                        waterVelocity = Read<Vector2>(br)
+                        // waterAmount = br.ReadSingle(),
+                        // waterVelocity = Read<Vector2>(br)
                     };
                     list2.Add(vertexData);
                     readData = br.ReadSingle();
