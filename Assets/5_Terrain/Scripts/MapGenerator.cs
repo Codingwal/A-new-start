@@ -102,20 +102,24 @@ public class MapGenerator : Singleton<MapGenerator>
         Vector2[] biomeOctaveOffsets = GenerateOctaveOffsets(seed, 2);
         float biomeValue = Mathf.Clamp01(Noise.GenerateNoise(new Vector2(center.x, center.y), biomeOctaveOffsets, 2000, 0.5f, 2, 0, 1.5f));
         BiomeSettings biomeSettings00 = GetBiomeSettings(biomeValue);
-        biomeValue = Mathf.Clamp01(Noise.GenerateNoise(new Vector2(center.x + mapChunkSize, center.y), biomeOctaveOffsets, 2000, 0.5f, 2, 0, 1.5f));
+        biomeValue = Mathf.Clamp01(Noise.GenerateNoise(new Vector2(center.x + mapChunkSize - 1, center.y), biomeOctaveOffsets, 2000, 0.5f, 2, 0, 1.5f));
         BiomeSettings biomeSettingsX0 = GetBiomeSettings(biomeValue);
-        biomeValue = Mathf.Clamp01(Noise.GenerateNoise(new Vector2(center.x, center.y + mapChunkSize), biomeOctaveOffsets, 2000, 0.5f, 2, 0, 1.5f));
+        biomeValue = Mathf.Clamp01(Noise.GenerateNoise(new Vector2(center.x, center.y + mapChunkSize - 1), biomeOctaveOffsets, 2000, 0.5f, 2, 0, 1.5f));
         BiomeSettings biomeSettings0Y = GetBiomeSettings(biomeValue);
-        biomeValue = Mathf.Clamp01(Noise.GenerateNoise(new Vector2(center.x + mapChunkSize, center.y + mapChunkSize), biomeOctaveOffsets, 2000, 0.5f, 2, 0, 1.5f));
+        biomeValue = Mathf.Clamp01(Noise.GenerateNoise(new Vector2(center.x + mapChunkSize - 1, center.y + mapChunkSize - 1), biomeOctaveOffsets, 2000, 0.5f, 2, 0, 1.5f));
         BiomeSettings biomeSettingsXY = GetBiomeSettings(biomeValue);
 
+        Debug.Log($"{center} -> {new Vector2(center.x, center.y)} = {biomeSettings00.heightOffset}, {new Vector2(center.x + mapChunkSize, center.y + mapChunkSize)} = {biomeSettingsXY.heightOffset}");
 
         VertexData[,] map = new VertexData[mapChunkSize, mapChunkSize];
         for (int x = 0; x < mapChunkSize; x++)
         {
+            BiomeSettings biomeSettings0 = BiomeSettings.Lerp(biomeSettings00, biomeSettingsX0, (float)x / (mapChunkSize - 1));
+            BiomeSettings biomeSettingsY = BiomeSettings.Lerp(biomeSettings0Y, biomeSettingsXY, (float)x / (mapChunkSize - 1));
             for (int y = 0; y < mapChunkSize; y++)
             {
-                BiomeSettings biomeSettings = BiomeSettings.Lerp(BiomeSettings.Lerp(biomeSettings00, biomeSettingsX0, x / mapChunkSize), BiomeSettings.Lerp(biomeSettings0Y, biomeSettingsXY, x / mapChunkSize), y / mapChunkSize);
+                BiomeSettings biomeSettings = BiomeSettings.Lerp(biomeSettings0, biomeSettingsY, (float)y / (mapChunkSize - 1));
+                // Debug.Log($"y = {y}, m-1 = {mapChunkSize - 1}, ty = {(float)y / (mapChunkSize - 1)}");
 
                 // Generate the map using the biomeSettings
                 Vector2[] octaveOffsets = GenerateOctaveOffsets(seed, biomeSettings.octaves);

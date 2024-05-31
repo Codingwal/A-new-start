@@ -1481,7 +1481,7 @@ MonoBehaviour:
     maxHeight: 0
     minWaterSourceHeight: 0.7
   terrainMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
-  mapChunkSize: 33
+  mapChunkSize: 241
 --- !u!4 &1146475733
 Transform:
   m_ObjectHideFlags: 0
@@ -1516,13 +1516,16 @@ MonoBehaviour:
     visibleDistanceThreshold: 100
     useForCollider: 1
   - lod: 1
-    visibleDistanceThreshold: 250
+    visibleDistanceThreshold: 200
+    useForCollider: 0
+  - lod: 2
+    visibleDistanceThreshold: 300
+    useForCollider: 0
+  - lod: 4
+    visibleDistanceThreshold: 400
     useForCollider: 0
   - lod: 8
     visibleDistanceThreshold: 700
-    useForCollider: 0
-  - lod: 16
-    visibleDistanceThreshold: 1200
     useForCollider: 0
   viewer: {fileID: 965662050}
   mapMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
