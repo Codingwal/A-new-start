@@ -14,14 +14,10 @@ public static class MapDataGenerator
         int increment = 1;
 
         Vector2[] biomeOctaveOffsets = VertexGenerator.GenerateOctaveOffsets(seed, 2);
-        float biomeValue = Mathf.Clamp01(Noise.GenerateNoise(new Vector2(center.x, center.y) / terrainScale, biomeOctaveOffsets, biomeScale, 0.5f, 2, 0, 1.5f));
-        BiomeSettings biomeSettings00 = GetBiomeSettings(biomeValue, terrainSettings);
-        biomeValue = Mathf.Clamp01(Noise.GenerateNoise(new Vector2(center.x + mapChunkSize - 1, center.y) / terrainScale, biomeOctaveOffsets, biomeScale, 0.5f, 2, 0, 1.5f));
-        BiomeSettings biomeSettingsX0 = GetBiomeSettings(biomeValue, terrainSettings);
-        biomeValue = Mathf.Clamp01(Noise.GenerateNoise(new Vector2(center.x, center.y + mapChunkSize - 1) / terrainScale, biomeOctaveOffsets, biomeScale, 0.5f, 2, 0, 1.5f));
-        BiomeSettings biomeSettings0Y = GetBiomeSettings(biomeValue, terrainSettings);
-        biomeValue = Mathf.Clamp01(Noise.GenerateNoise(new Vector2(center.x + mapChunkSize - 1, center.y + mapChunkSize - 1) / terrainScale, biomeOctaveOffsets, biomeScale, 0.5f, 2, 0, 1.5f));
-        BiomeSettings biomeSettingsXY = GetBiomeSettings(biomeValue, terrainSettings);
+        BiomeSettings biomeSettings00 = VertexGenerator.GetBiomeSettings(new Vector2(center.x, center.y) / terrainScale, biomeOctaveOffsets, terrainSettings);
+        BiomeSettings biomeSettingsX0 = VertexGenerator.GetBiomeSettings(new Vector2(center.x + mapChunkSize - 1, center.y) / terrainScale, biomeOctaveOffsets, terrainSettings);
+        BiomeSettings biomeSettings0Y = VertexGenerator.GetBiomeSettings(new Vector2(center.x, center.y + mapChunkSize - 1) / terrainScale, biomeOctaveOffsets, terrainSettings);
+        BiomeSettings biomeSettingsXY = VertexGenerator.GetBiomeSettings(new Vector2(center.x + mapChunkSize - 1, center.y + mapChunkSize - 1) / terrainScale, biomeOctaveOffsets, terrainSettings);
 
         VertexData[,] map = new VertexData[(mapChunkSize - 1) / increment + 1, (mapChunkSize - 1) / increment + 1];
         for (int x = 0; x < mapChunkSize; x += increment)
@@ -38,31 +34,6 @@ public static class MapDataGenerator
         // GenerateRivers(map, transferredWater, center / mapChunkSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.minWaterSourceHeight, 1);
 
         return new(map);
-    }
-    static BiomeSettings GetBiomeSettings(float biomeValue, TerrainSettings terrainSettings)
-    {
-        // Get the biomes with a value directly above and below the received noise value
-        KeyValuePair<float, BiomeSettings> biomeLowerValue = new(float.PositiveInfinity, new());
-        KeyValuePair<float, BiomeSettings> biomeHigherValue = new(float.NegativeInfinity, new());
-        foreach (KeyValuePair<float, BiomeSettings> biome in terrainSettings.biomes)
-        {
-            // biomeHeight must be higher, currentLowerBiome height must be lower (greater distance)
-            if (biomeValue >= biome.Key && biome.Key < biomeLowerValue.Key)
-            {
-                biomeLowerValue = biome;
-            }
-
-            // biomeHeight must be lower, currentHigherBiome height must be higher (greater distance)   
-            if (biomeValue <= biome.Key && biome.Key > biomeHigherValue.Key)
-            {
-                biomeHigherValue = biome;
-            }
-        }
-        Debug.Assert(biomeLowerValue.Key != float.PositiveInfinity, $"No biome with a lower height found (height = {biomeValue})");
-        Debug.Assert(biomeHigherValue.Key != float.NegativeInfinity, $"No biome with a higher height found (height = {biomeValue})");
-
-        // Calculate the biomeSettings of this chunk by lerping between the higher and the lower biomeSetting
-        return BiomeSettings.Lerp(biomeLowerValue.Value, biomeHigherValue.Value, Mathf.InverseLerp(biomeLowerValue.Key, biomeHigherValue.Key, biomeValue));
     }
     static void GenerateRivers(VertexData[,] map, List<VertexToCalcInfo> transferredWater, Vector2Int center, int seed, float minWaterSourceHeight, float waterSlopeSpeedImpact)
     {
