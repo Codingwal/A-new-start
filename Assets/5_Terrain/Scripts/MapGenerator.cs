@@ -40,7 +40,7 @@ public class MapGenerator : Singleton<MapGenerator>
     }
     void MapDataThread(Vector2Int center, Action<MapData> callback)
     {
-        MapData mapData = MapDataGenerator.GenerateMapData(center, terrainSettings, mapChunkSize);
+        MapData mapData = GenerateMapData(center);
         lock (mapDataThreadInfoQueue)
         {
             mapDataThreadInfoQueue.Enqueue(new(callback, mapData));
@@ -82,6 +82,20 @@ public class MapGenerator : Singleton<MapGenerator>
                 threadInfo.callBack(threadInfo.parameter);
             }
         }
+    }
+    private MapData GenerateMapData(Vector2Int center)
+    {
+        MapDataHandler mapDataHandler = MapDataHandler.Instance;
+
+        if (mapDataHandler.chunks.ContainsKey(center))
+        {
+            return new(mapDataHandler.chunks[center].map);
+        }
+        MapData map = MapDataGenerator.GenerateMapData(center, terrainSettings, mapChunkSize);
+
+        mapDataHandler.AddChunk(center, map.map);
+
+        return map;
     }
     struct MapThreadInfo<T>
     {

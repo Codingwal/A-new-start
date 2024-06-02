@@ -8,15 +8,6 @@ public static class MapDataGenerator
 
     public static MapData GenerateMapData(Vector2Int center, TerrainSettings terrainSettings, int mapChunkSize)
     {
-        // Debug.Log("Generating MapData");
-
-        MapDataHandler mapDataHandler = MapDataHandler.Instance;
-
-        if (mapDataHandler.chunks.ContainsKey(center))
-        {
-            return new(mapDataHandler.chunks[center].map);
-        }
-
         // Generate map data
         int seed = MapDataHandler.Instance.worldData.terrainData.seed;
         float terrainScale = terrainSettings.terrainScale;
@@ -55,8 +46,6 @@ public static class MapDataGenerator
         }
 
         // GenerateRivers(map, transferredWater, center / mapChunkSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings.minWaterSourceHeight, 1);
-
-        mapDataHandler.AddChunk(center, map);
 
         return new(map);
     }
@@ -103,18 +92,6 @@ public static class MapDataGenerator
             octaveOffsets[i] = new(offsetX, offsetY);
         }
         return octaveOffsets;
-    }
-    struct VertexToCalcInfo
-    {
-        public Vector2Int pos;
-        public VertexData source;
-        public float sourceInfluence;
-        public VertexToCalcInfo(Vector2Int pos, VertexData source, float sourceInfluence)
-        {
-            this.pos = pos;
-            this.source = source;
-            this.sourceInfluence = sourceInfluence;
-        }
     }
     static void GenerateRivers(VertexData[,] map, List<VertexToCalcInfo> transferredWater, Vector2Int center, int seed, float minWaterSourceHeight, float waterSlopeSpeedImpact)
     {
@@ -322,6 +299,18 @@ public static class MapDataGenerator
                         map[px, py] = strength - 0.5f * distance;
                 }
             }
+        }
+    }
+    struct VertexToCalcInfo
+    {
+        public Vector2Int pos;
+        public VertexData source;
+        public float sourceInfluence;
+        public VertexToCalcInfo(Vector2Int pos, VertexData source, float sourceInfluence)
+        {
+            this.pos = pos;
+            this.source = source;
+            this.sourceInfluence = sourceInfluence;
         }
     }
 }
