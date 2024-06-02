@@ -11,7 +11,8 @@ public class MapGenerator : Singleton<MapGenerator>
     public Material terrainMaterial;
     readonly int[] possibleMapChunkSizes = { 121, 241 };
     // [Dropdown("possibleMapChunkSizes")]
-    public int mapChunkSize = 241;
+    public int chunkSize = 241;
+    public int chunksPerSector1D = 9;
 
     Queue<MapThreadInfo<MapData>> mapDataThreadInfoQueue = new();
     Queue<MapThreadInfo<MeshData>> meshDataThreadInfoQueue = new();
@@ -90,7 +91,26 @@ public class MapGenerator : Singleton<MapGenerator>
         {
             return new(mapDataHandler.chunks[center].map);
         }
-        MapData map = MapDataGenerator.GenerateMapData(center, mapChunkSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings);
+        int sectorSize = chunksPerSector1D * chunkSize;
+
+        Vector2Int sectorCenter = Vector2Int.RoundToInt(center / sectorSize) * sectorSize;
+
+        SectorData sectorData;
+        lock (mapDataHandler.sectors)
+        {
+            if (mapDataHandler.sectors.ContainsKey(sectorCenter))
+            {
+                sectorData = mapDataHandler.sectors[sectorCenter];
+            }
+            else
+            {
+                mapDataHandler.sectors[sectorCenter] = new();
+                sectorData = RiverGenerator.GenerateRivers(sectorCenter, sectorSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings);
+                mapDataHandler.sectors[sectorCenter] = sectorData;
+                Debug.Log("Generated rivers");
+            }
+        }
+        MapData map = MapDataGenerator.GenerateMapData(center, chunkSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings, sectorData);
 
         mapDataHandler.AddChunk(center, map.map);
 
@@ -119,10 +139,10 @@ public struct MapData
 
     public MapData(List<ListWrapper<VertexData>> map)
     {
-        this.map = new VertexData[MapGenerator.Instance.mapChunkSize, MapGenerator.Instance.mapChunkSize];
-        for (int x = 0; x < MapGenerator.Instance.mapChunkSize; x++)
+        this.map = new VertexData[MapGenerator.Instance.chunkSize, MapGenerator.Instance.chunkSize];
+        for (int x = 0; x < MapGenerator.Instance.chunkSize; x++)
         {
-            for (int y = 0; y < MapGenerator.Instance.mapChunkSize; y++)
+            for (int y = 0; y < MapGenerator.Instance.chunkSize; y++)
             {
                 this.map[x, y] = map[x].list[y];
             }

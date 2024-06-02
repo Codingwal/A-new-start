@@ -976,13 +976,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 965662050}
+  - component: {fileID: 965662057}
   - component: {fileID: 965662049}
   - component: {fileID: 965662048}
   - component: {fileID: 965662047}
   - component: {fileID: 965662052}
   - component: {fileID: 965662055}
   - component: {fileID: 965662056}
-  - component: {fileID: 965662057}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1482,8 +1482,10 @@ MonoBehaviour:
     maxHeight: 0
     minWaterSourceHeight: 0.7
     terrainScale: 1
+    riverStepSize: 5
   terrainMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
-  mapChunkSize: 241
+  chunkSize: 241
+  chunksPerSector1D: 9
 --- !u!4 &1146475733
 Transform:
   m_ObjectHideFlags: 0
@@ -1557,6 +1559,7 @@ MonoBehaviour:
       maxHeight: 150
       minWaterSourceHeight: 0.7
       terrainScale: 1
+      riverStepSize: 5
     terrainData:
       seed: -954678
       chunks:

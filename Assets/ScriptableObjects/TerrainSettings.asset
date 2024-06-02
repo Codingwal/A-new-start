@@ -15,7 +15,7 @@ MonoBehaviour:
   biomes:
   - height: 0
     biomeSettings:
-      heightMultiplier: 200
+      heightMultiplier: 150
       octaves: 8
       noiseScale: 500
       octaveFrequencyFactor: 2
@@ -24,7 +24,7 @@ MonoBehaviour:
       heightOffset: -150
   - height: 0.1
     biomeSettings:
-      heightMultiplier: 200
+      heightMultiplier: 50
       octaves: 8
       noiseScale: 500
       octaveFrequencyFactor: 2
@@ -55,3 +55,6 @@ MonoBehaviour:
   maxHeight: 150
   minWaterSourceHeight: 0.7
   terrainScale: 1
+  riverStepSize: 25
+  maxRiverCount: 10
+  maxRiverGenerationTries: 15

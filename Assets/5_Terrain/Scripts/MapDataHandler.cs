@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,8 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
 {
     // The chunk dictionary
     public ConcurrentDictionary<Vector2, ChunkData> chunks;
+    public ConcurrentDictionary<Vector2, SectorData> sectors;
+    public ConcurrentDictionary<Vector2, Vector2[]> chunksWaitingForSector;
     public WorldData worldData;
 
     public void LoadData(WorldData worldData)
@@ -18,6 +21,7 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
 
         this.worldData = worldData;
         chunks = worldData.terrainData.chunks;
+        sectors = new();
 
         Debug.Log($"Loaded {chunks.Count} chunks");
 

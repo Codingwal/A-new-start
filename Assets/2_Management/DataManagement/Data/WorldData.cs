@@ -99,3 +99,11 @@ public class ChunkData
         this.map = map;
     }
 }
+public class SectorData
+{
+    public List<River> rivers = new();
+}
+public class River
+{
+    public List<Vector2Int> points = new();
+}
