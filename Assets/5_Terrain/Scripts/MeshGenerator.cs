@@ -1,24 +1,33 @@
+using System.Linq;
 using UnityEngine;
 
 public static class MeshGenerator
 {
-    public static MeshData GenerateTerrainMesh(VertexData[,] heightMap, int levelOfDetail)
+    public static MeshData GenerateTerrainMesh(VertexData[,] heightMap, int levelOfDetail, int increment)
     {
         int meshSize = heightMap.GetLength(0);
-        float halfSize = (meshSize - 1) / 2f;
+        float halfSize = (meshSize * increment - 1) / 2f;
 
         int meshSimplificationIncrement = (levelOfDetail == 0) ? 1 : levelOfDetail * 2;
-        int verticesPerLine = ((meshSize - 1) / meshSimplificationIncrement) + 1;
+        int verticesPerLine = ((meshSize - 1) / (meshSimplificationIncrement / increment)) + 1;
 
         MeshData meshData = new(verticesPerLine);
         int vertexIndex = 0;
 
-        for (int y = 0; y < meshSize; y += meshSimplificationIncrement)
+        for (int y = 0; y < meshSize; y += meshSimplificationIncrement / increment)
         {
-            for (int x = 0; x < meshSize; x += meshSimplificationIncrement)
+            for (int x = 0; x < meshSize; x += meshSimplificationIncrement / increment)
             {
                 // meshData.vertices[vertexIndex] = new(topLeftX + x, heightMap[x, y].height * heightMultiplier, topLeftZ - y);
-                meshData.vertices[vertexIndex] = new(x - halfSize, heightMap[x, y].height, y - halfSize);
+                try
+                {
+                    meshData.vertices[vertexIndex] = new(x * increment - halfSize, heightMap[x, y].height, y * increment - halfSize);
+                }
+                catch
+                {
+                    Debug.Log($"1 = {meshSimplificationIncrement / increment}, ms = {meshSize}, vpl = {verticesPerLine}, vpl2 = {(meshSize - 1) / meshSimplificationIncrement * increment}");
+                    Debug.Log($"vertices.count = {meshData.vertices.Count()}, vertexIndex = {vertexIndex}, ({x}|{y})");
+                }
                 // meshData.uvs[vertexIndex] = new(x / (float)meshSize, y / (float)meshSize);  
                 float slopeX;
                 if (x + 1 < meshSize)
@@ -38,7 +47,7 @@ public static class MeshGenerator
                 {
                     slopeY = Mathf.Abs(heightMap[x, y - 1].height - heightMap[x, y].height);
                 }
-                float slope = (slopeX + slopeY) / 2;
+                float slope = (slopeX + slopeY) / 2 / increment;
                 meshData.uvs[vertexIndex] = new(slope, 0);
 
                 if (x < meshSize - 1 && y < meshSize - 1)

@@ -59,7 +59,7 @@ public class MapGenerator : Singleton<MapGenerator>
     void MeshDataThread(MapData mapData, int lod, Action<MeshData> callback)
     {
         MeshData meshData = MeshGenerator.GenerateTerrainMesh
-        (mapData.map, lod);
+        (mapData.map, lod, 1);
         lock (meshDataThreadInfoQueue)
         {
             meshDataThreadInfoQueue.Enqueue(new MapThreadInfo<MeshData>(callback, meshData));
@@ -100,6 +100,7 @@ public class MapGenerator : Singleton<MapGenerator>
         int seed = MapDataHandler.Instance.worldData.terrainData.seed;
         float terrainScale = terrainSettings.terrainScale;
         float biomeScale = terrainSettings.biomeScale;
+        int increment = 1;
 
         Vector2[] biomeOctaveOffsets = GenerateOctaveOffsets(seed, 2);
         float biomeValue = Mathf.Clamp01(Noise.GenerateNoise(new Vector2(center.x, center.y) / terrainScale, biomeOctaveOffsets, biomeScale, 0.5f, 2, 0, 1.5f));
@@ -111,12 +112,12 @@ public class MapGenerator : Singleton<MapGenerator>
         biomeValue = Mathf.Clamp01(Noise.GenerateNoise(new Vector2(center.x + mapChunkSize - 1, center.y + mapChunkSize - 1) / terrainScale, biomeOctaveOffsets, biomeScale, 0.5f, 2, 0, 1.5f));
         BiomeSettings biomeSettingsXY = GetBiomeSettings(biomeValue);
 
-        VertexData[,] map = new VertexData[mapChunkSize, mapChunkSize];
-        for (int x = 0; x < mapChunkSize; x++)
+        VertexData[,] map = new VertexData[(mapChunkSize - 1) / increment + 1, (mapChunkSize - 1) / increment + 1];
+        for (int x = 0; x < mapChunkSize; x += increment)
         {
             BiomeSettings biomeSettings0 = BiomeSettings.Lerp(biomeSettings00, biomeSettingsX0, (float)x / (mapChunkSize - 1) / terrainScale);
             BiomeSettings biomeSettingsY = BiomeSettings.Lerp(biomeSettings0Y, biomeSettingsXY, (float)x / (mapChunkSize - 1) / terrainScale);
-            for (int y = 0; y < mapChunkSize; y++)
+            for (int y = 0; y < mapChunkSize; y += increment)
             {
                 BiomeSettings biomeSettings = BiomeSettings.Lerp(biomeSettings0, biomeSettingsY, (float)y / (mapChunkSize - 1) / terrainScale);
                 // Debug.Log($"y = {y}, m-1 = {mapChunkSize - 1}, ty = {(float)y / (mapChunkSize - 1)}");
@@ -125,8 +126,8 @@ public class MapGenerator : Singleton<MapGenerator>
                 Vector2[] octaveOffsets = GenerateOctaveOffsets(seed, biomeSettings.octaves);
 
                 // 2 is the max possible height while using octaveAmplitudeFactor = 0.5f (1 + 1/2 + 1/4 + 1/8 + ... approaches 2)
-                map[x, y] = VertexGenerator.GenerateVertexData(new Vector2(x + center.x, y + center.y), octaveOffsets, biomeSettings, 2, terrainScale);
-                map[x, y].height += biomeSettings.heightOffset * terrainScale;
+                map[x / increment, y / increment] = VertexGenerator.GenerateVertexData(new Vector2(x + center.x, y + center.y), octaveOffsets, biomeSettings, 2, terrainScale);
+                map[x / increment, y / increment].height += biomeSettings.heightOffset * terrainScale;
             }
         }
 
@@ -155,8 +156,8 @@ public class MapGenerator : Singleton<MapGenerator>
                 biomeHigherValue = biome;
             }
         }
-        Debug.Assert(biomeLowerValue.Key != float.PositiveInfinity, "No biome with a lower height found");
-        Debug.Assert(biomeHigherValue.Key != float.NegativeInfinity, "No biome with a higher height found");
+        Debug.Assert(biomeLowerValue.Key != float.PositiveInfinity, $"No biome with a lower height found (height = {biomeValue})");
+        Debug.Assert(biomeHigherValue.Key != float.NegativeInfinity, $"No biome with a higher height found (height = {biomeValue})");
 
         // Calculate the biomeSettings of this chunk by lerping between the higher and the lower biomeSetting
         return BiomeSettings.Lerp(biomeLowerValue.Value, biomeHigherValue.Value, Mathf.InverseLerp(biomeLowerValue.Key, biomeHigherValue.Key, biomeValue));
