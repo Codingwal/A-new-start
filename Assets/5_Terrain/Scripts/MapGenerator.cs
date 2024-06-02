@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System;
 using System.Threading;
 using UnityEngine;
-using System.Collections.Concurrent;
 
 public class MapGenerator : Singleton<MapGenerator>
 {
@@ -91,7 +90,7 @@ public class MapGenerator : Singleton<MapGenerator>
         {
             return new(mapDataHandler.chunks[center].map);
         }
-        MapData map = MapDataGenerator.GenerateMapData(center, terrainSettings, mapChunkSize);
+        MapData map = MapDataGenerator.GenerateMapData(center, mapChunkSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings);
 
         mapDataHandler.AddChunk(center, map.map);
 

@@ -6,15 +6,14 @@ public static class MapDataGenerator
 {
     static ConcurrentDictionary<Vector2Int, List<VertexToCalcInfo>> transferredWaterDict = new();
 
-    public static MapData GenerateMapData(Vector2Int center, TerrainSettings terrainSettings, int mapChunkSize)
+    public static MapData GenerateMapData(Vector2Int center, int mapChunkSize, int seed, TerrainSettings terrainSettings)
     {
         // Generate map data
-        int seed = MapDataHandler.Instance.worldData.terrainData.seed;
         float terrainScale = terrainSettings.terrainScale;
         float biomeScale = terrainSettings.biomeScale;
         int increment = 1;
 
-        Vector2[] biomeOctaveOffsets = GenerateOctaveOffsets(seed, 2);
+        Vector2[] biomeOctaveOffsets = VertexGenerator.GenerateOctaveOffsets(seed, 2);
         float biomeValue = Mathf.Clamp01(Noise.GenerateNoise(new Vector2(center.x, center.y) / terrainScale, biomeOctaveOffsets, biomeScale, 0.5f, 2, 0, 1.5f));
         BiomeSettings biomeSettings00 = GetBiomeSettings(biomeValue, terrainSettings);
         biomeValue = Mathf.Clamp01(Noise.GenerateNoise(new Vector2(center.x + mapChunkSize - 1, center.y) / terrainScale, biomeOctaveOffsets, biomeScale, 0.5f, 2, 0, 1.5f));
@@ -32,16 +31,7 @@ public static class MapDataGenerator
             for (int y = 0; y < mapChunkSize; y += increment)
             {
                 BiomeSettings biomeSettings = BiomeSettings.Lerp(biomeSettings0, biomeSettingsY, (float)y / (mapChunkSize - 1) / terrainScale);
-                // Debug.Log($"y = {y}, m-1 = {mapChunkSize - 1}, ty = {(float)y / (mapChunkSize - 1)}");
-
-                // Generate the map using the biomeSettings
-                Vector2[] octaveOffsets = GenerateOctaveOffsets(seed, biomeSettings.octaves);
-
-                // 2 is the max possible height while using octaveAmplitudeFactor = 0.5f (1 + 1/2 + 1/4 + 1/8 + ... approaches 2)
-                map[x / increment, y / increment].height = Noise.GenerateNoise(new Vector2(x + center.x, y + center.y) / terrainScale, octaveOffsets, biomeSettings.noiseScale,
-                biomeSettings.octaveAmplitudeFactor, biomeSettings.octaveFrequencyFactor, biomeSettings.slopeImpact, 2) * biomeSettings.heightMultiplier * terrainScale;
-
-                map[x / increment, y / increment].height += biomeSettings.heightOffset * terrainScale;
+                map[x / increment, y / increment].height = VertexGenerator.GenerateVertexData(new Vector2(x + center.x, y + center.y), seed, biomeSettings, increment, terrainScale);
             }
         }
 
@@ -73,25 +63,6 @@ public static class MapDataGenerator
 
         // Calculate the biomeSettings of this chunk by lerping between the higher and the lower biomeSetting
         return BiomeSettings.Lerp(biomeLowerValue.Value, biomeHigherValue.Value, Mathf.InverseLerp(biomeLowerValue.Key, biomeHigherValue.Key, biomeValue));
-    }
-    static Vector2[] GenerateOctaveOffsets(int seed, int octaveCount)
-    {
-        Vector2[] octaveOffsets = new Vector2[octaveCount];
-
-        System.Random rnd = new(seed);
-
-        for (int i = 0; i < octaveCount; i++)
-        {
-            // Get random offset for each octave, which will be added to the position, to get different noise depending on the seed
-
-            // Generate the random offsets
-            float offsetX = rnd.Next(-100000, 100000);
-            float offsetY = rnd.Next(-100000, 100000);
-
-            // Store the offset in an array
-            octaveOffsets[i] = new(offsetX, offsetY);
-        }
-        return octaveOffsets;
     }
     static void GenerateRivers(VertexData[,] map, List<VertexToCalcInfo> transferredWater, Vector2Int center, int seed, float minWaterSourceHeight, float waterSlopeSpeedImpact)
     {
