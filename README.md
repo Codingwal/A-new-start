@@ -1,2 +1,5 @@
 # A_New_Start
- Infinite Terrain generation & First Person
+- First person
+- Survival
+- Infinite terrain
+- Open world
