@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class RiverGenerator
@@ -28,7 +29,7 @@ public static class RiverGenerator
     }
     static River GenerateRiver(Vector2Int pos, int seed, TerrainSettings terrainSettings)
     {
-        float height = VertexGenerator.GenerateVertexData(pos, seed, terrainSettings, 1, terrainSettings.terrainScale);
+        float height = VertexGenerator.GenerateVertexData(pos, seed, terrainSettings, terrainSettings.terrainScale);
 
         if (!CanBeRiverSource(height)) return null;
         Debug.Log($"{pos} -> {height}");
@@ -48,40 +49,99 @@ public static class RiverGenerator
                 {
                     if (x == 0 && y == 0) continue;
 
-                    float neighbourHeight = VertexGenerator.GenerateVertexData(pos + new Vector2Int(x, y) * terrainSettings.riverStepSize, seed, terrainSettings, 1, terrainSettings.terrainScale);
+                    float neighbourHeight = VertexGenerator.GenerateVertexData(pos + new Vector2Int(x, y) * terrainSettings.riverStepSize,
+                    seed, terrainSettings, terrainSettings.terrainScale);
+
+                    Vector2[] biomeOctaveOffsets = VertexGenerator.GenerateOctaveOffsets(seed, 2);
+                    float biomeValue = Mathf.Clamp01(Noise.GenerateNoise((Vector2)pos / terrainSettings.terrainScale, biomeOctaveOffsets, terrainSettings.biomeScale, 0.5f, 2, 0, 1.5f));
+
+                    neighbourHeight += biomeValue * MapGenerator.Instance.riverFactor;
 
                     if (neighbourHeight >= lowestNeighbourHeight) continue;
+
+                    if (IsInRiver(river, pos + new Vector2Int(x, y) * terrainSettings.riverStepSize))
+                        continue;
 
                     lowestNeighbourHeight = neighbourHeight;
                     lowestNeighbourOffset = new Vector2Int(x, y) * terrainSettings.riverStepSize;
                 }
             }
-            pos += lowestNeighbourOffset;
+            if (lowestNeighbourOffset == new Vector2Int(0, 0))
+            {
+                Debug.LogError("Stuck");
+                break;
+            }
+            Vector2Int preferredDirection = lowestNeighbourOffset / terrainSettings.riverStepSize;
 
-            river.points.Add(pos);
+            for (int steps = 0; steps < terrainSettings.riverStepSize * 0.75f; steps++)
+            {
+                for (int x = -1; x <= 1; x++)
+                {
+                    for (int y = -1; y <= 1; y++)
+                    {
+                        if (x == 0 && y == 0) continue;
+
+                        float neighbourHeight = VertexGenerator.GenerateVertexData(pos + new Vector2Int(x, y),
+                        seed, terrainSettings, terrainSettings.terrainScale);
+
+                        // Vector2[] biomeOctaveOffsets = VertexGenerator.GenerateOctaveOffsets(seed, 2);
+                        // float biomeValue = Mathf.Clamp01(Noise.GenerateNoise((Vector2)pos / terrainSettings.terrainScale, biomeOctaveOffsets, terrainSettings.biomeScale, 0.5f, 2, 0, 1.5f));
+
+                        neighbourHeight += (Mathf.Abs(preferredDirection.x - x) + Mathf.Abs(preferredDirection.y - y)) * MapGenerator.Instance.riverFactor;
+
+                        if (neighbourHeight >= lowestNeighbourHeight) continue;
+
+                        if (IsInRiver(river, pos + new Vector2Int(x, y)))
+                            continue;
+
+                        lowestNeighbourHeight = neighbourHeight;
+                        lowestNeighbourOffset = new Vector2Int(x, y);
+                    }
+                }
+                if (lowestNeighbourOffset == new Vector2Int(0, 0))
+                {
+                    Debug.LogError("Stuck");
+                    break;
+                }
+                pos += lowestNeighbourOffset;
+                river.points.Add(pos);
+            }
 
             // Break if the ocean or an existing river has been reached
-            if (IsWater(lowestNeighbourHeight)) 
+            if (IsWater(lowestNeighbourHeight))
             {
                 Debug.Log("Landed in ocean");
                 break;
             }
 
             i++;
-            if (i > 1000) 
+            if (i > 5000)
             {
-                Debug.Log("Terminated");
+                Debug.LogError("Terminated");
+
+                // foreach (Vector2Int point in river.points)
+                // {
+                //     Debug.Log(point);
+                // }
                 break;
             }
         }
         return river;
     }
+    static bool IsInRiver(River river, Vector2Int point)
+    {
+        return river.points.Contains(point);
+    }
     static bool IsWater(float height)
     {
-        return height < 0;
+        return height < 5;
     }
     static bool CanBeRiverSource(float height)
     {
         return height > 50;
     }
+    // static Vector2Int GetLowestNeighbourOffset(Vector2Int pos)
+    // {
+
+    // }
 }

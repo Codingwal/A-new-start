@@ -1,6 +1,11 @@
 TODO:
 
 - Rivers
+    - RiverGenerator generates points at chunk border
+        - for example corners + 3 extra points per side as options
+        - select by lowest height
+    - MapDataGenerator generates the river from the start point to the end point (without the river leaving the chunk)
+        - A* pathfinding with noise
 
 - lake shader
 - river shader

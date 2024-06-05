@@ -13,6 +13,8 @@ public class MapGenerator : Singleton<MapGenerator>
     // [Dropdown("possibleMapChunkSizes")]
     public int chunkSize = 241;
     public int chunksPerSector1D = 9;
+    public int vertexIncrement = 1;
+    public float riverFactor = 0;
 
     Queue<MapThreadInfo<MapData>> mapDataThreadInfoQueue = new();
     Queue<MapThreadInfo<MeshData>> meshDataThreadInfoQueue = new();
@@ -57,7 +59,7 @@ public class MapGenerator : Singleton<MapGenerator>
     void MeshDataThread(MapData mapData, int lod, Action<MeshData> callback)
     {
         MeshData meshData = MeshGenerator.GenerateTerrainMesh
-        (mapData.map, lod, 1);
+        (mapData.map, lod, vertexIncrement);
         lock (meshDataThreadInfoQueue)
         {
             meshDataThreadInfoQueue.Enqueue(new MapThreadInfo<MeshData>(callback, meshData));
@@ -110,7 +112,7 @@ public class MapGenerator : Singleton<MapGenerator>
                 Debug.Log("Generated rivers");
             }
         }
-        MapData map = MapDataGenerator.GenerateMapData(center, chunkSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings, sectorData);
+        MapData map = MapDataGenerator.GenerateMapData(center, chunkSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings, sectorData, vertexIncrement);
 
         mapDataHandler.AddChunk(center, map.map);
 

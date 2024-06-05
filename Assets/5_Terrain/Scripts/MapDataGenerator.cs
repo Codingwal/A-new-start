@@ -6,27 +6,26 @@ public static class MapDataGenerator
 {
     static ConcurrentDictionary<Vector2Int, List<VertexToCalcInfo>> transferredWaterDict = new();
 
-    public static MapData GenerateMapData(Vector2Int center, int chunkSize, int seed, TerrainSettings terrainSettings, SectorData sectorData)
+    public static MapData GenerateMapData(Vector2Int center, int chunkSize, int seed, TerrainSettings terrainSettings, SectorData sectorData, int vertexIncrement)
     {
         // Generate map data
         float terrainScale = terrainSettings.terrainScale;
-        int increment = 1;
 
-        Vector2[] biomeOctaveOffsets = VertexGenerator.GenerateOctaveOffsets(seed, 2);
+        Vector2[] biomeOctaveOffsets = VertexGenerator.GenerateOctaveOffsets(seed, 5);
         BiomeSettings biomeSettings00 = VertexGenerator.GetBiomeSettings(new Vector2(center.x, center.y) / terrainScale, biomeOctaveOffsets, terrainSettings);
         BiomeSettings biomeSettingsX0 = VertexGenerator.GetBiomeSettings(new Vector2(center.x + chunkSize - 1, center.y) / terrainScale, biomeOctaveOffsets, terrainSettings);
         BiomeSettings biomeSettings0Y = VertexGenerator.GetBiomeSettings(new Vector2(center.x, center.y + chunkSize - 1) / terrainScale, biomeOctaveOffsets, terrainSettings);
         BiomeSettings biomeSettingsXY = VertexGenerator.GetBiomeSettings(new Vector2(center.x + chunkSize - 1, center.y + chunkSize - 1) / terrainScale, biomeOctaveOffsets, terrainSettings);
 
-        VertexData[,] map = new VertexData[(chunkSize - 1) / increment + 1, (chunkSize - 1) / increment + 1];
-        for (int x = 0; x < chunkSize; x += increment)
+        VertexData[,] map = new VertexData[(chunkSize - 1) / vertexIncrement + 1, (chunkSize - 1) / vertexIncrement + 1];
+        for (int x = 0; x < chunkSize; x += vertexIncrement)
         {
             BiomeSettings biomeSettings0 = BiomeSettings.Lerp(biomeSettings00, biomeSettingsX0, (float)x / (chunkSize - 1) / terrainScale);
             BiomeSettings biomeSettingsY = BiomeSettings.Lerp(biomeSettings0Y, biomeSettingsXY, (float)x / (chunkSize - 1) / terrainScale);
-            for (int y = 0; y < chunkSize; y += increment)
+            for (int y = 0; y < chunkSize; y += vertexIncrement)
             {
                 BiomeSettings biomeSettings = BiomeSettings.Lerp(biomeSettings0, biomeSettingsY, (float)y / (chunkSize - 1) / terrainScale);
-                map[x / increment, y / increment].height = VertexGenerator.GenerateVertexData(new Vector2(x + center.x, y + center.y), seed, biomeSettings, increment, terrainScale);
+                map[x / vertexIncrement, y / vertexIncrement].height = VertexGenerator.GenerateVertexData(new Vector2(x + center.x, y + center.y), seed, biomeSettings, terrainScale);
             }
         }
 
@@ -39,8 +38,7 @@ public static class MapDataGenerator
                 // If the point isn't in this chunk, continue
                 if (pointInChunkSpace.x > chunkSize || pointInChunkSpace.x < 0 || pointInChunkSpace.y > chunkSize || pointInChunkSpace.y < 0) continue;
 
-                Debug.Log(point);
-                AddIndent(map, 5, pointInChunkSpace);
+                AddIndent(map, 2, pointInChunkSpace);
             }
         }
 
@@ -60,19 +58,19 @@ public static class MapDataGenerator
         }
 
     }
-    static void AddIndent(VertexData[,] map, float strength, Vector2 pos)
+    static void AddIndent(VertexData[,] map, float strength, Vector2Int pos)
     {
         for (int y = -5; y <= 5; y++)
         {
             for (int x = -5; x <= 5; x++)
             {
                 float distance = Mathf.Clamp(Mathf.Sqrt(x * x + y * y), 1, 100);
-                int px = x + (int)pos.x;
-                int py = y + (int)pos.y;
+                int px = x + pos.x;
+                int py = y + pos.y;
 
                 if (px < 0 || px >= map.GetLength(0) || py < 0 || py >= map.GetLength(1)) continue;
 
-                map[px, py].height -= strength - 0.5f * distance;
+                map[px, py].height -= Mathf.Clamp(strength - 0.5f * distance, 0, 50);
 
             }
         }

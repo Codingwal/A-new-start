@@ -4,17 +4,28 @@ using UnityEngine;
 
 public static class VertexGenerator
 {
-    public static float GenerateVertexData(Vector2 pos, int seed, TerrainSettings terrainSettings, int increment, float terrainScale)
+    public static float GenerateVertexData(Vector2 pos, int seed, TerrainSettings terrainSettings, float terrainScale, int octaves = 0)
     {
-        Vector2[] biomeOctaveOffsets = GenerateOctaveOffsets(seed, 2);
+        Vector2[] biomeOctaveOffsets = GenerateOctaveOffsets(seed, 5);
         BiomeSettings biomeSettings = GetBiomeSettings(new Vector2(pos.x, pos.y) / terrainScale, biomeOctaveOffsets, terrainSettings);
 
-        return GenerateVertexData(pos, seed, biomeSettings, increment, terrainScale);
+        if (pos == new Vector2(550, -237))
+            Debug.LogWarning("!");
+
+        return GenerateVertexData(pos, seed, biomeSettings, terrainScale, octaves);
     }
-    public static float GenerateVertexData(Vector2 pos, int seed, BiomeSettings biomeSettings, int increment, float terrainScale)
+    public static float GenerateVertexData(Vector2 pos, int seed, BiomeSettings biomeSettings, float terrainScale, int octaves = 0)
     {
         // Generate the map using the biomeSettings
-        Vector2[] octaveOffsets = GenerateOctaveOffsets(seed, biomeSettings.octaves);
+        Vector2[] octaveOffsets;
+        if (octaves == 0)
+        {
+            octaveOffsets = GenerateOctaveOffsets(seed, biomeSettings.octaves);
+        }
+        else
+        {
+            octaveOffsets = GenerateOctaveOffsets(seed, octaves);
+        }
 
         // 2 is the max possible height while using octaveAmplitudeFactor = 0.5f (1 + 1/2 + 1/4 + 1/8 + ... approaches 2)
         float height = Noise.GenerateNoise(pos / terrainScale, octaveOffsets, biomeSettings.noiseScale,

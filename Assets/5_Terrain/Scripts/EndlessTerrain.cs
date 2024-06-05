@@ -158,6 +158,7 @@ public class EndlessTerrain : MonoBehaviour
             {
                 return;
             }
+
             float viewerDistanceFromNearestEdge = Mathf.Sqrt(bounds.SqrDistance(viewerPosition));
             bool visible = viewerDistanceFromNearestEdge <= maxViewDistance;
 

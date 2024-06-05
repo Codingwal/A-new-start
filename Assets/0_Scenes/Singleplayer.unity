@@ -1483,9 +1483,13 @@ MonoBehaviour:
     minWaterSourceHeight: 0.7
     terrainScale: 1
     riverStepSize: 5
+    maxRiverCount: 10
+    maxRiverGenerationTries: 15
   terrainMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
   chunkSize: 241
   chunksPerSector1D: 9
+  vertexIncrement: 1
+  riverFactor: 10
 --- !u!4 &1146475733
 Transform:
   m_ObjectHideFlags: 0
@@ -1528,7 +1532,7 @@ MonoBehaviour:
   - lod: 4
     visibleDistanceThreshold: 400
     useForCollider: 0
-  - lod: 6
+  - lod: 8
     visibleDistanceThreshold: 700
     useForCollider: 0
   viewer: {fileID: 965662050}
@@ -1560,6 +1564,8 @@ MonoBehaviour:
       minWaterSourceHeight: 0.7
       terrainScale: 1
       riverStepSize: 5
+      maxRiverCount: 10
+      maxRiverGenerationTries: 15
     terrainData:
       seed: -954678
       chunks:
