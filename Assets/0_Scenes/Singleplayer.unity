@@ -1489,7 +1489,7 @@ MonoBehaviour:
   chunkSize: 241
   chunksPerSector1D: 9
   vertexIncrement: 1
-  riverFactor: 10
+  riverFactor: 100
 --- !u!4 &1146475733
 Transform:
   m_ObjectHideFlags: 0

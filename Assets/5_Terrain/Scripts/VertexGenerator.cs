@@ -9,9 +9,6 @@ public static class VertexGenerator
         Vector2[] biomeOctaveOffsets = GenerateOctaveOffsets(seed, 5);
         BiomeSettings biomeSettings = GetBiomeSettings(new Vector2(pos.x, pos.y) / terrainScale, biomeOctaveOffsets, terrainSettings);
 
-        if (pos == new Vector2(550, -237))
-            Debug.LogWarning("!");
-
         return GenerateVertexData(pos, seed, biomeSettings, terrainScale, octaves);
     }
     public static float GenerateVertexData(Vector2 pos, int seed, BiomeSettings biomeSettings, float terrainScale, int octaves = 0)
