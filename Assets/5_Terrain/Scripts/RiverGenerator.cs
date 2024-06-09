@@ -7,6 +7,7 @@ public static class RiverGenerator
 {
     public static SectorData GenerateRivers(Vector2Int center, int seed, int sectorSize, TerrainSettings terrainSettings)
     {
+        Debug.Log("!");
         Vector2Int lowestPoint = new(center.x - sectorSize / 2, center.y - sectorSize / 2);
         Vector2Int highestPoint = new(center.x + sectorSize / 2, center.y + sectorSize / 2);
 

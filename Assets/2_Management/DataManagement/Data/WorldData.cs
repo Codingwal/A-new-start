@@ -66,8 +66,7 @@ public class TerrainData
             System.Random random = new();
             return new()
             {
-                seed = -746277,
-                // seed = random.Next(-1000000, 1000000),
+                seed = random.Next(-1000000, 1000000),
                 chunks = new()
             };
         }
