@@ -137,7 +137,7 @@ public class FileDataHandler
         bw.Write(terrainSettings.maxHeight);
         bw.Write(terrainSettings.minWaterSourceHeight);
         bw.Write(terrainSettings.terrainScale);
-        bw.Write(terrainSettings.riverStepSize);
+        bw.Write(terrainSettings.riverWaterGain);
         bw.Write(terrainSettings.maxRiverCount);
         bw.Write(terrainSettings.maxRiverGenerationTries);
 
@@ -210,7 +210,7 @@ public class FileDataHandler
         data.terrainSettings.maxHeight = br.ReadSingle();
         data.terrainSettings.minWaterSourceHeight = br.ReadSingle();
         data.terrainSettings.terrainScale = br.ReadSingle();
-        data.terrainSettings.riverStepSize = br.ReadInt32();
+        data.terrainSettings.riverWaterGain = br.ReadSingle();
         data.terrainSettings.maxRiverCount = br.ReadInt32();
         data.terrainSettings.maxRiverGenerationTries = br.ReadInt32();
 

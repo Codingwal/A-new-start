@@ -36,7 +36,7 @@ public static class MapDataGenerator
         }
 
         const int riverRange = 75;
-        const int waterAmountFactor = 5;
+        const float waterAmountFactor = 1;
 
         Dictionary<Vector2Int, float> pointsToChange = new();
         foreach (River river in sectorData.rivers)
@@ -48,7 +48,7 @@ public static class MapDataGenerator
                 // If the point isn't in this chunk, continue
                 if (pointInChunkSpace.x >= chunkSize + riverRange || pointInChunkSpace.x < -riverRange || pointInChunkSpace.y >= chunkSize + riverRange || pointInChunkSpace.y < -riverRange) continue;
 
-                AddIndent(pointInChunkSpace, point.height, map, pointsToChange, point.waterAmount * waterAmountFactor, riverRange);
+                AddIndent(pointInChunkSpace, point.height, map, pointsToChange, Mathf.Pow(point.waterAmount, 1f / 3f) * waterAmountFactor, riverRange);
             }
         }
         foreach (KeyValuePair<Vector2Int, float> point in pointsToChange)

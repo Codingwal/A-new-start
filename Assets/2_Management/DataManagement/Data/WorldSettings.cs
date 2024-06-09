@@ -59,7 +59,7 @@ public class TerrainSettings
     public float maxHeight = 150;
     public float minWaterSourceHeight = 0.7f;
     public float terrainScale = 1;
-    public int riverStepSize = 5;
+    public float riverWaterGain = 0.01f;
     public int maxRiverCount = 10;
     public int maxRiverGenerationTries = 15;
     public TerrainSettings()
@@ -78,7 +78,7 @@ public class TerrainSettings
         maxHeight = obj.maxHeight;
         minWaterSourceHeight = obj.minWaterSourceHeight;
         terrainScale = obj.terrainScale;
-        riverStepSize = obj.riverStepSize;
+        riverWaterGain = obj.riverWaterGain;
         maxRiverCount = obj.maxRiverCount;
         maxRiverGenerationTries = obj.maxRiverGenerationTries;
     }
@@ -100,7 +100,7 @@ public class TerrainSettingsObject : ScriptableObject
     public float maxHeight = 150;
     public float minWaterSourceHeight = 0.7f;
     public float terrainScale = 1;
-    public int riverStepSize = 5;
+    public float riverWaterGain = 5;
     public int maxRiverCount = 10;
     public int maxRiverGenerationTries = 15;
 }

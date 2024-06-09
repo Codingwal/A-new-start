@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -16,7 +17,7 @@ public static class RiverGenerator
         for (int i = 0; i < terrainSettings.maxRiverGenerationTries; i++)
         {
             Vector2Int pos = new(rnd.Next(lowestPoint.x, highestPoint.x), rnd.Next(lowestPoint.y, highestPoint.y));
-            River river = GenerateRiver(pos, seed, terrainSettings);
+            River river = GenerateRiver(pos, rivers, seed, terrainSettings);
             if (river == null) continue;
             rivers.Add(river);
 
@@ -27,7 +28,7 @@ public static class RiverGenerator
         SectorData sectorData = new() { rivers = rivers };
         return sectorData;
     }
-    static River GenerateRiver(Vector2Int pos, int seed, TerrainSettings terrainSettings)
+    static River GenerateRiver(Vector2Int pos, List<River> rivers, int seed, TerrainSettings terrainSettings)
     {
         River river = new();
 
@@ -39,7 +40,7 @@ public static class RiverGenerator
             Debug.Log($"{pos} -> {height}");
 
             // Add the source vertex to the array
-            river.points.Add(new(pos, height, 1));
+            river.points.Add(new(pos, height, 5));
         }
 
 
@@ -54,12 +55,27 @@ public static class RiverGenerator
         while (true)
         {
             // Get the next vertex and its height
-            Vector2Int lowestNeighbourOffset = GetLowestNeighbourOffset(pos, river, preferredDirection, MapGenerator.Instance.riverFactor, seed, terrainSettings);
+            Vector2Int lowestNeighbourOffset = GetLowestNeighbourOffset(pos, rivers, preferredDirection, MapGenerator.Instance.riverFactor, seed, terrainSettings, out Vector2Int index);
             if (lowestNeighbourOffset == new Vector2Int(0, 0))
             {
                 Debug.LogError("Stuck");
                 break;
             }
+
+            // If the river flowed into another river
+            if (index != new Vector2Int(-1, -1))
+            {
+                River receivingRiver = rivers[index.x];
+
+                receivingRiver.points[index.y].waterAmount += river.points[^1].waterAmount;
+                Debug.Log($"Rivers united! {receivingRiver.points[index.y - 1].waterAmount} + {river.points[^1].waterAmount} == {receivingRiver.points[index.y].waterAmount}");
+                for (int j = index.y + 1; j < receivingRiver.points.Count; j++)
+                {
+                    receivingRiver.points[j].waterAmount += receivingRiver.points[j - 1].waterAmount + terrainSettings.riverWaterGain;
+                }
+                return river;
+            }
+
             float lowestNeighbourHeight = VertexGenerator.GenerateVertexData(pos + lowestNeighbourOffset,
             seed, terrainSettings, terrainSettings.terrainScale);
 
@@ -69,7 +85,7 @@ public static class RiverGenerator
 
             // Add the point to the river points list
             // If it's in the same chunk as the previous element, add it to that chunk, otherwise create a new entry and add it there
-            river.points.Add(new(pos, height, river.points[^1].waterAmount + 0.001f));
+            river.points.Add(new(pos, height, river.points[^1].waterAmount + terrainSettings.riverWaterGain));
 
             // Break if the ocean or an existing river has been reached
             if (IsWater(height))
@@ -87,13 +103,30 @@ public static class RiverGenerator
         }
         return river;
     }
-    static Vector2Int GetChunk(Vector2Int point, int chunkSize)
+    static bool IsInRiver(List<River> rivers, Vector2Int point, out Vector2Int index)
     {
-        return Vector2Int.RoundToInt(point / chunkSize) * chunkSize;
-    }
-    static bool IsInRiver(River river, Vector2Int point)
-    {
-        // return river.points.Contains(point);
+        foreach (River river in rivers)
+        {
+            for (int i = 0; i < river.points.Count; i += 10)
+            {
+                RiverPoint riverPoint = river.points[i];
+
+                if (Mathf.Abs(riverPoint.pos.x - point.x) <= 10 && Mathf.Abs(riverPoint.pos.y - point.y) <= 10)
+                {
+                    for (int j = 0; j < 10; j++)
+                    {
+                        if (i + j >= river.points.Count) break;
+
+                        if (river.points[i + j].pos == point)
+                        {
+                            index = new(rivers.IndexOf(river), i + j);
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        index = new(-1, -1);
         return false;
     }
     static bool IsWater(float height)
@@ -133,7 +166,7 @@ public static class RiverGenerator
             }
         }
     }
-    static Vector2Int GetLowestNeighbourOffset(Vector2Int pos, River river, Vector2 direction, float directionFactor, int seed, TerrainSettings terrainSettings)
+    static Vector2Int GetLowestNeighbourOffset(Vector2Int pos, List<River> rivers, Vector2 direction, float directionFactor, int seed, TerrainSettings terrainSettings, out Vector2Int index)
     {
         // Get the direction and the height of the lowest adjacent vertex
         float lowestNeighbourHeight = float.PositiveInfinity;
@@ -157,14 +190,18 @@ public static class RiverGenerator
 
                 if (neighbourHeight >= lowestNeighbourHeight) continue;
 
-                if (IsInRiver(river, pos + new Vector2Int(x, y)))
-                    continue;
+                if (IsInRiver(rivers, pos + new Vector2Int(x, y), out Vector2Int tempIndex))
+                {
+                    index = tempIndex;
+                    return new(x, y);
+                }
 
                 lowestNeighbourHeight = neighbourHeight;
                 lowestNeighbourOffset = new Vector2Int(x, y);
             }
         }
 
+        index = new(-1, -1);
         return lowestNeighbourOffset;
     }
 }
