@@ -65,8 +65,6 @@ public static class RiverGenerator
 
             float height = Mathf.Min(lowestNeighbourHeight, river.points[^1].height - 0.0001f);
 
-            Debug.Assert(height <= lowestNeighbourHeight, "!!!");
-
             pos += lowestNeighbourOffset;
 
             // Add the point to the river points list
@@ -100,7 +98,7 @@ public static class RiverGenerator
     }
     static bool IsWater(float height)
     {
-        return height < 5;
+        return height < 0;
     }
     static bool CanBeRiverSource(float height)
     {

@@ -35,6 +35,7 @@ public static class MapDataGenerator
             }
         }
 
+        Dictionary<Vector2Int, float> pointsToChange = new();
         foreach (River river in sectorData.rivers)
         {
             foreach (RiverPoint point in river.points)
@@ -44,10 +45,13 @@ public static class MapDataGenerator
                 // If the point isn't in this chunk, continue
                 if (pointInChunkSpace.x >= chunkSize || pointInChunkSpace.x < 0 || pointInChunkSpace.y >= chunkSize || pointInChunkSpace.y < 0) continue;
 
-                AddIndent(pointInChunkSpace, point.height, map, 2);
+                AddIndent(pointInChunkSpace, point.height, map, pointsToChange, 5);
             }
         }
-
+        foreach (KeyValuePair<Vector2Int, float> point in pointsToChange)
+        {
+            map[point.Key.x, point.Key.y].height = point.Value;
+        }
 
         return new(map);
     }
@@ -65,14 +69,14 @@ public static class MapDataGenerator
         }
 
     }
-    static void AddIndent(Vector2Int pos, float height, VertexData[,] map, float strength)
+    static void AddIndent(Vector2Int pos, float height, VertexData[,] map, Dictionary<Vector2Int, float> pointsToChange, float strength)
     {
         // TODO: Why is map[pos].height sometimes lower than height???
         float heightDifferenceAtPoint = Mathf.Max(0.5f, map[pos.x, pos.y].height - height);
 
-        for (int y = -100; y <= 100; y++)
+        for (int y = -20; y <= 20; y++)
         {
-            for (int x = -100; x <= 100; x++)
+            for (int x = -20; x <= 20; x++)
             {
                 // Check if the point is inside this chunk
                 int px = x + pos.x;
@@ -83,17 +87,20 @@ public static class MapDataGenerator
                 float distance = Mathf.Sqrt(x * x + y * y);
 
                 // float reduceHeightBy = Mathf.Lerp(heightDifferenceAtPoint, 0, distance / 141.5f);
-                float newHeight = Mathf.Lerp(height, map[px, py].height, Mathf.Clamp01(distance / 141.5f));
+                float newHeight = Mathf.Lerp(height, map[px, py].height, Mathf.Clamp01(distance / 30));
 
                 // Debug.Log($"{height}, {map[px, py].height}, {Mathf.Clamp01(distance / 141.5f)} -> {newHeight}");
 
-                // map[px, py].height = newHeight;
+                if (pointsToChange.ContainsKey(new(px, py)))
+                    pointsToChange[new(px, py)] = Mathf.Min(pointsToChange[new(px, py)], newHeight);
+                else
+                    pointsToChange[new(px, py)] = newHeight;
 
                 // map[px, py].height = Mathf.Max(height, map[px, py].height);
 
                 if (x == 0 && y == 0)
                     // map[px, py].height = height - strength;
-                    map[px, py].height = 0;
+                    map[px, py].height = height - strength;
             }
         }
     }
