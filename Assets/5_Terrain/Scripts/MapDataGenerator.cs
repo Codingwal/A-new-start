@@ -35,6 +35,8 @@ public static class MapDataGenerator
             }
         }
 
+        const int riverRange = 75;
+
         Dictionary<Vector2Int, float> pointsToChange = new();
         foreach (River river in sectorData.rivers)
         {
@@ -43,9 +45,9 @@ public static class MapDataGenerator
                 Vector2Int pointInChunkSpace = point.pos - center;
 
                 // If the point isn't in this chunk, continue
-                if (pointInChunkSpace.x >= chunkSize || pointInChunkSpace.x < 0 || pointInChunkSpace.y >= chunkSize || pointInChunkSpace.y < 0) continue;
+                if (pointInChunkSpace.x >= chunkSize + riverRange || pointInChunkSpace.x < -riverRange || pointInChunkSpace.y >= chunkSize + riverRange || pointInChunkSpace.y < -riverRange) continue;
 
-                AddIndent(pointInChunkSpace, point.height, map, pointsToChange, 5);
+                AddIndent(pointInChunkSpace, point.height, map, pointsToChange, 5, riverRange);
             }
         }
         foreach (KeyValuePair<Vector2Int, float> point in pointsToChange)
@@ -55,28 +57,11 @@ public static class MapDataGenerator
 
         return new(map);
     }
-    static float VertexHeightAtNeighbour(VertexData[,] map, Vector2Int pos, Vector2Int offset)
+    static void AddIndent(Vector2Int pos, float height, VertexData[,] map, Dictionary<Vector2Int, float> pointsToChange, float strength, int riverRange)
     {
-        if (pos.x + offset.x < map.GetLength(0) && pos.x + offset.x >= 0 && pos.y + offset.y < map.GetLength(1) && pos.y + offset.y >= 0)
+        for (int y = -riverRange; y <= riverRange; y++)
         {
-            VertexData vertexData = map[pos.x + offset.x, pos.y + offset.y];
-            return vertexData.height + vertexData.waterAmount * 10;
-        }
-        else
-        {
-            // Estimate the position by continuing the slope of the vertex in the opposite direction
-            return 2 * map[pos.x, pos.y].height - map[pos.x - offset.x, pos.y - offset.y].height;
-        }
-
-    }
-    static void AddIndent(Vector2Int pos, float height, VertexData[,] map, Dictionary<Vector2Int, float> pointsToChange, float strength)
-    {
-        // TODO: Why is map[pos].height sometimes lower than height???
-        float heightDifferenceAtPoint = Mathf.Max(0.5f, map[pos.x, pos.y].height - height);
-
-        for (int y = -20; y <= 20; y++)
-        {
-            for (int x = -20; x <= 20; x++)
+            for (int x = -riverRange; x <= riverRange; x++)
             {
                 // Check if the point is inside this chunk
                 int px = x + pos.x;
@@ -87,7 +72,8 @@ public static class MapDataGenerator
                 float distance = Mathf.Sqrt(x * x + y * y);
 
                 // float reduceHeightBy = Mathf.Lerp(heightDifferenceAtPoint, 0, distance / 141.5f);
-                float newHeight = Mathf.Lerp(height, map[px, py].height, Mathf.Clamp01(distance / 30));
+                float newHeight = Mathf.SmoothStep(height, map[px, py].height, Mathf.Clamp01(distance / riverRange));
+                newHeight = Mathf.SmoothStep(height - strength, newHeight, Mathf.Clamp01(distance / strength));
 
                 // Debug.Log($"{height}, {map[px, py].height}, {Mathf.Clamp01(distance / 141.5f)} -> {newHeight}");
 
@@ -96,10 +82,7 @@ public static class MapDataGenerator
                 else
                     pointsToChange[new(px, py)] = newHeight;
 
-                // map[px, py].height = Mathf.Max(height, map[px, py].height);
-
                 if (x == 0 && y == 0)
-                    // map[px, py].height = height - strength;
                     map[px, py].height = height - strength;
             }
         }
