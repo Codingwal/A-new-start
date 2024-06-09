@@ -36,8 +36,9 @@ public static class MapDataGenerator
         }
 
         const int riverRange = 75;
-        const float waterAmountFactor = 1;
+        const float waterAmountFactor = 1.3f;
 
+        // Adjust terrain around the rivers so that they always flow downwards
         Dictionary<Vector2Int, float> pointsToChange = new();
         foreach (River river in sectorData.rivers)
         {
@@ -54,6 +55,31 @@ public static class MapDataGenerator
         foreach (KeyValuePair<Vector2Int, float> point in pointsToChange)
         {
             map[point.Key.x, point.Key.y].height = point.Value;
+        }
+
+        // Add the actual rivers
+        foreach (River river in sectorData.rivers)
+        {
+            foreach (RiverPoint point in river.points)
+            {
+                Vector2Int pointInChunkSpace = point.pos - center;
+                if (pointInChunkSpace.x >= chunkSize + riverRange || pointInChunkSpace.x < -riverRange || pointInChunkSpace.y >= chunkSize + riverRange || pointInChunkSpace.y < -riverRange) continue;
+
+                float strength = Mathf.Pow(point.waterAmount, 1f / 3f) * waterAmountFactor;
+                for (int y = -Mathf.RoundToInt(strength); y <= strength; y++)
+                {
+                    for (int x = -Mathf.RoundToInt(strength); x <= strength; x++)
+                    {
+                        // Check if the point is inside this chunk  
+                        int px = x + pointInChunkSpace.x;
+                        int py = y + pointInChunkSpace.y;
+                        if (px < 0 || px >= map.GetLength(0) || py < 0 || py >= map.GetLength(1)) continue;
+
+                        float distance = Mathf.Sqrt(x * x + y * y);
+                        map[px, py].height -= Mathf.SmoothStep(strength / 2, 0, Mathf.Clamp01(distance / strength));
+                    }
+                }
+            }
         }
 
         return new(map);
@@ -73,15 +99,11 @@ public static class MapDataGenerator
                 float distance = Mathf.Sqrt(x * x + y * y);
 
                 float newHeight = Mathf.SmoothStep(height, map[px, py].height, Mathf.Clamp01(distance / riverRange));
-                newHeight = Mathf.SmoothStep(height - strength, newHeight, Mathf.Clamp01(distance / strength));
 
                 if (pointsToChange.ContainsKey(new(px, py)))
                     pointsToChange[new(px, py)] = Mathf.Min(pointsToChange[new(px, py)], newHeight);
                 else
                     pointsToChange[new(px, py)] = newHeight;
-
-                if (x == 0 && y == 0)
-                    map[px, py].height = height - strength;
             }
         }
     }

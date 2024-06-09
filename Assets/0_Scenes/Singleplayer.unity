@@ -1482,14 +1482,14 @@ MonoBehaviour:
     maxHeight: 0
     minWaterSourceHeight: 0.7
     terrainScale: 1
-    riverStepSize: 5
+    riverWaterGain: 0.01
     maxRiverCount: 10
     maxRiverGenerationTries: 15
   terrainMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
   chunkSize: 241
   chunksPerSector1D: 9
   vertexIncrement: 1
-  riverFactor: 0.1
+  riverFactor: 0
 --- !u!4 &1146475733
 Transform:
   m_ObjectHideFlags: 0
@@ -1554,7 +1554,7 @@ MonoBehaviour:
       maxHeight: 150
       minWaterSourceHeight: 0.7
       terrainScale: 1
-      riverStepSize: 5
+      riverWaterGain: 0.01
       maxRiverCount: 10
       maxRiverGenerationTries: 15
     terrainData:

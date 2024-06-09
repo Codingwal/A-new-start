@@ -71,7 +71,7 @@ public static class RiverGenerator
                 Debug.Log($"Rivers united! {receivingRiver.points[index.y - 1].waterAmount} + {river.points[^1].waterAmount} == {receivingRiver.points[index.y].waterAmount}");
                 for (int j = index.y + 1; j < receivingRiver.points.Count; j++)
                 {
-                    receivingRiver.points[j].waterAmount += receivingRiver.points[j - 1].waterAmount + terrainSettings.riverWaterGain;
+                    receivingRiver.points[j].waterAmount = receivingRiver.points[j - 1].waterAmount + terrainSettings.riverWaterGain;
                 }
                 return river;
             }
