@@ -39,7 +39,7 @@ public static class RiverGenerator
             Debug.Log($"{pos} -> {height}");
 
             // Add the source vertex to the array
-            river.points.Add(new(pos, height));
+            river.points.Add(new(pos, height, 1));
         }
 
 
@@ -69,7 +69,7 @@ public static class RiverGenerator
 
             // Add the point to the river points list
             // If it's in the same chunk as the previous element, add it to that chunk, otherwise create a new entry and add it there
-            river.points.Add(new(pos, height));
+            river.points.Add(new(pos, height, river.points[^1].waterAmount + 0.001f));
 
             // Break if the ocean or an existing river has been reached
             if (IsWater(height))

@@ -36,6 +36,7 @@ public static class MapDataGenerator
         }
 
         const int riverRange = 75;
+        const int waterAmountFactor = 5;
 
         Dictionary<Vector2Int, float> pointsToChange = new();
         foreach (River river in sectorData.rivers)
@@ -47,7 +48,7 @@ public static class MapDataGenerator
                 // If the point isn't in this chunk, continue
                 if (pointInChunkSpace.x >= chunkSize + riverRange || pointInChunkSpace.x < -riverRange || pointInChunkSpace.y >= chunkSize + riverRange || pointInChunkSpace.y < -riverRange) continue;
 
-                AddIndent(pointInChunkSpace, point.height, map, pointsToChange, 5, riverRange);
+                AddIndent(pointInChunkSpace, point.height, map, pointsToChange, point.waterAmount * waterAmountFactor, riverRange);
             }
         }
         foreach (KeyValuePair<Vector2Int, float> point in pointsToChange)
@@ -71,11 +72,8 @@ public static class MapDataGenerator
                 // Calculate the distance to the central point
                 float distance = Mathf.Sqrt(x * x + y * y);
 
-                // float reduceHeightBy = Mathf.Lerp(heightDifferenceAtPoint, 0, distance / 141.5f);
                 float newHeight = Mathf.SmoothStep(height, map[px, py].height, Mathf.Clamp01(distance / riverRange));
                 newHeight = Mathf.SmoothStep(height - strength, newHeight, Mathf.Clamp01(distance / strength));
-
-                // Debug.Log($"{height}, {map[px, py].height}, {Mathf.Clamp01(distance / 141.5f)} -> {newHeight}");
 
                 if (pointsToChange.ContainsKey(new(px, py)))
                     pointsToChange[new(px, py)] = Mathf.Min(pointsToChange[new(px, py)], newHeight);
