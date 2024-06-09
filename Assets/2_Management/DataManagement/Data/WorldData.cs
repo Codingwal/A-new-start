@@ -106,5 +106,15 @@ public class SectorData
 }
 public class River
 {
-    public List<Vector2Int> points = new();
+    public List<RiverPoint> points = new();
+}
+public class RiverPoint
+{
+    public Vector2Int pos;
+    public float height;
+    public RiverPoint(Vector2Int pos, float height)
+    {
+        this.pos = pos;
+        this.height = height;
+    }
 }

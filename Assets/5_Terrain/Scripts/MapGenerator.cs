@@ -107,7 +107,7 @@ public class MapGenerator : Singleton<MapGenerator>
             else
             {
                 mapDataHandler.sectors[sectorCenter] = new();
-                sectorData = RiverGenerator.GenerateRivers(sectorCenter, sectorSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings);
+                sectorData = RiverGenerator.GenerateRivers(sectorCenter, MapDataHandler.Instance.worldData.terrainData.seed, sectorSize, terrainSettings);
                 mapDataHandler.sectors[sectorCenter] = sectorData;
                 Debug.Log("Generated rivers");
             }

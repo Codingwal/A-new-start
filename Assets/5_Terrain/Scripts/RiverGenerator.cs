@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public static class RiverGenerator
 {
-    public static SectorData GenerateRivers(Vector2Int center, int sectorSize, int seed, TerrainSettings terrainSettings)
+    public static SectorData GenerateRivers(Vector2Int center, int seed, int sectorSize, TerrainSettings terrainSettings)
     {
         Vector2Int lowestPoint = new(center.x - sectorSize / 2, center.y - sectorSize / 2);
         Vector2Int highestPoint = new(center.x + sectorSize / 2, center.y + sectorSize / 2);
@@ -28,15 +29,18 @@ public static class RiverGenerator
     }
     static River GenerateRiver(Vector2Int pos, int seed, TerrainSettings terrainSettings)
     {
-        // Check if a river can be generated
-        float height = VertexGenerator.GenerateVertexData(pos, seed, terrainSettings, terrainSettings.terrainScale);
-        if (!CanBeRiverSource(height)) return null;
-
-        Debug.Log($"{pos} -> {height}");
-
-        // Init the class and add the source vertex to the points array
         River river = new();
-        river.points.Add(pos);
+
+        {
+            // Check if a river can be generated
+            float height = VertexGenerator.GenerateVertexData(pos, seed, terrainSettings, terrainSettings.terrainScale);
+            if (!CanBeRiverSource(height)) return null;
+
+            Debug.Log($"{pos} -> {height}");
+
+            // Add the source vertex to the array
+            river.points.Add(new(pos, height));
+        }
 
 
         Vector2 preferredDirection = FindClosestWater(pos, seed, terrainSettings).normalized;
@@ -49,20 +53,28 @@ public static class RiverGenerator
         int i = 0;
         while (true)
         {
-
+            // Get the next vertex and its height
             Vector2Int lowestNeighbourOffset = GetLowestNeighbourOffset(pos, river, preferredDirection, MapGenerator.Instance.riverFactor, seed, terrainSettings);
             if (lowestNeighbourOffset == new Vector2Int(0, 0))
             {
                 Debug.LogError("Stuck");
                 break;
             }
-            pos += lowestNeighbourOffset;
-            river.points.Add(pos);
-
-            // Break if the ocean or an existing river has been reached
             float lowestNeighbourHeight = VertexGenerator.GenerateVertexData(pos + lowestNeighbourOffset,
             seed, terrainSettings, terrainSettings.terrainScale);
-            if (IsWater(lowestNeighbourHeight))
+
+            float height = Mathf.Min(lowestNeighbourHeight, river.points[^1].height - 0.0001f);
+
+            Debug.Assert(height <= lowestNeighbourHeight, "!!!");
+
+            pos += lowestNeighbourOffset;
+
+            // Add the point to the river points list
+            // If it's in the same chunk as the previous element, add it to that chunk, otherwise create a new entry and add it there
+            river.points.Add(new(pos, height));
+
+            // Break if the ocean or an existing river has been reached
+            if (IsWater(height))
             {
                 Debug.Log("Landed in the ocean");
                 break;
@@ -72,19 +84,19 @@ public static class RiverGenerator
             if (i > 5000)
             {
                 Debug.LogError("Terminated");
-
-                foreach (Vector2Int point in river.points)
-                {
-                    Debug.Log(point);
-                }
                 break;
             }
         }
         return river;
     }
+    static Vector2Int GetChunk(Vector2Int point, int chunkSize)
+    {
+        return Vector2Int.RoundToInt(point / chunkSize) * chunkSize;
+    }
     static bool IsInRiver(River river, Vector2Int point)
     {
-        return river.points.Contains(point);
+        // return river.points.Contains(point);
+        return false;
     }
     static bool IsWater(float height)
     {
@@ -140,7 +152,7 @@ public static class RiverGenerator
                 if (directionError > 2) continue;
 
                 float neighbourHeight = VertexGenerator.GenerateVertexData(pos + new Vector2Int(x, y),
-                seed, terrainSettings, terrainSettings.terrainScale);
+                seed, terrainSettings, terrainSettings.terrainScale, 2);
 
                 neighbourHeight += directionError * directionFactor;
                 // Debug.Log($"({x}, {y}) -> {(Mathf.Abs(x - direction.x) + Mathf.Abs(y - direction.y)) * directionFactor}");
