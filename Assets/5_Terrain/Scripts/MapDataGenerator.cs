@@ -57,9 +57,11 @@ public static class MapDataGenerator
             map[point.Key.x, point.Key.y].height = point.Value;
         }
 
+        List<List<Vector3>> rivers = new();
         // Add the actual rivers
         foreach (River river in sectorData.rivers)
         {
+            List<Vector3> riverPoints = new();
             foreach (RiverPoint point in river.points)
             {
                 Vector2Int pointInChunkSpace = point.pos - center;
@@ -79,10 +81,12 @@ public static class MapDataGenerator
                         map[px, py].height -= Mathf.SmoothStep(strength / 2, 0, Mathf.Clamp01(distance / strength));
                     }
                 }
+                riverPoints.Add(new(pointInChunkSpace.x, point.height, pointInChunkSpace.y));
             }
+            rivers.Add(riverPoints);
         }
 
-        return new(map);
+        return new(map, rivers);
     }
     static void AddIndent(Vector2Int pos, float height, VertexData[,] map, Dictionary<Vector2Int, float> pointsToChange, float strength, int riverRange)
     {

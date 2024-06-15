@@ -7,6 +7,7 @@ using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using Unity.IO.LowLevel.Unsafe;
+using System.Data;
 
 public class FileDataHandler
 {
@@ -158,6 +159,17 @@ public class FileDataHandler
                 WriteClose(bw);
             }
             WriteClose(bw);
+            foreach (ListWrapper<Vector3> river in pair.Value.rivers)
+            {
+                foreach (Vector3 point in river.list)
+                {
+                    Write(bw, point);
+                    // bw.Write(vertexData.waterAmount);
+                    // Write(bw, vertexData.waterVelocity);
+                }
+                WriteClose(bw);
+            }
+            WriteClose(bw);
         }
         WriteClose(bw);
 
@@ -249,7 +261,28 @@ public class FileDataHandler
                 map.Add(new(list2));
                 readData = br.ReadSingle();
             }
-            chunks.TryAdd(key, new(map));
+
+            List<ListWrapper<Vector3>> rivers = new();
+            while (readData != 2.1059140958881314e+37)
+            {
+                List<Vector3> river = new();
+                // 2nd list
+                while (readData != 2.1059140958881314e+37)
+                {
+                    Vector3 point = new()
+                    {
+                        x = readData,
+                        y = br.ReadSingle(),
+                        z = br.ReadSingle()
+                    };
+                    river.Add(point);
+                    readData = br.ReadSingle();
+                }
+                rivers.Add(new(river));
+                readData = br.ReadSingle();
+            }
+
+            chunks.TryAdd(key, new(map, rivers));
             readData = br.ReadSingle();
         }
 

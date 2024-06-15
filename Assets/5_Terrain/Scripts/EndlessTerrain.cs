@@ -96,8 +96,12 @@ public class EndlessTerrain : MonoBehaviour
         Vector2Int position;
         Bounds bounds;
 
-        Transform meshChild;
+        // River mesh
+        Transform riverMeshChild;
+        MeshFilter riverMeshFilter;
 
+        // Terrain mesh
+        Transform meshChild;
         MeshRenderer meshRenderer;
         MeshFilter meshFilter;
         MeshCollider meshCollider;
@@ -120,13 +124,16 @@ public class EndlessTerrain : MonoBehaviour
 
             terrainChunk = Instantiate(terrainChunkPrefab, positionV3, Quaternion.identity, parent);
 
-            meshChild = terrainChunk.transform.GetChild(1);
+            meshChild = terrainChunk.transform.GetChild(0);
 
             meshRenderer = meshChild.GetComponent<MeshRenderer>();
             meshFilter = meshChild.GetComponent<MeshFilter>();
             meshCollider = meshChild.GetComponent<MeshCollider>();
 
             meshRenderer.material = material;
+
+            riverMeshChild = terrainChunk.transform.GetChild(1);
+            riverMeshFilter = riverMeshChild.GetComponent<MeshFilter>();
 
             terrainChunk.transform.localScale = Vector3.one * MapGenerator.Instance.terrainSettings.uniformScale;
             SetVisible(false);
@@ -162,6 +169,8 @@ public class EndlessTerrain : MonoBehaviour
 
             if (visible)
             {
+                riverMeshFilter.mesh = RiverMeshGenerator.GenerateRiverMesh(mapData.rivers);
+
                 int lodIndex = 0;
 
                 for (int i = 0; i < detailLevels.Length - 1; i++)

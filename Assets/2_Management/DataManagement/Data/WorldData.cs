@@ -94,9 +94,11 @@ public struct VertexData
 public class ChunkData
 {
     public List<ListWrapper<VertexData>> map;
-    public ChunkData(List<ListWrapper<VertexData>> map)
+    public List<ListWrapper<Vector3>> rivers;
+    public ChunkData(List<ListWrapper<VertexData>> map, List<ListWrapper<Vector3>> rivers)
     {
         this.map = map;
+        this.rivers = rivers;
     }
 }
 public class SectorData

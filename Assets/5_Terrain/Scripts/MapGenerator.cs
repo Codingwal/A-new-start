@@ -91,7 +91,7 @@ public class MapGenerator : Singleton<MapGenerator>
 
         if (mapDataHandler.chunks.ContainsKey(center))
         {
-            return new(mapDataHandler.chunks[center].map);
+            return new(mapDataHandler.chunks[center].map, mapDataHandler.chunks[center].rivers);
         }
         int sectorSize = chunksPerSector1D * chunkSize;
 
@@ -114,7 +114,7 @@ public class MapGenerator : Singleton<MapGenerator>
         }
         MapData map = MapDataGenerator.GenerateMapData(center, chunkSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings, sectorData, vertexIncrement);
 
-        mapDataHandler.AddChunk(center, map.map);
+        mapDataHandler.AddChunk(center, map.map, map.rivers);
 
         return map;
     }
@@ -133,13 +133,15 @@ public class MapGenerator : Singleton<MapGenerator>
 public struct MapData
 {
     public VertexData[,] map { get; private set; }
+    public List<List<Vector3>> rivers;
 
-    public MapData(VertexData[,] map)
+    public MapData(VertexData[,] map, List<List<Vector3>> rivers)
     {
         this.map = map;
+        this.rivers = rivers;
     }
 
-    public MapData(List<ListWrapper<VertexData>> map)
+    public MapData(List<ListWrapper<VertexData>> map, List<ListWrapper<Vector3>> rivers)
     {
         this.map = new VertexData[MapGenerator.Instance.chunkSize, MapGenerator.Instance.chunkSize];
         for (int x = 0; x < MapGenerator.Instance.chunkSize; x++)
@@ -148,6 +150,12 @@ public struct MapData
             {
                 this.map[x, y] = map[x].list[y];
             }
+        }
+
+        this.rivers = new();
+        foreach (ListWrapper<Vector3> river in rivers)
+        {
+            this.rivers.Add(river.list);
         }
     }
 }
