@@ -67,6 +67,9 @@ public static class MapDataGenerator
                 Vector2Int pointInChunkSpace = point.pos - center;
                 if (pointInChunkSpace.x >= chunkSize + riverRange || pointInChunkSpace.x < -riverRange || pointInChunkSpace.y >= chunkSize + riverRange || pointInChunkSpace.y < -riverRange) continue;
 
+                if (pointInChunkSpace.x < map.GetLength(0) && pointInChunkSpace.x > 0 && pointInChunkSpace.y < map.GetLength(1) && pointInChunkSpace.y > 0)
+                    riverPoints.Add(new(pointInChunkSpace.x, map[pointInChunkSpace.x, pointInChunkSpace.y].height - 0.2f, pointInChunkSpace.y));
+
                 float strength = Mathf.Pow(point.waterAmount, 1f / 3f) * waterAmountFactor;
                 for (int y = -Mathf.RoundToInt(strength); y <= strength; y++)
                 {
@@ -78,10 +81,10 @@ public static class MapDataGenerator
                         if (px < 0 || px >= map.GetLength(0) || py < 0 || py >= map.GetLength(1)) continue;
 
                         float distance = Mathf.Sqrt(x * x + y * y);
+
                         map[px, py].height -= Mathf.SmoothStep(strength / 2, 0, Mathf.Clamp01(distance / strength));
                     }
                 }
-                riverPoints.Add(new(pointInChunkSpace.x, point.height, pointInChunkSpace.y));
             }
             rivers.Add(riverPoints);
         }

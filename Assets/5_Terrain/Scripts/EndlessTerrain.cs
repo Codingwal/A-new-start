@@ -169,7 +169,7 @@ public class EndlessTerrain : MonoBehaviour
 
             if (visible)
             {
-                riverMeshFilter.mesh = RiverMeshGenerator.GenerateRiverMesh(mapData.rivers);
+                riverMeshFilter.mesh = RiverMeshGenerator.GenerateRiverMesh(mapData.rivers, 241);
 
                 int lodIndex = 0;
 
