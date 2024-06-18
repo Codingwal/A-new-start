@@ -1,14 +1,19 @@
 TODO:
 
-- Rivers
-    - RiverGenerator generates points at chunk border
-        - for example corners + 3 extra points per side as options
-        - select by lowest height
-    - MapDataGenerator generates the river from the start point to the end point (without the river leaving the chunk)
-        - A* pathfinding with noise
+FOR NEXT BUILD:
 
+- Finish rivers
+    - Finish river mesh generation
+    - Fix heights
+    - Fix sharp corners bug
+    - Prevent flowing into another sector
+- Finish world loading before activating player
+- Fix empty world name bug
+- Add seed loading
+- Prevent spawning in oceans
 - lake shader
 - river shader
+- Prevent terrain texture reptition
 
 
 FUTURE PLANS:
@@ -24,11 +29,8 @@ FUTURE PLANS:
     - Biomes
     - Improve water generation
     - Trees, grass and rocks
-    - Better texturing
-        - Choose texture depending on steepness, biome and height
-        - Reduce texture stretching
 
-
+---------------------------------------
 
 PROJECT SETUP:
 
@@ -40,7 +42,6 @@ Player : Utility, Management
 Generation : Utility, Management
 UI: Utility, Management
 
----------------------------------------
 
 EXECUTION ORDER:
 
@@ -58,3 +59,8 @@ DataManager.LoadWorld
 LoadWorld
     - Generate chunks
     - Update textures
+
+
+
+COOL SEEDS:
+-105729 (Big island)

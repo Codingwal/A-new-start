@@ -68,7 +68,11 @@ public static class MapDataGenerator
                 if (pointInChunkSpace.x >= chunkSize + riverRange || pointInChunkSpace.x < -riverRange || pointInChunkSpace.y >= chunkSize + riverRange || pointInChunkSpace.y < -riverRange) continue;
 
                 if (pointInChunkSpace.x < map.GetLength(0) && pointInChunkSpace.x > 0 && pointInChunkSpace.y < map.GetLength(1) && pointInChunkSpace.y > 0)
+                {
                     riverPoints.Add(new(pointInChunkSpace.x, map[pointInChunkSpace.x, pointInChunkSpace.y].height - 0.2f, pointInChunkSpace.y));
+                    if (riverPoints.Count > 1 && riverPoints[^1].y > riverPoints[^2].y)
+                        riverPoints[^1] = new Vector3(riverPoints[^1].x, riverPoints[^2].y, riverPoints[^1].z);
+                }
 
                 float strength = Mathf.Pow(point.waterAmount, 1f / 3f) * waterAmountFactor;
                 for (int y = -Mathf.RoundToInt(strength); y <= strength; y++)
