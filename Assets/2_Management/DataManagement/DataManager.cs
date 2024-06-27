@@ -11,12 +11,12 @@ public static class DataManager
 
     private static List<IDataCallbackReceiver> dataPersistanceObjects;
 
-    public static void NewWorld(string worldName, TerrainSettingsObject terrainSettingsObj, PlayerSettingsObject playerSettingsObj)
+    public static void NewWorld(string worldName, TerrainSettingsObject terrainSettingsObj, PlayerSettingsObject playerSettingsObj, int seed)
     {
         Debug.Log("Creating World");
         
         // Create a new WorldData
-        WorldData worldData = WorldData.NewWorld(new(terrainSettingsObj), new(playerSettingsObj));
+        WorldData worldData = WorldData.NewWorld(new(terrainSettingsObj), new(playerSettingsObj), seed);
 
         // Set the current world to the new world
         currentWorldName = worldName;

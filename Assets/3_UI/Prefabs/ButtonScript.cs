@@ -14,7 +14,8 @@ public class ButtonScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     public int fontSize = 40;
     public int fontSizeOnHover = 60;
 
-    private void Start() {
+    private void Start()
+    {
         text = GetComponentInChildren<TMP_Text>();
         button = GetComponent<Button>();
         button.onClick.AddListener(OnClick);
@@ -23,14 +24,13 @@ public class ButtonScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     public void OnPointerEnter(PointerEventData eventData)
     {
         text.fontSize = fontSizeOnHover;
-    }   
+    }
     public void OnPointerExit(PointerEventData eventData)
     {
         text.fontSize = fontSize;
     }
     private void OnClick()
     {
-
         if (newMenu == null)
         {
             return;

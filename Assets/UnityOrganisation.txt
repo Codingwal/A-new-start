@@ -8,15 +8,14 @@ FOR NEXT BUILD:
     - Fix sharp corners bug
     - Prevent flowing into another sector
 - Finish world loading before activating player
-- Fix empty world name bug
-- Add seed loading
-- Prevent spawning in oceans
 - lake shader
 - river shader
 - Prevent terrain texture reptition
 
 
 FUTURE PLANS:
+
+- Add building system
 
 - Add swimming
 

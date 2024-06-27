@@ -7,19 +7,20 @@ using UnityEngine.UI;
 
 public class MainMenuMaster : MonoBehaviour
 {
-    // Create world options
+    [Header("Create world options")]
     public GameObject worldNameObject;
+    public GameObject emptyWorldNameObject;
+    public GameObject worldSeedObject;
 
-    // Worldsaves dropdown
+    [Header("WorldSaves dropdown")]
     public TMP_Dropdown worldsavesDropdown;
 
-    // LoadingProgress slider and text
+    [Header("LoadingProgress slider and text")]
     public GameObject loadingScreen;
     public Slider progressSlider;
-    public TMP_Text progressText; 
+    public TMP_Text progressText;
 
-
-    [Header ("Worldsettings scriptable objects")]
+    [Header("Worldsettings scriptable objects")]
     [SerializeField] TerrainSettingsObject terrainSettingsObj;
     [SerializeField] PlayerSettingsObject playerSettingsObj;
 
@@ -65,11 +66,16 @@ public class MainMenuMaster : MonoBehaviour
         string worldName = worldNameObject.GetComponent<TMP_InputField>().text;
         if (worldName == "")
         {
-            Debug.Log("Canceled CreateWorld: The worldName is empty");
+            emptyWorldNameObject.SetActive(true);
+            return;
         }
 
+        string worldSeedString = worldSeedObject.GetComponent<TMP_InputField>().text;
+        int worldSeed = worldSeedString != "" ? int.Parse(worldSeedString) : 0;
+        Debug.Log($"Seed: {worldSeed}");
+
         // Create a new world
-        DataManager.NewWorld(worldName, terrainSettingsObj, playerSettingsObj);
+        DataManager.NewWorld(worldName, terrainSettingsObj, playerSettingsObj, worldSeed);
 
         // Start the game
         Play();

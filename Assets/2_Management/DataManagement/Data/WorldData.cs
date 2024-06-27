@@ -10,14 +10,14 @@ public class WorldData
     public TerrainSettings terrainSettings;
     public TerrainData terrainData;
 
-    public static WorldData NewWorld(TerrainSettings terrainSettings, PlayerSettings playerSettings)
+    public static WorldData NewWorld(TerrainSettings terrainSettings, PlayerSettings playerSettings, int seed)
     {
 
         return new()
         {
             terrainSettings = terrainSettings,
             playerSettings = playerSettings,
-            terrainData = TerrainData.Default,
+            terrainData = TerrainData.Default(seed),
             playerData = PlayerData.Default
         };
     }
@@ -25,7 +25,7 @@ public class WorldData
     {
         terrainSettings = new();
         playerSettings = new();
-        terrainData = TerrainData.Default;
+        terrainData = TerrainData.Default(0);
         playerData = PlayerData.Default;
     }
 }
@@ -59,17 +59,14 @@ public class TerrainData
     public int seed;
     [SerializeField] public SerializableDictonary<Vector2, ChunkData> chunks;
 
-    public static TerrainData Default
+    public static TerrainData Default(int seed)
     {
-        get
+        System.Random random = new();
+        return new()
         {
-            System.Random random = new();
-            return new()
-            {
-                seed = 0,
-                chunks = new()
-            };
-        }
+            seed = seed,
+            chunks = new()
+        };
     }
 }
 
