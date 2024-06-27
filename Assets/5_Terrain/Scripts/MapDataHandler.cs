@@ -19,6 +19,9 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
 
         MapGenerator.Instance.terrainSettings = worldData.terrainSettings;
 
+        if (worldData.terrainData.seed == 0)
+            worldData.terrainData.seed = GenerateSeed(worldData.terrainSettings);
+
         this.worldData = worldData;
         chunks = worldData.terrainData.chunks;
         sectors = new();
@@ -52,6 +55,20 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
             tempRivers.Add(new(river));
         }
         chunks[center] = new(tempMap, tempRivers);
+    }
+    int GenerateSeed(TerrainSettings terrainSettings)
+    {
+        System.Random rnd = new();
+
+        int seed = rnd.Next();
+        int i = 1;
+        while (VertexGenerator.GenerateVertexData(new Vector2(0, 0), seed, terrainSettings, terrainSettings.terrainScale) < 20)
+        {
+            seed = rnd.Next();
+            i++;
+        }
+        Debug.Log($"Generated seed: {seed} with {i} tries");
+        return seed;
     }
 }
 
