@@ -7,6 +7,7 @@ public static class MainSystem
     public static GameState gameState;
     public static event Action<GameState> GameStateChanged;
     public static event Action LoadWorld;
+    public static event Action StartGame;
     public static event Action Pause;
     public static event Action Continue;
 
@@ -44,6 +45,10 @@ public static class MainSystem
 
         gameState = newGameState;
         GameStateChanged?.Invoke(newGameState);
+    }
+    public static void StartGameplay()
+    {
+        StartGame?.Invoke();
     }
 }
 public enum GameState

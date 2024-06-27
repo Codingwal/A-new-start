@@ -14,16 +14,19 @@ public class EndlessTerrain : MonoBehaviour
 
     // Reference to the player (The object that should be in the center of the loaded chunks)
     public Transform viewer;
+    public static Vector2 viewerPosition;
+    Vector2 viewerPositionOld;
 
     public Material mapMaterial;
 
-    public static Vector2 viewerPosition;
-    Vector2 viewerPositionOld;
     int chunkSize;
     int chunksVisibleInViewDistance;
 
     public static Dictionary<Vector2, TerrainChunk> terrainChunkDictonary = new();
     public static List<TerrainChunk> terrainChunksVisibleLastUpdate = new();
+
+    bool startedGame = false;
+    static int chunksWaitingForMapDataCount = 0;
 
     private void Awake()
     {
@@ -46,6 +49,12 @@ public class EndlessTerrain : MonoBehaviour
     }
     private void Update()
     {
+        if (startedGame == false && chunksWaitingForMapDataCount == 0)
+        {
+            MainSystem.StartGameplay();
+            startedGame = true;
+        }
+
         if (MainSystem.gameState != GameState.InGame)
         {
             return;
@@ -147,12 +156,15 @@ public class EndlessTerrain : MonoBehaviour
                     collisionLODMesh = lodMeshes[i];
                 }
             }
+            chunksWaitingForMapDataCount++;
             MapGenerator.Instance.RequestMapData(position, OnMapDataReceived);
         }
         void OnMapDataReceived(MapData mapData)
         {
             this.mapData = mapData;
             mapDataReceived = true;
+
+            chunksWaitingForMapDataCount--;
 
             UpdateTerrainChunk();
         }

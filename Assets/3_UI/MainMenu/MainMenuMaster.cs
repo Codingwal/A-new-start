@@ -71,7 +71,10 @@ public class MainMenuMaster : MonoBehaviour
         }
 
         string worldSeedString = worldSeedObject.GetComponent<TMP_InputField>().text;
+
+        // If the seedString is empty, set the seed to 0 (this will result in a randomly generated seed)
         int worldSeed = worldSeedString != "" ? int.Parse(worldSeedString) : 0;
+
         Debug.Log($"Seed: {worldSeed}");
 
         // Create a new world
