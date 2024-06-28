@@ -13,7 +13,6 @@ public class InputManager : Singleton<InputManager>
     public event Action Jump;
     public static event Action ToggleDevSprint;
     public static event Action ToggleDebug;
-    float debugLastPressed = 0;
 
     protected override void SingletonAwake()
     {
@@ -22,6 +21,7 @@ public class InputManager : Singleton<InputManager>
 
         MainSystem.GameStateChanged += OnGameStateChanged;
 
+        gameplay.Jump.started += OnJumpStarted;
         gameplay.Debug.started += OnDebugStarted;
         gameplay.Sprint.started += OnSprintStarted;
     }
@@ -29,6 +29,7 @@ public class InputManager : Singleton<InputManager>
     {
         MainSystem.GameStateChanged -= OnGameStateChanged;
 
+        gameplay.Jump.started -= OnJumpStarted;
         gameplay.Debug.started -= OnDebugStarted;
         gameplay.Sprint.started -= OnSprintStarted;
     }
@@ -71,15 +72,14 @@ public class InputManager : Singleton<InputManager>
     private void FixedUpdate()
     {
         Move?.Invoke(gameplay.Move.ReadValue<Vector2>());
-
-        if (gameplay.Jump.IsPressed())
-        {
-            Jump?.Invoke();
-        }
     }
     private void LateUpdate()
     {
         Look?.Invoke(gameplay.Look.ReadValue<Vector2>());
+    }
+    void OnJumpStarted(CallbackContext ctx)
+    {
+        Jump?.Invoke();
     }
     void OnDebugStarted(CallbackContext ctx)
     {

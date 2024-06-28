@@ -4,7 +4,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public Rigidbody rb;
 
-    public float jumpForce = 3f;
+    public float jumpForce = 4f;
     [Space]
     public float walkSpeed = 5f;
     public float sprintSpeed = 7f;

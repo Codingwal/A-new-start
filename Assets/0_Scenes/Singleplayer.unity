@@ -264,7 +264,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &165587542
 RectTransform:
   m_ObjectHideFlags: 0
@@ -316,6 +316,7 @@ MonoBehaviour:
   player: {fileID: 965662050}
   playerMovementComponent: {fileID: 965662052}
   storedTimesCount: 20
+  devSprintSpeedMultiplier: 4
 --- !u!1 &180344341
 GameObject:
   m_ObjectHideFlags: 0
@@ -1567,7 +1568,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 965662057}
-  jumpForce: 3
+  jumpForce: 4
   walkSpeed: 5
   sprintSpeed: 8
   crouchSpeed: 3
