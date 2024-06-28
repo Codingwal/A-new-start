@@ -26,11 +26,13 @@ public class DebugScreen : MonoBehaviour
     {
         InputManager.ToggleDebug += ToggleDebug;
         InputManager.ToggleDevSprint += ToggleDevSprint;
+        InputManager.DevJump += DevJump;
     }
     void OnDestroy()
     {
         InputManager.ToggleDebug -= ToggleDebug;
         InputManager.ToggleDevSprint -= ToggleDevSprint;
+        InputManager.DevJump -= DevJump;
     }
     void ToggleDebug()
     {
@@ -44,6 +46,10 @@ public class DebugScreen : MonoBehaviour
             playerMovementComponent.sprintSpeed *= devSprintSpeedMultiplier;
         else
             playerMovementComponent.sprintSpeed /= devSprintSpeedMultiplier;
+    }
+    void DevJump()
+    {
+        player.position = new(player.position.x, 200, player.position.z);
     }
     void Update()
     {

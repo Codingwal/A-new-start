@@ -12,6 +12,7 @@ public class InputManager : Singleton<InputManager>
     public event Action<Vector2> Look;
     public event Action Jump;
     public static event Action ToggleDevSprint;
+    public static event Action DevJump;
     public static event Action ToggleDebug;
 
     protected override void SingletonAwake()
@@ -79,7 +80,14 @@ public class InputManager : Singleton<InputManager>
     }
     void OnJumpStarted(CallbackContext ctx)
     {
-        Jump?.Invoke();
+        if (gameplay.Debug.IsPressed())
+        {
+            DevJump?.Invoke();
+        }
+        else
+        {
+            Jump?.Invoke();
+        }
     }
     void OnDebugStarted(CallbackContext ctx)
     {

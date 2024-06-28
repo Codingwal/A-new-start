@@ -161,7 +161,6 @@ public static class RiverGenerator
 
             if (distance > 1000)
             {
-                Debug.Log("No water found");
                 return new();
             }
         }
