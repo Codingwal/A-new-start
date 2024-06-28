@@ -67,6 +67,13 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
         {
             seed = rnd.Next();
             i++;
+
+            if (i > 100)
+            {
+                Debug.LogError("Can't find seed");
+                seed = 0;
+                break;
+            }
         }
         Debug.Log($"Generated seed: {seed} with {i} tries");
         return seed;

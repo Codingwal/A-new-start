@@ -16,14 +16,6 @@ public class PlayerSettings
     }
 }
 
-[CreateAssetMenu()]
-[Serializable]
-public class PlayerSettingsObject : ScriptableObject
-{
-
-}
-
-
 [Serializable]
 public class BiomeSettings
 {
@@ -86,21 +78,6 @@ public class TerrainSettings
 [Serializable]
 public class BiomeWrapper
 {
-    public float height;
-    public BiomeSettings biomeSettings;
-}
-[CreateAssetMenu()]
-[Serializable]
-public class TerrainSettingsObject : ScriptableObject
-{
-    public List<BiomeWrapper> biomes;
-    public float biomeScale = 5000;
-    public float uniformScale = 1;
-    public float minHeight = 0;
-    public float maxHeight = 150;
-    public float minWaterSourceHeight = 0.7f;
-    public float terrainScale = 1;
-    public float riverWaterGain = 5;
-    public int maxRiverCount = 10;
-    public int maxRiverGenerationTries = 15;
+    public float height = 0;
+    public BiomeSettings biomeSettings = new();
 }

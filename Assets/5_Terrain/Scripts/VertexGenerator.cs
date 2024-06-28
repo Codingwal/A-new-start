@@ -58,6 +58,7 @@ public static class VertexGenerator
         // Get the biomes with a value directly above and below the received noise value
         KeyValuePair<float, BiomeSettings> biomeLowerValue = new(float.PositiveInfinity, new());
         KeyValuePair<float, BiomeSettings> biomeHigherValue = new(float.NegativeInfinity, new());
+        Debug.Log("Biomecount = " + terrainSettings.biomes.Count);
         foreach (KeyValuePair<float, BiomeSettings> biome in terrainSettings.biomes)
         {
             // biomeHeight must be higher, currentLowerBiome height must be lower (greater distance)

@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 8792bc8b81bd9b0458b2897f9b0c8abc, type: 3}
   m_Name: TerrainSettings
-  m_EditorClassIdentifier: Management::TerrainSettingsObject
+  m_EditorClassIdentifier: 
   biomes:
   - height: 0
     biomeSettings:
@@ -49,12 +49,12 @@ MonoBehaviour:
       octaveAmplitudeFactor: 0.5
       slopeImpact: 1
       heightOffset: 200
-  biomeScale: 8000
+  biomeScale: 5000
   uniformScale: 1
   minHeight: 0
   maxHeight: 150
   minWaterSourceHeight: 0.7
   terrainScale: 1
-  riverWaterGain: 0.01
-  maxRiverCount: 15
-  maxRiverGenerationTries: 40
+  riverWaterGain: 5
+  maxRiverCount: 10
+  maxRiverGenerationTries: 15
