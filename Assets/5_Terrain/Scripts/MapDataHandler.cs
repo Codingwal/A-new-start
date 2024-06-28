@@ -6,7 +6,7 @@ using UnityEngine;
 public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
 {
     // The chunk dictionary
-    public ConcurrentDictionary<Vector2, ChunkData> chunks;
+    public static ConcurrentDictionary<Vector2, ChunkData> chunks;
     public ConcurrentDictionary<Vector2, SectorData> sectors;
     public ConcurrentDictionary<Vector2, Vector2[]> chunksWaitingForSector;
     public static WorldData worldData;
@@ -28,13 +28,13 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
         sectors = new();
 
         Debug.Log($"Loaded {chunks.Count} chunks");
-
     }
-    public void SaveData(WorldData worldData)
+    public void SaveData(WorldData _worldData)
     {
-        worldData.terrainData.chunks = (SerializableDictonary<Vector2, ChunkData>)chunks;
+        _worldData.terrainData.chunks = (SerializableDictonary<Vector2, ChunkData>)chunks;
+        _worldData.terrainData.seed = worldData.terrainData.seed;
 
-        Debug.Log($"Saved {worldData.terrainData.chunks.Count} chunks");
+        Debug.Log($"Saved {_worldData.terrainData.chunks.Count} chunks");
     }
 
     // EndlessTerrain uses this to add chunks

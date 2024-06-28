@@ -21,7 +21,6 @@ public class PlayerDataHandler : MonoBehaviour, IDataCallbackReceiver
         PlayerData playerData = worldData.playerData;
 
         transform.position = playerData.position;
-        transform.position += new Vector3(0, 10, 0);    // Spawn player a bit above the ground to prevent glitching through the mesh while the world is loaded
         playerLookScript.xRotation = playerData.rotation.x;
         transform.localRotation = Quaternion.Euler(0, playerData.rotation.y, playerData.rotation.z);
     }
@@ -29,6 +28,9 @@ public class PlayerDataHandler : MonoBehaviour, IDataCallbackReceiver
     {
         Debug.Log("StartGame");
         Time.timeScale = 1;
+
+        if (Mathf.Round(transform.position.y) == 200)
+            transform.position = new(0, MapDataHandler.chunks[new(0, 0)].map[0].list[0].height + 10, 0);
     }
 
     public void SaveData(WorldData worldData)

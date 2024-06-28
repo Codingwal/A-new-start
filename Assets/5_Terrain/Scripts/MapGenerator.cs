@@ -89,9 +89,9 @@ public class MapGenerator : Singleton<MapGenerator>
     {
         MapDataHandler mapDataHandler = MapDataHandler.Instance;
 
-        if (mapDataHandler.chunks.ContainsKey(center))
+        if (MapDataHandler.chunks.ContainsKey(center))
         {
-            return new(mapDataHandler.chunks[center].map, mapDataHandler.chunks[center].rivers);
+            return new(MapDataHandler.chunks[center].map, MapDataHandler.chunks[center].rivers);
         }
         int sectorSize = chunksPerSector1D * chunkSize;
 
