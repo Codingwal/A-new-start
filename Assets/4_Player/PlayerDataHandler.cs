@@ -10,10 +10,6 @@ public class PlayerDataHandler : MonoBehaviour, IDataCallbackReceiver
 
         Time.timeScale = 0;
     }
-    private void Start()
-    {
-        MainSystem.ChangeGameState(GameState.InGame);
-    }
     private void OnDisable()
     {
         MainSystem.StartGame -= StartGame;

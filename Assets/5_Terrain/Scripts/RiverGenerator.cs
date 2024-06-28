@@ -7,7 +7,6 @@ public static class RiverGenerator
 {
     public static SectorData GenerateRivers(Vector2Int center, int seed, int sectorSize, TerrainSettings terrainSettings)
     {
-        Debug.Log("!");
         Vector2Int lowestPoint = new(center.x - sectorSize / 2, center.y - sectorSize / 2);
         Vector2Int highestPoint = new(center.x + sectorSize / 2, center.y + sectorSize / 2);
 
@@ -38,7 +37,7 @@ public static class RiverGenerator
             float height = VertexGenerator.GenerateVertexData(pos, seed, terrainSettings, terrainSettings.terrainScale);
             if (!CanBeRiverSource(height)) return null;
 
-            Debug.Log($"{pos} -> {height}");
+            // Debug.Log($"{pos} -> {height}");
 
             // Add the source vertex to the array
             river.points.Add(new(pos, height, 5));
@@ -50,7 +49,7 @@ public static class RiverGenerator
         {
             return river;
         }
-        Debug.Log($"Direction = {preferredDirection} from pos {pos}");
+        // Debug.Log($"Direction = {preferredDirection} from pos {pos}");
 
         int i = 0;
         while (true)
@@ -59,7 +58,7 @@ public static class RiverGenerator
             Vector2Int lowestNeighbourOffset = GetLowestNeighbourOffset(pos, rivers, preferredDirection, MapGenerator.Instance.riverFactor, seed, terrainSettings, out Vector2Int index);
             if (lowestNeighbourOffset == new Vector2Int(0, 0))
             {
-                Debug.LogError("Stuck");
+                // Debug.Log("Stuck");
                 break;
             }
 
@@ -69,7 +68,7 @@ public static class RiverGenerator
                 River receivingRiver = rivers[index.x];
 
                 receivingRiver.points[index.y].waterAmount += river.points[^1].waterAmount;
-                Debug.Log($"Rivers united! {receivingRiver.points[index.y - 1].waterAmount} + {river.points[^1].waterAmount} == {receivingRiver.points[index.y].waterAmount}");
+                // Debug.Log($"Rivers united! {receivingRiver.points[index.y - 1].waterAmount} + {river.points[^1].waterAmount} == {receivingRiver.points[index.y].waterAmount}");
                 for (int j = index.y + 1; j < receivingRiver.points.Count; j++)
                 {
                     receivingRiver.points[j].waterAmount = receivingRiver.points[j - 1].waterAmount + terrainSettings.riverWaterGain;
@@ -91,14 +90,14 @@ public static class RiverGenerator
             // Break if the ocean or an existing river has been reached
             if (IsWater(height))
             {
-                Debug.Log("Landed in the ocean");
+                // Debug.Log("Landed in the ocean");
                 break;
             }
             i++;
 
             if (i > 5000)
             {
-                Debug.LogError("Terminated");
+                // Debug.Log("Terminated");
                 break;
             }
         }
@@ -162,7 +161,7 @@ public static class RiverGenerator
 
             if (distance > 1000)
             {
-                Debug.LogError("No water found");
+                Debug.Log("No water found");
                 return new();
             }
         }

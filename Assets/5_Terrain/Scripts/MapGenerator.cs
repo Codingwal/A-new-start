@@ -107,12 +107,11 @@ public class MapGenerator : Singleton<MapGenerator>
             else
             {
                 mapDataHandler.sectors[sectorCenter] = new();
-                sectorData = RiverGenerator.GenerateRivers(sectorCenter, MapDataHandler.Instance.worldData.terrainData.seed, sectorSize, terrainSettings);
+                sectorData = RiverGenerator.GenerateRivers(sectorCenter, MapDataHandler.worldData.terrainData.seed, sectorSize, terrainSettings);
                 mapDataHandler.sectors[sectorCenter] = sectorData;
-                Debug.Log("Generated rivers");
             }
         }
-        MapData map = MapDataGenerator.GenerateMapData(center, chunkSize, MapDataHandler.Instance.worldData.terrainData.seed, terrainSettings, sectorData, vertexIncrement);
+        MapData map = MapDataGenerator.GenerateMapData(center, chunkSize, MapDataHandler.worldData.terrainData.seed, terrainSettings, sectorData, vertexIncrement);
 
         mapDataHandler.AddChunk(center, map.map, map.rivers);
 

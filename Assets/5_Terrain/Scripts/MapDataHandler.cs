@@ -9,10 +9,12 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
     public ConcurrentDictionary<Vector2, ChunkData> chunks;
     public ConcurrentDictionary<Vector2, SectorData> sectors;
     public ConcurrentDictionary<Vector2, Vector2[]> chunksWaitingForSector;
-    public WorldData worldData;
+    public static WorldData worldData;
 
-    public void LoadData(WorldData worldData)
+    public void LoadData(WorldData _worldData)
     {
+        worldData = _worldData;
+
         // Prevent endlessTerrain from trying to load deleted chunks
         EndlessTerrain.terrainChunkDictonary.Clear();
         EndlessTerrain.terrainChunksVisibleLastUpdate.Clear();
@@ -22,7 +24,6 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
         if (worldData.terrainData.seed == 0)
             worldData.terrainData.seed = GenerateSeed(worldData.terrainSettings);
 
-        this.worldData = worldData;
         chunks = worldData.terrainData.chunks;
         sectors = new();
 

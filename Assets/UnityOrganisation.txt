@@ -12,8 +12,12 @@ FOR NEXT BUILD:
 - river shader
 - Prevent terrain texture reptition
 - Add debug screen (seed, position, rotation)
+- Spawn player directly on the ground
 
 FUTURE PLANS:
+
+- Cleanup debug screen code
+- Cleanup scene system code
 
 - Add building system
 

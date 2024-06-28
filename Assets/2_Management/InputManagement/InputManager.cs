@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using static UnityEngine.InputSystem.InputAction;
 
 public class InputManager : Singleton<InputManager>
 {
@@ -10,17 +11,22 @@ public class InputManager : Singleton<InputManager>
     public event Action<Vector2> Move;
     public event Action<Vector2> Look;
     public event Action Jump;
-    
+    public static event Action ToggleDebug;
+    float debugLastPressed = 0;
+
     protected override void SingletonAwake()
     {
         playerInput = new();
         gameplay = playerInput.Gameplay;
 
         MainSystem.GameStateChanged += OnGameStateChanged;
+        gameplay.Debug.started += OnDebugStarted;
     }
-    private void OnDisable() {
+    private void OnDisable()
+    {
         MainSystem.GameStateChanged -= OnGameStateChanged;
-    }   
+        gameplay.Debug.started -= OnDebugStarted;
+    }
     private void OnGameStateChanged(GameState newGameState)
     {
         if (newGameState == GameState.InGame)
@@ -69,6 +75,10 @@ public class InputManager : Singleton<InputManager>
     private void LateUpdate()
     {
         Look?.Invoke(gameplay.Look.ReadValue<Vector2>());
+    }
+    void OnDebugStarted(CallbackContext ctx)
+    {
+        ToggleDebug?.Invoke();
     }
 }
 public enum WalkState
