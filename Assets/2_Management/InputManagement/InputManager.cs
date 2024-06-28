@@ -11,6 +11,7 @@ public class InputManager : Singleton<InputManager>
     public event Action<Vector2> Move;
     public event Action<Vector2> Look;
     public event Action Jump;
+    public static event Action ToggleDevSprint;
     public static event Action ToggleDebug;
     float debugLastPressed = 0;
 
@@ -20,12 +21,16 @@ public class InputManager : Singleton<InputManager>
         gameplay = playerInput.Gameplay;
 
         MainSystem.GameStateChanged += OnGameStateChanged;
+
         gameplay.Debug.started += OnDebugStarted;
+        gameplay.Sprint.started += OnSprintStarted;
     }
     private void OnDisable()
     {
         MainSystem.GameStateChanged -= OnGameStateChanged;
+
         gameplay.Debug.started -= OnDebugStarted;
+        gameplay.Sprint.started -= OnSprintStarted;
     }
     private void OnGameStateChanged(GameState newGameState)
     {
@@ -79,6 +84,13 @@ public class InputManager : Singleton<InputManager>
     void OnDebugStarted(CallbackContext ctx)
     {
         ToggleDebug?.Invoke();
+    }
+    void OnSprintStarted(CallbackContext ctx)
+    {
+        if (gameplay.Debug.IsPressed())
+        {
+            ToggleDevSprint?.Invoke();
+        }
     }
 }
 public enum WalkState

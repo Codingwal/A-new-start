@@ -7,27 +7,43 @@ public class DebugScreen : MonoBehaviour
     [SerializeField] TMP_Text seedText;
     [SerializeField] TMP_Text positionText;
     [SerializeField] TMP_Text fpsText;
+    [SerializeField] TMP_Text devSprintEnabledText;
 
+    // Used to get player information
+    [SerializeField] Transform player;
+    [SerializeField] PlayerMovement playerMovementComponent;
+
+    // Used to calc fps
     List<float> lastTimes = new();
-    [SerializeField] int granularity = 5;
-    int counter = 10;
+    [SerializeField] int storedTimesCount = 20;
+    int counter = 0;
 
-    Transform player;
+    // devSprint (super fast sprint for devs)
+    bool devSprintEnabled = false;
+    [SerializeField] float devSprintSpeedMultiplier = 4;
+
     DebugScreen()
     {
         InputManager.ToggleDebug += ToggleDebug;
-    }
-    void OnEnable()
-    {
-        player = GameObject.Find("Player").transform;
+        InputManager.ToggleDevSprint += ToggleDevSprint;
     }
     void OnDestroy()
     {
         InputManager.ToggleDebug -= ToggleDebug;
+        InputManager.ToggleDevSprint -= ToggleDevSprint;
     }
     void ToggleDebug()
     {
         transform.gameObject.SetActive(!transform.gameObject.activeSelf);
+    }
+    void ToggleDevSprint()
+    {
+        devSprintEnabled = !devSprintEnabled;
+
+        if (devSprintEnabled)
+            playerMovementComponent.sprintSpeed *= devSprintSpeedMultiplier;
+        else
+            playerMovementComponent.sprintSpeed /= devSprintSpeedMultiplier;
     }
     void Update()
     {
@@ -37,6 +53,12 @@ public class DebugScreen : MonoBehaviour
         Vector3 position = player.position;
         positionText.text = $"Position: {position}";
 
+        UpdateFPS();
+
+        devSprintEnabledText.text = $"Developer sprint is {(devSprintEnabled ? "enabled" : "disabled")}";
+    }
+    void UpdateFPS()
+    {
         if (counter == 0)
         {
             float sum = 0;
@@ -47,9 +69,10 @@ public class DebugScreen : MonoBehaviour
 
             float average = sum / lastTimes.Count;
             float fps = 1 / average;
-            counter = granularity;
+            counter = storedTimesCount;
 
             fpsText.text = $"FPS: {Mathf.RoundToInt(fps)}";
+            lastTimes.Clear();
         }
         lastTimes.Add(Time.deltaTime);
         counter--;
