@@ -55,6 +55,6 @@ MonoBehaviour:
   maxHeight: 150
   minWaterSourceHeight: 0.7
   terrainScale: 1
-  riverWaterGain: 5
+  riverWaterGain: 0.1
   maxRiverCount: 10
   maxRiverGenerationTries: 15

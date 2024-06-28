@@ -2,7 +2,7 @@ TODO:
 
 FOR NEXT BUILD:
 
-- Spawn player directly on the ground
+- devJump
 - Look at bookmarks
 
 FUTURE PLANS:
