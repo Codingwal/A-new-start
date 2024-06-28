@@ -12,7 +12,8 @@ public class PauseMenuMaster : MonoBehaviour
     public GameObject loadingScreen;
     public Slider progressSlider;
     public TMP_Text progressText;
-    private void Awake() {
+    private void Awake()
+    {
         SceneSystem.Loading += OnSceneLoading;
     }
     private void Start()
@@ -21,7 +22,8 @@ public class PauseMenuMaster : MonoBehaviour
 
         MainSystem.Pause += Pause;
     }
-    private void OnDisable() {
+    private void OnDisable()
+    {
         SceneSystem.Loading -= OnSceneLoading;
         MainSystem.Pause -= Pause;
     }
@@ -39,7 +41,7 @@ public class PauseMenuMaster : MonoBehaviour
         loadingScreen.SetActive(true);
         SceneSystem.SwitchScene(SceneSystem.Scenes.MainMenu, this);
     }
-    public void OnSceneLoading(float progress)
+    public void OnSceneLoading(float progress, string currentTask)
     {
         progressSlider.value = progress;
         progressText.text = progress * 100 + "%";

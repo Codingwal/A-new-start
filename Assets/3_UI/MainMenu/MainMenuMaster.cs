@@ -15,10 +15,6 @@ public class MainMenuMaster : MonoBehaviour
     [Header("WorldSaves dropdown")]
     public TMP_Dropdown worldsavesDropdown;
 
-    [Header("LoadingProgress slider and text")]
-    public GameObject loadingScreen;
-    public Slider progressSlider;
-    public TMP_Text progressText;
 
     [Header("Worldsettings scriptable objects")]
     [SerializeField] TerrainSettingsObject terrainSettingsObj;
@@ -38,22 +34,12 @@ public class MainMenuMaster : MonoBehaviour
 
         // Activate the MainMenu wich is the first child
         transform.GetChild(0).gameObject.SetActive(true);
-
-        // Subscribe to the SceneLoading event to show the progress
-        SceneSystem.Loading += OnSceneLoading;
     }
     public void Play()
     {
-        // Activate the loading screen
-        loadingScreen.SetActive(true);
-
         // Load the Singleplayer scene
-        SceneSystem.SwitchScene(SceneSystem.Scenes.Singleplayer, this);
-    }
-    public void OnSceneLoading(float progress)
-    {
-        progressSlider.value = progress;
-        progressText.text = progress * 100 + "%";
+        // SceneSystem.SwitchScene(SceneSystem.Scenes.Singleplayer, this);
+        SceneSystem.LoadSingleplayer();
     }
     public void Quit()
     {

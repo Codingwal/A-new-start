@@ -49,10 +49,15 @@ public class EndlessTerrain : MonoBehaviour
     }
     private void Update()
     {
-        if (startedGame == false && chunksWaitingForMapDataCount == 0)
+        if (!startedGame)
         {
-            MainSystem.StartGameplay();
-            startedGame = true;
+            SceneSystem.chunksWaitingForMapDataCount = chunksWaitingForMapDataCount;
+
+            if (chunksWaitingForMapDataCount == 0)
+            {
+                MainSystem.StartGameplay();
+                startedGame = true;
+            }
         }
 
         if (MainSystem.gameState != GameState.InGame)

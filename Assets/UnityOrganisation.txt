@@ -11,7 +11,7 @@ FOR NEXT BUILD:
 - lake shader
 - river shader
 - Prevent terrain texture reptition
-
+- Add debug screen (seed, position, rotation)
 
 FUTURE PLANS:
 
