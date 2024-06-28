@@ -63,7 +63,7 @@ public class PlayerMovement : MonoBehaviour
         }
         Vector3 velocity = input.x * transform.right + input.y * transform.forward;
 
-        rb.MovePosition(transform.position + (velocity * speed * Time.deltaTime));
+        rb.MovePosition(transform.position + (speed * Time.deltaTime * velocity));
     }
     public void Jump()
     {

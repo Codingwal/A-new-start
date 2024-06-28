@@ -138,7 +138,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &19921384
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5877,10 +5877,6 @@ MonoBehaviour:
   emptyWorldNameObject: {fileID: 697132724}
   worldSeedObject: {fileID: 1404939860}
   worldsavesDropdown: {fileID: 1924671453}
-  loadingScreen: {fileID: 0}
-  progressSlider: {fileID: 0}
-  progressText: {fileID: 0}
-  currentTaskText: {fileID: 0}
   terrainSettingsObj: {fileID: 11400000, guid: 81d60164a90d9564195daf0946245d4f, type: 2}
   playerSettingsObj: {fileID: 11400000, guid: df9cff62162f7b04ba889d2f5dee4eff, type: 2}
 --- !u!1 &1665594709
@@ -6672,7 +6668,7 @@ PrefabInstance:
     - target: {fileID: 3817568010641151609, guid: 36226a8520d12114782ba56628cae35d,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3817568010641151609, guid: 36226a8520d12114782ba56628cae35d,
         type: 3}
@@ -6697,7 +6693,7 @@ PrefabInstance:
     - target: {fileID: 3817568010641151609, guid: 36226a8520d12114782ba56628cae35d,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: MainMenuMaster, Assembly-CSharp
+      value: MainMenuMaster, UI
       objectReference: {fileID: 0}
     - target: {fileID: 3817568010641151609, guid: 36226a8520d12114782ba56628cae35d,
         type: 3}
