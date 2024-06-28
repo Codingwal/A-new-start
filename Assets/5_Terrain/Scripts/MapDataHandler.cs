@@ -65,7 +65,8 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
         int i = 1;
         while (VertexGenerator.GenerateVertexData(new Vector2(0, 0), seed, terrainSettings, terrainSettings.terrainScale) < 20)
         {
-            seed = rnd.Next();
+            // Set limit so that it's easier for players to share and remember seeds
+            seed = rnd.Next(-100000, 100000);
             i++;
 
             if (i > 100)
