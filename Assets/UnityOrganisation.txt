@@ -2,22 +2,21 @@ TODO:
 
 FOR NEXT BUILD:
 
-- Finish rivers
-    - Finish river mesh generation
-    - Fix heights
-    - Fix sharp corners bug
-    - Prevent flowing into another sector
-- Finish world loading before activating player
-- lake shader
-- river shader
-- Prevent terrain texture reptition
-- Add debug screen (seed, position, rotation)
 - Spawn player directly on the ground
 
 FUTURE PLANS:
 
 - Cleanup debug screen code
 - Cleanup scene system code
+
+- Finish rivers
+    - Finish river mesh generation
+    - Fix heights
+    - Fix sharp corners bug
+    - Prevent flowing into another sector
+    - lake shader
+    - river shader
+- Prevent terrain texture reptition
 
 - Add building system
 

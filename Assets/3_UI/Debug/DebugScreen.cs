@@ -15,6 +15,10 @@ public class DebugScreen : MonoBehaviour
     {
         player = GameObject.Find("Player").transform;
     }
+    void OnDestroy()
+    {
+        InputManager.ToggleDebug -= ToggleDebug;
+    }
     void ToggleDebug()
     {
         transform.gameObject.SetActive(!transform.gameObject.activeSelf);
