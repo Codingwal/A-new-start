@@ -9,8 +9,6 @@ public class MapGenerator : Singleton<MapGenerator>
     [HideInInspector] public TerrainSettings terrainSettings;
 
     public Material terrainMaterial;
-    readonly int[] possibleMapChunkSizes = { 121, 241 };
-    // [Dropdown("possibleMapChunkSizes")]
     public int chunkSize = 241;
     public int chunksPerSector1D = 9;
     public int vertexIncrement = 1;
@@ -58,8 +56,7 @@ public class MapGenerator : Singleton<MapGenerator>
     }
     void MeshDataThread(MapData mapData, int lod, Action<MeshData> callback)
     {
-        MeshData meshData = MeshGenerator.GenerateTerrainMesh
-        (mapData.map, lod, vertexIncrement);
+        MeshData meshData = MeshGenerator.GenerateTerrainMesh(mapData.map, lod);
         lock (meshDataThreadInfoQueue)
         {
             meshDataThreadInfoQueue.Enqueue(new MapThreadInfo<MeshData>(callback, meshData));

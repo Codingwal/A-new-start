@@ -5,7 +5,7 @@
 
 # !!! This is not generated but added intentionally
 # World data gets big really fast and isn't needed on github
-/[Aa]ssets/Data/
+Data/
 
 
 /[Ll]ibrary/

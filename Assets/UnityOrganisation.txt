@@ -2,9 +2,6 @@ TODO:
 
 FOR NEXT BUILD:
 
-- devJump
-- Look at bookmarks
-
 FUTURE PLANS:
 
 - Cleanup debug screen code
