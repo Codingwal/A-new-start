@@ -1,4 +1,3 @@
-using System.Linq;
 using UnityEngine;
 
 public static class MeshGenerator
@@ -18,16 +17,8 @@ public static class MeshGenerator
         {
             for (int x = 0; x < meshSize; x += meshSimplificationIncrement)
             {
-                try
-                {
-                    meshData.vertices[vertexIndex] = new(x - halfSize, heightMap[x, y].height, y - halfSize);
-                }
-                catch
-                {
-                    Debug.Log($"1 = {meshSimplificationIncrement}, ms = {meshSize}, vpl = {verticesPerLine}, vpl2 = {(meshSize - 1) / meshSimplificationIncrement}");
-                    Debug.Log($"vertices.count = {meshData.vertices.Count()}, vertexIndex = {vertexIndex}, ({x}|{y})");
-                }
-                // meshData.uvs[vertexIndex] = new(x / (float)meshSize, y / (float)meshSize);  
+                meshData.vertices[vertexIndex] = new(x - halfSize, heightMap[x, y].height, y - halfSize);
+
                 float slopeX;
                 if (x + 1 < meshSize)
                 {

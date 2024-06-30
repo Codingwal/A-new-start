@@ -44,16 +44,25 @@ public class BiomeSettings
 [Serializable]
 public class TerrainSettings
 {
+    // Biomes
     public SerializableDictonary<float, BiomeSettings> biomes = new();
     public float biomeScale = 5000;
+
+    // Scale
     public float uniformScale = 1;
+    public float terrainScale = 1;
+
+    // Unused??
     public float minHeight = 0;
     public float maxHeight = 150;
+
+    // Rivers
     public float minWaterSourceHeight = 0.7f;
-    public float terrainScale = 1;
     public float riverWaterGain = 0.01f;
     public int maxRiverCount = 10;
     public int maxRiverGenerationTries = 15;
+    public float minRiverSlope = 0.0001f;
+    public float riverDirectionImpact = 0;
     public TerrainSettings()
     {
 
@@ -66,18 +75,23 @@ public class TerrainSettings
         }
         biomeScale = obj.biomeScale;
         uniformScale = obj.uniformScale;
+        terrainScale = obj.terrainScale;
+
         minHeight = obj.minHeight;
         maxHeight = obj.maxHeight;
+
         minWaterSourceHeight = obj.minWaterSourceHeight;
-        terrainScale = obj.terrainScale;
         riverWaterGain = obj.riverWaterGain;
         maxRiverCount = obj.maxRiverCount;
         maxRiverGenerationTries = obj.maxRiverGenerationTries;
+        minRiverSlope = obj.minRiverSlope;
+        riverDirectionImpact = obj.riverDirectionImpact;
     }
 }
 [Serializable]
 public class BiomeWrapper
 {
+    [Range(0, 1)]
     public float height = 0;
     public BiomeSettings biomeSettings = new();
 }

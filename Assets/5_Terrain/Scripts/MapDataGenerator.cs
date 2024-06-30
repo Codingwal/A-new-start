@@ -31,11 +31,11 @@ public static class MapDataGenerator
                 BiomeSettings biomeSettings = BiomeSettings.Lerp(biomeSettings0, biomeSettingsY, (float)y / (chunkSize - 1) / terrainScale);
 
                 // Calculate the height using the biomeSettings
-                map[x / vertexIncrement, y / vertexIncrement].height = VertexGenerator.GenerateVertexData(new Vector2(x + center.x, y + center.y), seed, biomeSettings, terrainScale);
+                map[x / vertexIncrement, y / vertexIncrement].height = VertexGenerator.GenerateVertexData(new Vector2(x + center.x - chunkSize / 2, y + center.y - chunkSize / 2), seed, biomeSettings, terrainScale);
             }
         }
 
-        const int riverRange = 75;
+        const int riverRange = 100;
         const float waterAmountFactor = 1.3f;
 
         // Adjust terrain around the rivers so that they always flow downwards
@@ -44,12 +44,12 @@ public static class MapDataGenerator
         {
             foreach (RiverPoint point in river.points)
             {
-                Vector2Int pointInChunkSpace = point.pos - center;
+                Vector2Int pointInChunkSpace = point.pos - center + new Vector2Int(chunkSize / 2, chunkSize / 2);
 
-                // If the point isn't in this chunk, continue
+                // If the point is too far away to have an effect on this chunk, continue
                 if (pointInChunkSpace.x >= chunkSize + riverRange || pointInChunkSpace.x < -riverRange || pointInChunkSpace.y >= chunkSize + riverRange || pointInChunkSpace.y < -riverRange) continue;
 
-                AddIndent(pointInChunkSpace, point.height, map, pointsToChange, Mathf.Pow(point.waterAmount, 1f / 3f) * waterAmountFactor, riverRange);
+                AddIndent(pointInChunkSpace, point.height, map, pointsToChange, riverRange);
             }
         }
         foreach (KeyValuePair<Vector2Int, float> point in pointsToChange)
@@ -57,24 +57,25 @@ public static class MapDataGenerator
             map[point.Key.x, point.Key.y].height = point.Value;
         }
 
-        List<List<Vector3>> rivers = new();
         // Add the actual rivers
+        List<List<Vector3>> rivers = new();
         foreach (River river in sectorData.rivers)
         {
             List<Vector3> riverPoints = new();
             foreach (RiverPoint point in river.points)
             {
-                Vector2Int pointInChunkSpace = point.pos - center;
-                if (pointInChunkSpace.x >= chunkSize + riverRange || pointInChunkSpace.x < -riverRange || pointInChunkSpace.y >= chunkSize + riverRange || pointInChunkSpace.y < -riverRange) continue;
-
-                if (pointInChunkSpace.x < map.GetLength(0) && pointInChunkSpace.x > 0 && pointInChunkSpace.y < map.GetLength(1) && pointInChunkSpace.y > 0)
-                {
-                    riverPoints.Add(new(pointInChunkSpace.x, map[pointInChunkSpace.x, pointInChunkSpace.y].height - 0.2f, pointInChunkSpace.y));
-                    if (riverPoints.Count > 1 && riverPoints[^1].y > riverPoints[^2].y)
-                        riverPoints[^1] = new Vector3(riverPoints[^1].x, riverPoints[^2].y, riverPoints[^1].z);
-                }
-
+                // Calculate the strength of the indentation by using the water amount
                 float strength = Mathf.Pow(point.waterAmount, 1f / 3f) * waterAmountFactor;
+
+                Vector2Int pointInChunkSpace = point.pos - center + new Vector2Int(chunkSize / 2, chunkSize / 2);
+
+                // If the point is too far away to have an effect on this chunk, continue
+                if (pointInChunkSpace.x >= chunkSize + strength || pointInChunkSpace.x < -strength || pointInChunkSpace.y >= chunkSize + strength || pointInChunkSpace.y < -strength) continue;
+
+                // If the point lies inside the chunk, add it to the list  that will be used to generate the river mesh
+                if (pointInChunkSpace.x < map.GetLength(0) && pointInChunkSpace.x > 0 && pointInChunkSpace.y < map.GetLength(1) && pointInChunkSpace.y > 0)
+                    riverPoints.Add(new(pointInChunkSpace.x, map[pointInChunkSpace.x, pointInChunkSpace.y].height, pointInChunkSpace.y));
+
                 for (int y = -Mathf.RoundToInt(strength); y <= strength; y++)
                 {
                     for (int x = -Mathf.RoundToInt(strength); x <= strength; x++)
@@ -89,13 +90,15 @@ public static class MapDataGenerator
                         map[px, py].height -= Mathf.SmoothStep(strength / 2, 0, Mathf.Clamp01(distance / strength));
                     }
                 }
+                // if (pointInChunkSpace.x < 0 || pointInChunkSpace.x >= map.GetLength(0) || pointInChunkSpace.y < 0 || pointInChunkSpace.y >= map.GetLength(1)) continue;
+                // map[pointInChunkSpace.x, pointInChunkSpace.y].height = point.height;
             }
             rivers.Add(riverPoints);
         }
 
         return new(map, rivers);
     }
-    static void AddIndent(Vector2Int pos, float height, VertexData[,] map, Dictionary<Vector2Int, float> pointsToChange, float strength, int riverRange)
+    static void AddIndent(Vector2Int pos, float height, VertexData[,] map, Dictionary<Vector2Int, float> pointsToChange, int riverRange)
     {
         for (int y = -riverRange; y <= riverRange; y++)
         {
@@ -109,8 +112,10 @@ public static class MapDataGenerator
                 // Calculate the distance to the central point
                 float distance = Mathf.Sqrt(x * x + y * y);
 
-                float newHeight = Mathf.SmoothStep(height, map[px, py].height, Mathf.Clamp01(distance / riverRange));
+                // Lerp between the original height and the height of the water by using the distance to the point
+                float newHeight = Mathf.Lerp(height, map[px, py].height, Mathf.Clamp01(distance / riverRange));
 
+                // Add it to the pointsToChange array if there isn't already is a lower height for the same point
                 if (pointsToChange.ContainsKey(new(px, py)))
                     pointsToChange[new(px, py)] = Mathf.Min(pointsToChange[new(px, py)], newHeight);
                 else

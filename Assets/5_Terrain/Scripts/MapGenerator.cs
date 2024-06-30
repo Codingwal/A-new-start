@@ -12,7 +12,6 @@ public class MapGenerator : Singleton<MapGenerator>
     public int chunkSize = 241;
     public int chunksPerSector1D = 9;
     public int vertexIncrement = 1;
-    public float riverFactor = 0;
 
     Queue<MapThreadInfo<MapData>> mapDataThreadInfoQueue = new();
     Queue<MapThreadInfo<MeshData>> meshDataThreadInfoQueue = new();

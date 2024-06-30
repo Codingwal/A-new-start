@@ -2,9 +2,11 @@ TODO:
 
 FOR NEXT BUILD:
 
+- Improve rivers
+- Cleanup & improve TerrainSettings
+
 FUTURE PLANS:
 
-- Cleanup debug screen code
 - Cleanup scene system code
 
 - Finish rivers

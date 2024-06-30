@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 public static class RiverGenerator
 {
@@ -43,19 +41,19 @@ public static class RiverGenerator
             river.points.Add(new(pos, height, 5));
         }
 
-
+        // Choose a preferred direction
         Vector2 preferredDirection = FindClosestWater(pos, seed, terrainSettings).normalized;
         if (preferredDirection == new Vector2Int(0, 0))
         {
             return river;
         }
-        // Debug.Log($"Direction = {preferredDirection} from pos {pos}");
 
+        // Generate the river
         int i = 0;
         while (true)
         {
             // Get the next vertex and its height
-            Vector2Int lowestNeighbourOffset = GetLowestNeighbourOffset(pos, rivers, preferredDirection, MapGenerator.Instance.riverFactor, seed, terrainSettings, out Vector2Int index);
+            Vector2Int lowestNeighbourOffset = GetLowestNeighbourOffset(pos, rivers, preferredDirection, seed, terrainSettings, out Vector2Int index);
             if (lowestNeighbourOffset == new Vector2Int(0, 0))
             {
                 // Debug.Log("Stuck");
@@ -68,7 +66,15 @@ public static class RiverGenerator
                 River receivingRiver = rivers[index.x];
 
                 receivingRiver.points[index.y].waterAmount += river.points[^1].waterAmount;
-                // Debug.Log($"Rivers united! {receivingRiver.points[index.y - 1].waterAmount} + {river.points[^1].waterAmount} == {receivingRiver.points[index.y].waterAmount}");
+                if (receivingRiver.points[index.y].height > river.points[^1].height)
+                {
+                    receivingRiver.points[index.y].height = river.points[^1].height;
+                    for (int j = index.y + 1; j < receivingRiver.points.Count; j++)
+                    {
+                        receivingRiver.points[j].height = receivingRiver.points[j - 1].height - terrainSettings.minRiverSlope;
+                    }
+                }
+
                 for (int j = index.y + 1; j < receivingRiver.points.Count; j++)
                 {
                     receivingRiver.points[j].waterAmount = receivingRiver.points[j - 1].waterAmount + terrainSettings.riverWaterGain;
@@ -79,7 +85,7 @@ public static class RiverGenerator
             float lowestNeighbourHeight = VertexGenerator.GenerateVertexData(pos + lowestNeighbourOffset,
             seed, terrainSettings, terrainSettings.terrainScale);
 
-            float height = Mathf.Min(lowestNeighbourHeight, river.points[^1].height - 0.0001f);
+            float height = Mathf.Min(lowestNeighbourHeight, river.points[^1].height - terrainSettings.minRiverSlope);
 
             pos += lowestNeighbourOffset;
 
@@ -165,7 +171,7 @@ public static class RiverGenerator
             }
         }
     }
-    static Vector2Int GetLowestNeighbourOffset(Vector2Int pos, List<River> rivers, Vector2 direction, float directionFactor, int seed, TerrainSettings terrainSettings, out Vector2Int index)
+    static Vector2Int GetLowestNeighbourOffset(Vector2Int pos, List<River> rivers, Vector2 direction, int seed, TerrainSettings terrainSettings, out Vector2Int index)
     {
         // Get the direction and the height of the lowest adjacent vertex
         float lowestNeighbourHeight = float.PositiveInfinity;
@@ -184,7 +190,7 @@ public static class RiverGenerator
                 float neighbourHeight = VertexGenerator.GenerateVertexData(pos + new Vector2Int(x, y),
                 seed, terrainSettings, terrainSettings.terrainScale, 2);
 
-                neighbourHeight += directionError * directionFactor;
+                neighbourHeight += directionError * terrainSettings.riverDirectionImpact;
                 // Debug.Log($"({x}, {y}) -> {(Mathf.Abs(x - direction.x) + Mathf.Abs(y - direction.y)) * directionFactor}");
 
                 if (neighbourHeight >= lowestNeighbourHeight) continue;
