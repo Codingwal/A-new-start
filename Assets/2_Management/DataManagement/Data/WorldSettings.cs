@@ -57,7 +57,7 @@ public class TerrainSettings
     public float maxHeight = 150;
 
     // Rivers
-    public bool generateRivers = true;
+    public bool generateRivers;
     public float minWaterSourceHeight = 0.7f;
     public float riverWaterGain = 0.01f;
     public int maxRiverCount = 10;

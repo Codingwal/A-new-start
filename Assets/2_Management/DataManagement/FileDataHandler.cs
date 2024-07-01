@@ -133,14 +133,20 @@ public class FileDataHandler
         WriteClose(bw);
 
         bw.Write(terrainSettings.biomeScale);
+
         bw.Write(terrainSettings.uniformScale);
+        bw.Write(terrainSettings.terrainScale);
+
         bw.Write(terrainSettings.minHeight);
         bw.Write(terrainSettings.maxHeight);
+
+        bw.Write(terrainSettings.generateRivers);
         bw.Write(terrainSettings.minWaterSourceHeight);
-        bw.Write(terrainSettings.terrainScale);
         bw.Write(terrainSettings.riverWaterGain);
         bw.Write(terrainSettings.maxRiverCount);
         bw.Write(terrainSettings.maxRiverGenerationTries);
+        bw.Write(terrainSettings.minRiverSlope);
+        bw.Write(terrainSettings.riverDirectionImpact);
 
         TerrainData terrainData = data.terrainData;
         bw.Write(terrainData.seed);
@@ -217,14 +223,20 @@ public class FileDataHandler
         }
 
         data.terrainSettings.biomeScale = br.ReadSingle();
+
         data.terrainSettings.uniformScale = br.ReadSingle();
+        data.terrainSettings.terrainScale = br.ReadSingle();
+
         data.terrainSettings.minHeight = br.ReadSingle();
         data.terrainSettings.maxHeight = br.ReadSingle();
+
+        data.terrainSettings.generateRivers = br.ReadBoolean();
         data.terrainSettings.minWaterSourceHeight = br.ReadSingle();
-        data.terrainSettings.terrainScale = br.ReadSingle();
         data.terrainSettings.riverWaterGain = br.ReadSingle();
         data.terrainSettings.maxRiverCount = br.ReadInt32();
         data.terrainSettings.maxRiverGenerationTries = br.ReadInt32();
+        data.terrainSettings.minRiverSlope = br.ReadSingle();
+        data.terrainSettings.riverDirectionImpact = br.ReadSingle();
 
         data.terrainData.seed = br.ReadInt32();
 

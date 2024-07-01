@@ -14,7 +14,7 @@ public static class DataManager
     public static void NewWorld(string worldName, TerrainSettingsObject terrainSettingsObj, PlayerSettingsObject playerSettingsObj, int seed)
     {
         Debug.Log("Creating World");
-        
+
         // Create a new WorldData
         WorldData worldData = WorldData.NewWorld(new(terrainSettingsObj), new(playerSettingsObj), seed);
 
@@ -57,7 +57,7 @@ public static class DataManager
     public static void SaveWorld()
     {
         Debug.Log("Saving world");
-        
+
         dataPersistanceObjects = FindAllDataPersistanceObjects();
 
         // Load the WorldData
