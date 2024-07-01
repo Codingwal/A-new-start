@@ -12,10 +12,10 @@ public static class MapDataGenerator
         float terrainScale = terrainSettings.terrainScale;
 
         Vector2[] biomeOctaveOffsets = VertexGenerator.GenerateOctaveOffsets(seed, 5);
-        BiomeSettings biomeSettings00 = VertexGenerator.GetBiomeSettings(new Vector2(center.x, center.y) / terrainScale, biomeOctaveOffsets, terrainSettings);
-        BiomeSettings biomeSettingsX0 = VertexGenerator.GetBiomeSettings(new Vector2(center.x + chunkSize - 1, center.y) / terrainScale, biomeOctaveOffsets, terrainSettings);
-        BiomeSettings biomeSettings0Y = VertexGenerator.GetBiomeSettings(new Vector2(center.x, center.y + chunkSize - 1) / terrainScale, biomeOctaveOffsets, terrainSettings);
-        BiomeSettings biomeSettingsXY = VertexGenerator.GetBiomeSettings(new Vector2(center.x + chunkSize - 1, center.y + chunkSize - 1) / terrainScale, biomeOctaveOffsets, terrainSettings);
+        BiomeSettings biomeSettings00 = VertexGenerator.GetBiomeSettings(new Vector2(center.x - chunkSize / 2, center.y - chunkSize / 2) / terrainScale, biomeOctaveOffsets, terrainSettings);
+        BiomeSettings biomeSettingsX0 = VertexGenerator.GetBiomeSettings(new Vector2(center.x + chunkSize / 2, center.y - chunkSize / 2) / terrainScale, biomeOctaveOffsets, terrainSettings);
+        BiomeSettings biomeSettings0Y = VertexGenerator.GetBiomeSettings(new Vector2(center.x - chunkSize / 2, center.y + chunkSize / 2) / terrainScale, biomeOctaveOffsets, terrainSettings);
+        BiomeSettings biomeSettingsXY = VertexGenerator.GetBiomeSettings(new Vector2(center.x + chunkSize / 2, center.y + chunkSize / 2) / terrainScale, biomeOctaveOffsets, terrainSettings);
 
         VertexData[,] map = new VertexData[(chunkSize - 1) / vertexIncrement + 1, (chunkSize - 1) / vertexIncrement + 1];
         for (int x = 0; x < chunkSize; x += vertexIncrement)

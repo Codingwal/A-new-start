@@ -51,10 +51,13 @@ MonoBehaviour:
       heightOffset: 200
   biomeScale: 5000
   uniformScale: 1
+  terrainScale: 1
   minHeight: 0
   maxHeight: 150
+  generateRivers: 0
   minWaterSourceHeight: 0.7
-  terrainScale: 1
   riverWaterGain: 0.1
   maxRiverCount: 10
   maxRiverGenerationTries: 15
+  minRiverSlope: 0.0001
+  riverDirectionImpact: 0

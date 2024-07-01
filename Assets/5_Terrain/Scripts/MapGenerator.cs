@@ -102,8 +102,11 @@ public class MapGenerator : Singleton<MapGenerator>
             }
             else
             {
-                mapDataHandler.sectors[sectorCenter] = new();
-                sectorData = RiverGenerator.GenerateRivers(sectorCenter, MapDataHandler.worldData.terrainData.seed, sectorSize, terrainSettings);
+                if (terrainSettings.generateRivers)
+                    sectorData = RiverGenerator.GenerateRivers(sectorCenter, MapDataHandler.worldData.terrainData.seed, sectorSize, terrainSettings);
+                else
+                    sectorData = new();
+
                 mapDataHandler.sectors[sectorCenter] = sectorData;
             }
         }

@@ -57,6 +57,7 @@ public class TerrainSettings
     public float maxHeight = 150;
 
     // Rivers
+    public bool generateRivers = true;
     public float minWaterSourceHeight = 0.7f;
     public float riverWaterGain = 0.01f;
     public int maxRiverCount = 10;
@@ -80,6 +81,7 @@ public class TerrainSettings
         minHeight = obj.minHeight;
         maxHeight = obj.maxHeight;
 
+        generateRivers = obj.generateRivers;
         minWaterSourceHeight = obj.minWaterSourceHeight;
         riverWaterGain = obj.riverWaterGain;
         maxRiverCount = obj.maxRiverCount;

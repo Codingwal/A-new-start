@@ -19,6 +19,7 @@ public class TerrainSettingsObject : ScriptableObject
     public float maxHeight = 150;
 
     [Header("Rivers")]
+    public bool generateRivers = true;
     public float minWaterSourceHeight = 0.7f;
     public float riverWaterGain = 5;
     public int maxRiverCount = 10;
