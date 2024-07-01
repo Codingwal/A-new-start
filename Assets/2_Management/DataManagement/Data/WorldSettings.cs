@@ -50,10 +50,6 @@ public class TerrainSettings
     public float octaveFrequencyFactor;
     public float octaveAmplitudeFactor;
 
-    // Unused??
-    public float minHeight;
-    public float maxHeight;
-
     // Rivers
     public bool generateRivers;
     public float minWaterSourceHeight;
@@ -75,9 +71,6 @@ public class TerrainSettings
         biomeScale = obj.biomeScale;
         uniformScale = obj.uniformScale;
         terrainScale = obj.terrainScale;
-
-        minHeight = obj.minHeight;
-        maxHeight = obj.maxHeight;
 
         noiseScale = obj.noiseScale;
         octaves = obj.octaves;

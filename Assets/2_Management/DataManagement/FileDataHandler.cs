@@ -134,9 +134,6 @@ public class FileDataHandler
         bw.Write(terrainSettings.octaveFrequencyFactor);
         bw.Write(terrainSettings.octaveAmplitudeFactor);
 
-        bw.Write(terrainSettings.minHeight);
-        bw.Write(terrainSettings.maxHeight);
-
         bw.Write(terrainSettings.generateRivers);
         bw.Write(terrainSettings.minWaterSourceHeight);
         bw.Write(terrainSettings.riverWaterGain);
@@ -224,9 +221,6 @@ public class FileDataHandler
         data.terrainSettings.octaves = br.ReadInt32();
         data.terrainSettings.octaveFrequencyFactor = br.ReadSingle();
         data.terrainSettings.octaveAmplitudeFactor = br.ReadSingle();
-
-        data.terrainSettings.minHeight = br.ReadSingle();
-        data.terrainSettings.maxHeight = br.ReadSingle();
 
         data.terrainSettings.generateRivers = br.ReadBoolean();
         data.terrainSettings.minWaterSourceHeight = br.ReadSingle();

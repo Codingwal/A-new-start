@@ -20,10 +20,6 @@ public class TerrainSettingsObject : ScriptableObject
     public float octaveFrequencyFactor;
     public float octaveAmplitudeFactor;
 
-    [Header("Unused??")]
-    public float minHeight;
-    public float maxHeight;
-
     [Header("Rivers")]
     public bool generateRivers;
     public float minWaterSourceHeight;
