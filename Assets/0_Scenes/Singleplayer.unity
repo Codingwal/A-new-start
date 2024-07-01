@@ -1609,7 +1609,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 965662046}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 70
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -1954,18 +1954,22 @@ MonoBehaviour:
       values: []
     biomeScale: 5000
     uniformScale: 0
-    minHeight: 0
-    maxHeight: 0
-    minWaterSourceHeight: 0.7
     terrainScale: 1
+    noiseScale: 0
+    octaves: 0
+    octaveFrequencyFactor: 0
+    octaveAmplitudeFactor: 0
+    generateRivers: 0
+    minWaterSourceHeight: 0.7
     riverWaterGain: 0.01
     maxRiverCount: 10
     maxRiverGenerationTries: 15
+    minRiverSlope: 0
+    riverDirectionImpact: 0
   terrainMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
   chunkSize: 241
   chunksPerSector1D: 9
   vertexIncrement: 1
-  riverFactor: 0
 --- !u!4 &1146475733
 Transform:
   m_ObjectHideFlags: 0
@@ -1998,10 +2002,8 @@ MonoBehaviour:
   detailLevels:
   - lod: 0
     visibleDistanceThreshold: 100
-    useForCollider: 1
   - lod: 0
     visibleDistanceThreshold: 800
-    useForCollider: 0
   viewer: {fileID: 965662050}
   mapMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
 --- !u!114 &1146475735
