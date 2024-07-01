@@ -21,9 +21,6 @@ public class BiomeSettings
 {
     public float heightMultiplier = 150;
     public int octaves = 8;
-    public float noiseScale = 500;
-    public float octaveFrequencyFactor = 2;
-    public float octaveAmplitudeFactor = 0.5f;
     public float slopeImpact = 1;
     public float heightOffset = 0;
     public static BiomeSettings Lerp(BiomeSettings a, BiomeSettings b, float t)
@@ -32,9 +29,6 @@ public class BiomeSettings
         {
             heightMultiplier = Mathf.Lerp(a.heightMultiplier, b.heightMultiplier, t),
             octaves = Mathf.RoundToInt(Mathf.Lerp(a.octaves, b.octaves, t)),
-            noiseScale = Mathf.Lerp(a.noiseScale, b.noiseScale, t),
-            octaveFrequencyFactor = Mathf.Lerp(a.octaveFrequencyFactor, b.octaveFrequencyFactor, t),
-            octaveAmplitudeFactor = Mathf.Lerp(a.octaveAmplitudeFactor, b.octaveAmplitudeFactor, t),
             slopeImpact = Mathf.Lerp(a.slopeImpact, b.slopeImpact, t),
             heightOffset = Mathf.Lerp(a.heightOffset, b.heightOffset, t),
         };
@@ -46,24 +40,29 @@ public class TerrainSettings
 {
     // Biomes
     public SerializableDictonary<float, BiomeSettings> biomes = new();
-    public float biomeScale = 5000;
+    public float biomeScale;
 
     // Scale
-    public float uniformScale = 1;
-    public float terrainScale = 1;
+    public float uniformScale;
+    public float terrainScale;
+
+    // Noise settings
+    public float noiseScale;
+    public float octaveFrequencyFactor;
+    public float octaveAmplitudeFactor;
 
     // Unused??
-    public float minHeight = 0;
-    public float maxHeight = 150;
+    public float minHeight;
+    public float maxHeight;
 
     // Rivers
     public bool generateRivers;
-    public float minWaterSourceHeight = 0.7f;
-    public float riverWaterGain = 0.01f;
-    public int maxRiverCount = 10;
-    public int maxRiverGenerationTries = 15;
-    public float minRiverSlope = 0.0001f;
-    public float riverDirectionImpact = 0;
+    public float minWaterSourceHeight;
+    public float riverWaterGain;
+    public int maxRiverCount;
+    public int maxRiverGenerationTries;
+    public float minRiverSlope;
+    public float riverDirectionImpact;
     public TerrainSettings()
     {
 
@@ -80,6 +79,10 @@ public class TerrainSettings
 
         minHeight = obj.minHeight;
         maxHeight = obj.maxHeight;
+
+        noiseScale = obj.noiseScale;
+        octaveFrequencyFactor = obj.octaveFrequencyFactor;
+        octaveAmplitudeFactor = obj.octaveAmplitudeFactor;
 
         generateRivers = obj.generateRivers;
         minWaterSourceHeight = obj.minWaterSourceHeight;

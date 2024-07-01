@@ -8,22 +8,27 @@ public class TerrainSettingsObject : ScriptableObject
 {
     [Header("Biomes")]
     public List<BiomeWrapper> biomes = new() { new() };
-    public float biomeScale = 5000;
+    public float biomeScale;
 
     [Header("Scale")]
-    public float uniformScale = 1;
-    public float terrainScale = 1;
+    public float uniformScale;
+    public float terrainScale;
+
+    [Header("Noise settings")]
+    public float noiseScale;
+    public float octaveFrequencyFactor;
+    public float octaveAmplitudeFactor;
 
     [Header("Unused??")]
-    public float minHeight = 0;
-    public float maxHeight = 150;
+    public float minHeight;
+    public float maxHeight;
 
     [Header("Rivers")]
-    public bool generateRivers = true;
-    public float minWaterSourceHeight = 0.7f;
-    public float riverWaterGain = 5;
-    public int maxRiverCount = 10;
-    public int maxRiverGenerationTries = 15;
-    public float minRiverSlope = 0.0001f;
-    public float riverDirectionImpact = 0;
+    public bool generateRivers;
+    public float minWaterSourceHeight;
+    public float riverWaterGain;
+    public int maxRiverCount;
+    public int maxRiverGenerationTries;
+    public float minRiverSlope;
+    public float riverDirectionImpact;
 }

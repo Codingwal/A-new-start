@@ -31,7 +31,7 @@ public static class MapDataGenerator
                 BiomeSettings biomeSettings = BiomeSettings.Lerp(biomeSettings0, biomeSettingsY, (float)y / (chunkSize - 1) / terrainScale);
 
                 // Calculate the height using the biomeSettings
-                map[x / vertexIncrement, y / vertexIncrement].height = VertexGenerator.GenerateVertexData(new Vector2(x + center.x - chunkSize / 2, y + center.y - chunkSize / 2), seed, biomeSettings, terrainScale);
+                map[x / vertexIncrement, y / vertexIncrement].height = VertexGenerator.GenerateVertexData(new Vector2(x + center.x - chunkSize / 2, y + center.y - chunkSize / 2), seed, biomeSettings, terrainSettings, terrainScale);
             }
         }
 

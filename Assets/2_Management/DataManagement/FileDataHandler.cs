@@ -124,9 +124,6 @@ public class FileDataHandler
 
             bw.Write(biome.Value.heightMultiplier);
             bw.Write(biome.Value.octaves);
-            bw.Write(biome.Value.noiseScale);
-            bw.Write(biome.Value.octaveFrequencyFactor);
-            bw.Write(biome.Value.octaveAmplitudeFactor);
             bw.Write(biome.Value.slopeImpact);
             bw.Write(biome.Value.heightOffset);
         }
@@ -136,6 +133,10 @@ public class FileDataHandler
 
         bw.Write(terrainSettings.uniformScale);
         bw.Write(terrainSettings.terrainScale);
+
+        bw.Write(terrainSettings.noiseScale);
+        bw.Write(terrainSettings.octaveFrequencyFactor);
+        bw.Write(terrainSettings.octaveAmplitudeFactor);
 
         bw.Write(terrainSettings.minHeight);
         bw.Write(terrainSettings.maxHeight);
@@ -212,9 +213,6 @@ public class FileDataHandler
             {
                 heightMultiplier = br.ReadSingle(),
                 octaves = br.ReadInt32(),
-                noiseScale = br.ReadSingle(),
-                octaveFrequencyFactor = br.ReadSingle(),
-                octaveAmplitudeFactor = br.ReadSingle(),
                 slopeImpact = br.ReadSingle(),
                 heightOffset = br.ReadSingle()
             };
@@ -226,6 +224,10 @@ public class FileDataHandler
 
         data.terrainSettings.uniformScale = br.ReadSingle();
         data.terrainSettings.terrainScale = br.ReadSingle();
+
+        data.terrainSettings.noiseScale = br.ReadSingle();
+        data.terrainSettings.octaveFrequencyFactor = br.ReadSingle();
+        data.terrainSettings.octaveAmplitudeFactor = br.ReadSingle();
 
         data.terrainSettings.minHeight = br.ReadSingle();
         data.terrainSettings.maxHeight = br.ReadSingle();
