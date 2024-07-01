@@ -1,13 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
 using System;
 using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
-using Unity.IO.LowLevel.Unsafe;
-using System.Data;
 
 public class FileDataHandler
 {
@@ -123,7 +119,6 @@ public class FileDataHandler
             bw.Write(biome.Key);
 
             bw.Write(biome.Value.heightMultiplier);
-            bw.Write(biome.Value.octaves);
             bw.Write(biome.Value.slopeImpact);
             bw.Write(biome.Value.heightOffset);
         }
@@ -135,6 +130,7 @@ public class FileDataHandler
         bw.Write(terrainSettings.terrainScale);
 
         bw.Write(terrainSettings.noiseScale);
+        bw.Write(terrainSettings.octaves);
         bw.Write(terrainSettings.octaveFrequencyFactor);
         bw.Write(terrainSettings.octaveAmplitudeFactor);
 
@@ -212,7 +208,6 @@ public class FileDataHandler
             BiomeSettings biomeSettings = new()
             {
                 heightMultiplier = br.ReadSingle(),
-                octaves = br.ReadInt32(),
                 slopeImpact = br.ReadSingle(),
                 heightOffset = br.ReadSingle()
             };
@@ -226,6 +221,7 @@ public class FileDataHandler
         data.terrainSettings.terrainScale = br.ReadSingle();
 
         data.terrainSettings.noiseScale = br.ReadSingle();
+        data.terrainSettings.octaves = br.ReadInt32();
         data.terrainSettings.octaveFrequencyFactor = br.ReadSingle();
         data.terrainSettings.octaveAmplitudeFactor = br.ReadSingle();
 

@@ -4,15 +4,15 @@ public class PlayerMovement : MonoBehaviour
 {
     public Rigidbody rb;
 
-    public float jumpForce = 4f;
+    [SerializeField] float jumpForce;
     [Space]
-    public float walkSpeed = 5f;
-    public float sprintSpeed = 7f;
-    public float crouchSpeed = 3f;
-    private float speed;
+    [SerializeField] float walkSpeed;
+    public float sprintSpeed;       // Can be modified by DebugScreen.cs
+    [SerializeField] float crouchSpeed;
+    float speed;
 
-    private bool isGrounded;
-    private float floorAngle;
+    bool isGrounded;
+    float floorAngle;
 
     private void Start()
     {

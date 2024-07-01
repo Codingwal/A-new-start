@@ -2,7 +2,7 @@ using UnityEngine;
 public class PlayerDataHandler : MonoBehaviour, IDataCallbackReceiver
 {
     [SerializeField] Transform playerCamera;
-    private PlayerLook playerLookScript;
+    PlayerLook playerLookScript;
     private void Awake()
     {
         MainSystem.gameState = GameState.MainMenu;

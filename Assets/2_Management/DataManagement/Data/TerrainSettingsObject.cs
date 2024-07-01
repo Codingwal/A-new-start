@@ -16,6 +16,7 @@ public class TerrainSettingsObject : ScriptableObject
 
     [Header("Noise settings")]
     public float noiseScale;
+    public int octaves;
     public float octaveFrequencyFactor;
     public float octaveAmplitudeFactor;
 

@@ -19,16 +19,14 @@ public class PlayerSettings
 [Serializable]
 public class BiomeSettings
 {
-    public float heightMultiplier = 150;
-    public int octaves = 8;
-    public float slopeImpact = 1;
-    public float heightOffset = 0;
+    public float heightMultiplier;
+    public float slopeImpact;
+    public float heightOffset;
     public static BiomeSettings Lerp(BiomeSettings a, BiomeSettings b, float t)
     {
         return new()
         {
             heightMultiplier = Mathf.Lerp(a.heightMultiplier, b.heightMultiplier, t),
-            octaves = Mathf.RoundToInt(Mathf.Lerp(a.octaves, b.octaves, t)),
             slopeImpact = Mathf.Lerp(a.slopeImpact, b.slopeImpact, t),
             heightOffset = Mathf.Lerp(a.heightOffset, b.heightOffset, t),
         };
@@ -48,6 +46,7 @@ public class TerrainSettings
 
     // Noise settings
     public float noiseScale;
+    public int octaves;
     public float octaveFrequencyFactor;
     public float octaveAmplitudeFactor;
 
@@ -81,6 +80,7 @@ public class TerrainSettings
         maxHeight = obj.maxHeight;
 
         noiseScale = obj.noiseScale;
+        octaves = obj.octaves;
         octaveFrequencyFactor = obj.octaveFrequencyFactor;
         octaveAmplitudeFactor = obj.octaveAmplitudeFactor;
 

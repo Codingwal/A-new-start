@@ -7,9 +7,9 @@ public static class DataManager
     public static string currentWorldName = "";
     public static string fileName;
 
-    private static FileDataHandler dataHandler = new();
+    static FileDataHandler dataHandler = new();
 
-    private static List<IDataCallbackReceiver> dataPersistanceObjects;
+    static List<IDataCallbackReceiver> dataPersistanceObjects;
 
     public static void NewWorld(string worldName, TerrainSettingsObject terrainSettingsObj, PlayerSettingsObject playerSettingsObj, int seed)
     {

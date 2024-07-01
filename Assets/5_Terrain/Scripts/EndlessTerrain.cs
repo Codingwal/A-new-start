@@ -8,16 +8,16 @@ public class EndlessTerrain : MonoBehaviour
     // Reduces the amount of chunk updates through a threshhold that the player needs to move
     const float viewerMoveThresholdForChunkUpdate = 25f;
     const float sqrViewerMoveThresholdForChunkUpdate = viewerMoveThresholdForChunkUpdate * viewerMoveThresholdForChunkUpdate;
-    public LODInfo[] detailLevels;
+    [SerializeField] LODInfo[] detailLevels;
     public static float maxViewDistance;
 
 
     // Reference to the player (The object that should be in the center of the loaded chunks)
-    public Transform viewer;
-    public static Vector2 viewerPosition;
+    [SerializeField] Transform viewer;
+    [SerializeField] static Vector2 viewerPosition;
     Vector2 viewerPositionOld;
 
-    public Material mapMaterial;
+    [SerializeField] Material mapMaterial;
 
     int chunkSize;
     int chunksVisibleInViewDistance;
@@ -156,11 +156,9 @@ public class EndlessTerrain : MonoBehaviour
             for (int i = 0; i < detailLevels.Length; i++)
             {
                 lodMeshes[i] = new(detailLevels[i].lod, UpdateTerrainChunk);
-                if (detailLevels[i].useForCollider)
-                {
-                    collisionLODMesh = lodMeshes[i];
-                }
             }
+            collisionLODMesh = lodMeshes[0];
+
             chunksWaitingForMapDataCount++;
             MapGenerator.Instance.RequestMapData(position, OnMapDataReceived);
         }
@@ -273,6 +271,5 @@ public class EndlessTerrain : MonoBehaviour
     {
         public int lod;
         public float visibleDistanceThreshold;
-        public bool useForCollider;
     }
 }

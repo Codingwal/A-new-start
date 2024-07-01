@@ -17,7 +17,7 @@ public static class VertexGenerator
         Vector2[] octaveOffsets;
         if (octaves == 0)
         {
-            octaveOffsets = GenerateOctaveOffsets(seed, biomeSettings.octaves);
+            octaveOffsets = GenerateOctaveOffsets(seed, terrainSettings.octaves);
         }
         else
         {

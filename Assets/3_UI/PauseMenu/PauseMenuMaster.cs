@@ -6,12 +6,12 @@ using TMPro;
 
 public class PauseMenuMaster : MonoBehaviour
 {
-    public GameObject player;
-    public GameObject pauseMenu;
+    [SerializeField] GameObject player;
+    [SerializeField] GameObject pauseMenu;
     [Space]
-    public GameObject loadingScreen;
-    public Slider progressSlider;
-    public TMP_Text progressText;
+    [SerializeField] GameObject loadingScreen;
+    [SerializeField] Slider progressSlider;
+    [SerializeField] TMP_Text progressText;
     private void Awake()
     {
         SceneSystem.Loading += OnSceneLoading;

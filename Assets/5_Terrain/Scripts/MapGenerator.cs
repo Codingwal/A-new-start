@@ -9,9 +9,9 @@ public class MapGenerator : Singleton<MapGenerator>
     [HideInInspector] public TerrainSettings terrainSettings;
 
     public Material terrainMaterial;
-    public int chunkSize = 241;
-    public int chunksPerSector1D = 9;
-    public int vertexIncrement = 1;
+    public int chunkSize;
+    public int chunksPerSector1D;
+    public int vertexIncrement;
 
     Queue<MapThreadInfo<MapData>> mapDataThreadInfoQueue = new();
     Queue<MapThreadInfo<MeshData>> meshDataThreadInfoQueue = new();

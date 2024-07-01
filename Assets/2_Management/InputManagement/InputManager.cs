@@ -4,8 +4,8 @@ using static UnityEngine.InputSystem.InputAction;
 
 public class InputManager : Singleton<InputManager>
 {
-    private PlayerInput playerInput;
-    private PlayerInput.GameplayActions gameplay;
+    PlayerInput playerInput;
+    PlayerInput.GameplayActions gameplay;
 
     public WalkState walkState;
     public event Action<Vector2> Move;
