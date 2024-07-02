@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DebugScreen : MonoBehaviour
 {
@@ -27,12 +28,20 @@ public class DebugScreen : MonoBehaviour
         InputManager.ToggleDebug += ToggleDebug;
         InputManager.ToggleDevSprint += ToggleDevSprint;
         InputManager.DevJump += DevJump;
+
+        // As this object is often inactive, this event is used instead of OnDestroy()
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
     }
-    void OnDestroy()
+    void OnSceneUnloaded(Scene scene)
     {
+        // Only execute the code if this object is closed, which only happens if the "Singleplayer" scene is closed
+        if (scene.name != SceneSystem.Scenes.Singleplayer.ToString()) return;
+
         InputManager.ToggleDebug -= ToggleDebug;
         InputManager.ToggleDevSprint -= ToggleDevSprint;
         InputManager.DevJump -= DevJump;
+
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
     }
     void ToggleDebug()
     {

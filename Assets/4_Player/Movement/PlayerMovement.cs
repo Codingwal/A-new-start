@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Inspired by https://www.youtube.com/watch?v=f473C43s8nE (FIRST PERSON MOVEMENT in 10 MINUTES - Unity Tutorial) by Dave/GameDevelopment
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] Rigidbody rb;
