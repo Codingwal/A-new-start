@@ -42,7 +42,7 @@ public class DebugScreen : MonoBehaviour
         InputManager.DevJump -= DevJump;
 
         SceneManager.sceneUnloaded -= OnSceneUnloaded;
-    }
+    } 
     void ToggleDebug()
     {
         transform.gameObject.SetActive(!transform.gameObject.activeSelf);
