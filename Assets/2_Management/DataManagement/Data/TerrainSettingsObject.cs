@@ -6,14 +6,26 @@ using UnityEngine;
 [Serializable]
 public class TerrainSettingsObject : ScriptableObject
 {
+    [Header("Biomes")]
     public List<BiomeWrapper> biomes = new() { new() };
-    public float biomeScale = 5000;
-    public float uniformScale = 1;
-    public float minHeight = 0;
-    public float maxHeight = 150;
-    public float minWaterSourceHeight = 0.7f;
-    public float terrainScale = 1;
-    public float riverWaterGain = 5;
-    public int maxRiverCount = 10;
-    public int maxRiverGenerationTries = 15;
+    public float biomeScale;
+
+    [Header("Scale")]
+    public float uniformScale;
+    public float terrainScale;
+
+    [Header("Noise settings")]
+    public float noiseScale;
+    public int octaves;
+    public float octaveFrequencyFactor;
+    public float octaveAmplitudeFactor;
+
+    [Header("Rivers")]
+    public bool generateRivers;
+    public float minWaterSourceHeight;
+    public float riverWaterGain;
+    public int maxRiverCount;
+    public int maxRiverGenerationTries;
+    public float minRiverSlope;
+    public float riverDirectionImpact;
 }

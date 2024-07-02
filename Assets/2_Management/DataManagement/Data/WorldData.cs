@@ -82,10 +82,6 @@ public struct VertexData
         this.waterAmount = waterAmount;
         this.waterVelocity = waterVelocity;
     }
-    public static VertexData operator +(VertexData a, VertexData b)
-    {
-        return new(a.height + b.height, a.waterAmount + b.waterAmount, a.waterVelocity + b.waterVelocity);
-    }
 }
 [Serializable]
 public class ChunkData

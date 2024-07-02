@@ -61,7 +61,7 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
     {
         System.Random rnd = new();
 
-        int seed = rnd.Next();
+        int seed = rnd.Next(-100000, 100000);
         int i = 1;
         while (VertexGenerator.GenerateVertexData(new Vector2(0, 0), seed, terrainSettings, terrainSettings.terrainScale) < 20)
         {

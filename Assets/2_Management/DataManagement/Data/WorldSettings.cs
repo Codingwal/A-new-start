@@ -19,22 +19,14 @@ public class PlayerSettings
 [Serializable]
 public class BiomeSettings
 {
-    public float heightMultiplier = 150;
-    public int octaves = 8;
-    public float noiseScale = 500;
-    public float octaveFrequencyFactor = 2;
-    public float octaveAmplitudeFactor = 0.5f;
-    public float slopeImpact = 1;
-    public float heightOffset = 0;
+    public float heightMultiplier;
+    public float slopeImpact;
+    public float heightOffset;
     public static BiomeSettings Lerp(BiomeSettings a, BiomeSettings b, float t)
     {
         return new()
         {
             heightMultiplier = Mathf.Lerp(a.heightMultiplier, b.heightMultiplier, t),
-            octaves = Mathf.RoundToInt(Mathf.Lerp(a.octaves, b.octaves, t)),
-            noiseScale = Mathf.Lerp(a.noiseScale, b.noiseScale, t),
-            octaveFrequencyFactor = Mathf.Lerp(a.octaveFrequencyFactor, b.octaveFrequencyFactor, t),
-            octaveAmplitudeFactor = Mathf.Lerp(a.octaveAmplitudeFactor, b.octaveAmplitudeFactor, t),
             slopeImpact = Mathf.Lerp(a.slopeImpact, b.slopeImpact, t),
             heightOffset = Mathf.Lerp(a.heightOffset, b.heightOffset, t),
         };
@@ -44,16 +36,28 @@ public class BiomeSettings
 [Serializable]
 public class TerrainSettings
 {
+    // Biomes
     public SerializableDictonary<float, BiomeSettings> biomes = new();
-    public float biomeScale = 5000;
-    public float uniformScale = 1;
-    public float minHeight = 0;
-    public float maxHeight = 150;
-    public float minWaterSourceHeight = 0.7f;
-    public float terrainScale = 1;
-    public float riverWaterGain = 0.01f;
-    public int maxRiverCount = 10;
-    public int maxRiverGenerationTries = 15;
+    public float biomeScale;
+
+    // Scale
+    public float uniformScale;
+    public float terrainScale;
+
+    // Noise settings
+    public float noiseScale;
+    public int octaves;
+    public float octaveFrequencyFactor;
+    public float octaveAmplitudeFactor;
+
+    // Rivers
+    public bool generateRivers;
+    public float minWaterSourceHeight;
+    public float riverWaterGain;
+    public int maxRiverCount;
+    public int maxRiverGenerationTries;
+    public float minRiverSlope;
+    public float riverDirectionImpact;
     public TerrainSettings()
     {
 
@@ -66,18 +70,26 @@ public class TerrainSettings
         }
         biomeScale = obj.biomeScale;
         uniformScale = obj.uniformScale;
-        minHeight = obj.minHeight;
-        maxHeight = obj.maxHeight;
-        minWaterSourceHeight = obj.minWaterSourceHeight;
         terrainScale = obj.terrainScale;
+
+        noiseScale = obj.noiseScale;
+        octaves = obj.octaves;
+        octaveFrequencyFactor = obj.octaveFrequencyFactor;
+        octaveAmplitudeFactor = obj.octaveAmplitudeFactor;
+
+        generateRivers = obj.generateRivers;
+        minWaterSourceHeight = obj.minWaterSourceHeight;
         riverWaterGain = obj.riverWaterGain;
         maxRiverCount = obj.maxRiverCount;
         maxRiverGenerationTries = obj.maxRiverGenerationTries;
+        minRiverSlope = obj.minRiverSlope;
+        riverDirectionImpact = obj.riverDirectionImpact;
     }
 }
 [Serializable]
 public class BiomeWrapper
 {
+    [Range(0, 1)]
     public float height = 0;
     public BiomeSettings biomeSettings = new();
 }

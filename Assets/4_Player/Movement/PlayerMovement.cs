@@ -1,18 +1,21 @@
 using UnityEngine;
 
+// Inspired by https://www.youtube.com/watch?v=f473C43s8nE (FIRST PERSON MOVEMENT in 10 MINUTES - Unity Tutorial) by Dave/GameDevelopment
 public class PlayerMovement : MonoBehaviour
 {
-    public Rigidbody rb;
+    [SerializeField] Rigidbody rb;
 
-    public float jumpForce = 4f;
-    [Space]
-    public float walkSpeed = 5f;
-    public float sprintSpeed = 7f;
-    public float crouchSpeed = 3f;
-    private float speed;
+    [Header("Movement settings")]
+    [SerializeField] float walkSpeed;
+    public float sprintSpeed;       // Can be modified by DebugScreen.cs
+    [SerializeField] float crouchSpeed;
+    float speed;
 
-    private bool isGrounded;
-    private float floorAngle;
+    [Header("Jumping")]
+    [SerializeField] float jumpForce;
+    [SerializeField] float maxJumpSlope;
+    bool canJump;
+    float floorAngle;
 
     private void Start()
     {
@@ -21,28 +24,35 @@ public class PlayerMovement : MonoBehaviour
     }
     private void OnCollisionStay(Collision collision)
     {
+        // Calculate the ground angle
+
         float minDistance = float.PositiveInfinity;
         floorAngle = 180;
 
+        // Find the closest point to the players feet and its angle
         for (int i = 0; i < collision.contactCount; i++)
         {
             ContactPoint contact = collision.GetContact(i);
 
-            float distance = Vector3.Distance(contact.point, transform.position);
+            // Calculate the distance to the players feet
+            float distance = Vector3.Distance(contact.point, transform.position - new Vector3(0, 1, 0));
 
+            // If this is the new closest collisionPoint, save its angle
             if (distance < minDistance)
             {
                 minDistance = distance;
-
                 floorAngle = Vector3.Angle(transform.up, contact.normal);
             }
         }
-        isGrounded = floorAngle <= 45;
+
+        // If the angle (slope) exceeds maxJumpSlope (is too steep), set canJump to false
+        canJump = floorAngle <= maxJumpSlope;
     }
     private void OnCollisionExit(Collision other)
     {
+        // If the player no longer has contact to another object, disable jumping
         floorAngle = 180;
-        isGrounded = false;
+        canJump = false;
     }
     public void ProcessMove(Vector2 input)
     {
@@ -59,13 +69,23 @@ public class PlayerMovement : MonoBehaviour
                 speed = crouchSpeed;
                 break;
         }
-        Vector3 velocity = input.x * transform.right + input.y * transform.forward;
 
-        rb.MovePosition(transform.position + (speed * Time.deltaTime * velocity));
+        // Calculate the 2d movement by using the user input
+        Vector3 movement = input.x * transform.right + input.y * transform.forward;
+
+        // rb.velocity = speed * movement.normalized + new Vector3(0, rb.velocity.y, 0);
+        rb.AddForce(speed * movement.normalized * 10f, ForceMode.Force);
+
+        Vector2 floatVelocity = new(rb.velocity.x, rb.velocity.z);
+        if (floatVelocity.magnitude > speed)
+        {
+            Vector2 limitedVelocity = floatVelocity.normalized * speed;
+            rb.velocity = new(limitedVelocity.x, rb.velocity.y, limitedVelocity.y);
+        }
     }
     public void Jump()
     {
-        if (isGrounded)
+        if (canJump)
         {
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
         }

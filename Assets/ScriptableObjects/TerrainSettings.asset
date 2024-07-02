@@ -16,45 +16,36 @@ MonoBehaviour:
   - height: 0
     biomeSettings:
       heightMultiplier: 150
-      octaves: 8
-      noiseScale: 500
-      octaveFrequencyFactor: 2
-      octaveAmplitudeFactor: 0.5
       slopeImpact: 1
       heightOffset: -150
   - height: 0.1
     biomeSettings:
       heightMultiplier: 50
-      octaves: 8
-      noiseScale: 500
-      octaveFrequencyFactor: 2
-      octaveAmplitudeFactor: 0.5
       slopeImpact: 1
       heightOffset: 0
   - height: 0.2
     biomeSettings:
       heightMultiplier: 100
-      octaves: 8
-      noiseScale: 500
-      octaveFrequencyFactor: 2
-      octaveAmplitudeFactor: 0.5
       slopeImpact: 1
       heightOffset: 50
   - height: 1
     biomeSettings:
       heightMultiplier: 300
-      octaves: 8
-      noiseScale: 500
-      octaveFrequencyFactor: 2
-      octaveAmplitudeFactor: 0.5
       slopeImpact: 1
       heightOffset: 200
   biomeScale: 5000
   uniformScale: 1
+  terrainScale: 1
+  noiseScale: 500
+  octaves: 8
+  octaveFrequencyFactor: 2
+  octaveAmplitudeFactor: 0.5
   minHeight: 0
   maxHeight: 150
+  generateRivers: 0
   minWaterSourceHeight: 0.7
-  terrainScale: 1
   riverWaterGain: 0.1
   maxRiverCount: 10
   maxRiverGenerationTries: 15
+  minRiverSlope: 0.0001
+  riverDirectionImpact: 0

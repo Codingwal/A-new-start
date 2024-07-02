@@ -2,12 +2,11 @@ TODO:
 
 FOR NEXT BUILD:
 
-- devJump
-- Look at bookmarks
+- Improve rivers
+- Cleanup & improve TerrainSettings
 
 FUTURE PLANS:
 
-- Cleanup debug screen code
 - Cleanup scene system code
 
 - Finish rivers

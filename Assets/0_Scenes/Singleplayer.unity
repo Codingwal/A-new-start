@@ -1473,7 +1473,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 965662046}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: f6c57e8e02e271a4fad83714b618b139, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1568,10 +1568,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 965662057}
-  jumpForce: 4
   walkSpeed: 5
   sprintSpeed: 8
   crouchSpeed: 3
+  jumpForce: 4
+  maxJumpSlope: 35
 --- !u!114 &965662055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1954,18 +1955,22 @@ MonoBehaviour:
       values: []
     biomeScale: 5000
     uniformScale: 0
-    minHeight: 0
-    maxHeight: 0
-    minWaterSourceHeight: 0.7
     terrainScale: 1
+    noiseScale: 0
+    octaves: 0
+    octaveFrequencyFactor: 0
+    octaveAmplitudeFactor: 0
+    generateRivers: 0
+    minWaterSourceHeight: 0.7
     riverWaterGain: 0.01
     maxRiverCount: 10
     maxRiverGenerationTries: 15
+    minRiverSlope: 0
+    riverDirectionImpact: 0
   terrainMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
   chunkSize: 241
   chunksPerSector1D: 9
   vertexIncrement: 1
-  riverFactor: 0
 --- !u!4 &1146475733
 Transform:
   m_ObjectHideFlags: 0
@@ -1998,10 +2003,8 @@ MonoBehaviour:
   detailLevels:
   - lod: 0
     visibleDistanceThreshold: 100
-    useForCollider: 1
-  - lod: 0
+  - lod: 2
     visibleDistanceThreshold: 800
-    useForCollider: 0
   viewer: {fileID: 965662050}
   mapMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
 --- !u!114 &1146475735

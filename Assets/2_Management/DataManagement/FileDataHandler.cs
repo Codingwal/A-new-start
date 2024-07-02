@@ -1,13 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
 using System;
 using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
-using Unity.IO.LowLevel.Unsafe;
-using System.Data;
 
 public class FileDataHandler
 {
@@ -123,24 +119,28 @@ public class FileDataHandler
             bw.Write(biome.Key);
 
             bw.Write(biome.Value.heightMultiplier);
-            bw.Write(biome.Value.octaves);
-            bw.Write(biome.Value.noiseScale);
-            bw.Write(biome.Value.octaveFrequencyFactor);
-            bw.Write(biome.Value.octaveAmplitudeFactor);
             bw.Write(biome.Value.slopeImpact);
             bw.Write(biome.Value.heightOffset);
         }
         WriteClose(bw);
 
         bw.Write(terrainSettings.biomeScale);
+
         bw.Write(terrainSettings.uniformScale);
-        bw.Write(terrainSettings.minHeight);
-        bw.Write(terrainSettings.maxHeight);
-        bw.Write(terrainSettings.minWaterSourceHeight);
         bw.Write(terrainSettings.terrainScale);
+
+        bw.Write(terrainSettings.noiseScale);
+        bw.Write(terrainSettings.octaves);
+        bw.Write(terrainSettings.octaveFrequencyFactor);
+        bw.Write(terrainSettings.octaveAmplitudeFactor);
+
+        bw.Write(terrainSettings.generateRivers);
+        bw.Write(terrainSettings.minWaterSourceHeight);
         bw.Write(terrainSettings.riverWaterGain);
         bw.Write(terrainSettings.maxRiverCount);
         bw.Write(terrainSettings.maxRiverGenerationTries);
+        bw.Write(terrainSettings.minRiverSlope);
+        bw.Write(terrainSettings.riverDirectionImpact);
 
         TerrainData terrainData = data.terrainData;
         bw.Write(terrainData.seed);
@@ -205,10 +205,6 @@ public class FileDataHandler
             BiomeSettings biomeSettings = new()
             {
                 heightMultiplier = br.ReadSingle(),
-                octaves = br.ReadInt32(),
-                noiseScale = br.ReadSingle(),
-                octaveFrequencyFactor = br.ReadSingle(),
-                octaveAmplitudeFactor = br.ReadSingle(),
                 slopeImpact = br.ReadSingle(),
                 heightOffset = br.ReadSingle()
             };
@@ -217,14 +213,22 @@ public class FileDataHandler
         }
 
         data.terrainSettings.biomeScale = br.ReadSingle();
+
         data.terrainSettings.uniformScale = br.ReadSingle();
-        data.terrainSettings.minHeight = br.ReadSingle();
-        data.terrainSettings.maxHeight = br.ReadSingle();
-        data.terrainSettings.minWaterSourceHeight = br.ReadSingle();
         data.terrainSettings.terrainScale = br.ReadSingle();
+
+        data.terrainSettings.noiseScale = br.ReadSingle();
+        data.terrainSettings.octaves = br.ReadInt32();
+        data.terrainSettings.octaveFrequencyFactor = br.ReadSingle();
+        data.terrainSettings.octaveAmplitudeFactor = br.ReadSingle();
+
+        data.terrainSettings.generateRivers = br.ReadBoolean();
+        data.terrainSettings.minWaterSourceHeight = br.ReadSingle();
         data.terrainSettings.riverWaterGain = br.ReadSingle();
         data.terrainSettings.maxRiverCount = br.ReadInt32();
         data.terrainSettings.maxRiverGenerationTries = br.ReadInt32();
+        data.terrainSettings.minRiverSlope = br.ReadSingle();
+        data.terrainSettings.riverDirectionImpact = br.ReadSingle();
 
         data.terrainData.seed = br.ReadInt32();
 

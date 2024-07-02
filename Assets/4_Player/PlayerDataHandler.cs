@@ -2,7 +2,7 @@ using UnityEngine;
 public class PlayerDataHandler : MonoBehaviour, IDataCallbackReceiver
 {
     [SerializeField] Transform playerCamera;
-    private PlayerLook playerLookScript;
+    PlayerLook playerLookScript;
     private void Awake()
     {
         MainSystem.gameState = GameState.MainMenu;
@@ -30,7 +30,7 @@ public class PlayerDataHandler : MonoBehaviour, IDataCallbackReceiver
         Time.timeScale = 1;
 
         if (Mathf.Round(transform.position.y) == 200)
-            transform.position = new(0, MapDataHandler.chunks[new(0, 0)].map[0].list[0].height + 10, 0);
+            transform.position = new(0, MapDataHandler.chunks[new(0, 0)].map[120].list[120].height + 2, 0);
     }
 
     public void SaveData(WorldData worldData)

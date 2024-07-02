@@ -7,14 +7,14 @@ public static class DataManager
     public static string currentWorldName = "";
     public static string fileName;
 
-    private static FileDataHandler dataHandler = new();
+    static FileDataHandler dataHandler = new();
 
-    private static List<IDataCallbackReceiver> dataPersistanceObjects;
+    static List<IDataCallbackReceiver> dataPersistanceObjects;
 
     public static void NewWorld(string worldName, TerrainSettingsObject terrainSettingsObj, PlayerSettingsObject playerSettingsObj, int seed)
     {
         Debug.Log("Creating World");
-        
+
         // Create a new WorldData
         WorldData worldData = WorldData.NewWorld(new(terrainSettingsObj), new(playerSettingsObj), seed);
 
@@ -57,7 +57,7 @@ public static class DataManager
     public static void SaveWorld()
     {
         Debug.Log("Saving world");
-        
+
         dataPersistanceObjects = FindAllDataPersistanceObjects();
 
         // Load the WorldData
