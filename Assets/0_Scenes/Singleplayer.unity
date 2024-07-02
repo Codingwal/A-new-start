@@ -1573,8 +1573,6 @@ MonoBehaviour:
   crouchSpeed: 3
   jumpForce: 4
   maxJumpSlope: 35
-  canJump: 0
-  floorAngle: 0
 --- !u!114 &965662055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2005,7 +2003,7 @@ MonoBehaviour:
   detailLevels:
   - lod: 0
     visibleDistanceThreshold: 100
-  - lod: 0
+  - lod: 2
     visibleDistanceThreshold: 800
   viewer: {fileID: 965662050}
   mapMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
