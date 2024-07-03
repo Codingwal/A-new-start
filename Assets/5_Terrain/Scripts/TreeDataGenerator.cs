@@ -3,47 +3,51 @@ using UnityEngine;
 
 public static class TreeDataGenerator
 {
-    public static void GenerateTrees(VertexData[,] map, TerrainSettings terrainSettings, int seed)
+    public static void GenerateTrees(VertexData[,] map, TerrainSettings terrainSettings, int seed, Vector2Int chunkCenter, int chunkSize)
     {
-        Debug.LogWarning("1");
-        const float perlinNoiseScale = 1;
-        const float propabilityLerpMinHeight = 70;
-        const float propabilityLerpMaxHeight = 100;
+        const float perlinNoiseScale = 100;
+        const float propabilityLerpMaxHeightBegin = 70;
+        const float propabilityLerpMaxHeightEnd = 100;
+        const float propabilityLerpMinHeightBegin = 15;
+        const float propabilityLerpMinHeightEnd = 30;
         const float propabilityLerpMinSlope = 0.4f;
         const float propabilityLerpMaxSlope = 0.8f;
 
         float[,] propabilityMap = new float[map.GetLength(0), map.GetLength(1)];
-        for (int x = 0; x < map.GetLength(0); x++)
+        for (int x = 0; x < map.GetLength(0); x += 5)
         {
-            for (int y = 0; y < map.GetLength(1); y++)
+            for (int y = 0; y < map.GetLength(1); y += 5)
             {
-                float probability = Mathf.PerlinNoise((x + 100) * perlinNoiseScale, (y + 100) * perlinNoiseScale);
+                Vector2 pos = new Vector2(x, y) + chunkCenter - new Vector2(chunkSize / 2, chunkSize / 2);
+                float probability = Mathf.PerlinNoise((seed + pos.x) / perlinNoiseScale, (seed + pos.y) / perlinNoiseScale);
+                Debug.Log(probability);
 
                 // Limit the probability to 1 so that exceeding the maxHeight or maxSlope garantuees that a tree isn't generated
                 probability = Mathf.Min(probability, 1);
+                // Debug.LogWarning(probability);
 
                 // Reduce the propability for steep and/or high vertices
-                // probability -= Mathf.InverseLerp(propabilityLerpMinHeight, propabilityLerpMaxHeight, map[x, y].height);
-                // probability -= Mathf.InverseLerp(propabilityLerpMinSlope, propabilityLerpMaxSlope, Slope(map, x, y));
+                probability -= Mathf.InverseLerp(propabilityLerpMaxHeightBegin, propabilityLerpMaxHeightEnd, map[x, y].height);
+                probability -= Mathf.InverseLerp(propabilityLerpMinHeightEnd, propabilityLerpMinHeightBegin, map[x, y].height);
+                probability -= Mathf.InverseLerp(propabilityLerpMinSlope, propabilityLerpMaxSlope, Slope(map, x, y));
 
                 propabilityMap[x, y] = probability;
             }
         }
-        Debug.LogWarning("2");
 
         for (int x = 0; x < map.GetLength(0); x++)
         {
             for (int y = 0; y < map.GetLength(1); y++)
             {
-                // // Generate a deterministic, position and seed dependent random value between 0 and 0.5 and add it to the propability
-                // System.Random rnd = new(seed + 879 * x * y ^ 2);
-                // probability += (float)rnd.NextDouble() / 2;
+                // Generate a deterministic, position and seed dependent random value between 0 and 1
+                System.Random rnd = new(seed + 879 * x * y ^ 2);
+                float value = (float)rnd.NextDouble();
 
-                if (propabilityMap[x, y] > 0.1f)
+                // The greater the propability, the likelier it is for a tree to be generated
+                if (value < propabilityMap[x, y])
                     map[x, y].tree = 1;
             }
         }
-        Debug.LogWarning("3");
     }
     static float Slope(VertexData[,] map, int x, int y)
     {

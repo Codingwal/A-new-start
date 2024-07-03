@@ -95,7 +95,7 @@ public static class MapDataGenerator
             rivers.Add(riverPoints);
         }
 
-        TreeDataGenerator.GenerateTrees(map, terrainSettings, seed);
+        TreeDataGenerator.GenerateTrees(map, terrainSettings, seed, center, chunkSize);
 
         return new(map, rivers);
     }

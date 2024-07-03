@@ -105,7 +105,7 @@ public class EndlessTerrain : MonoBehaviour
                 }
                 else
                 {
-                    terrainChunkDictonary.Add(chunkPos, new TerrainChunk(chunkPos, chunkSize, detailLevels, transform, mapMaterial, terrainChunkPrefab, treePrefab));
+                    terrainChunkDictonary.Add(chunkPos, new TerrainChunk(chunkPos, (int)chunkSize, detailLevels, transform, mapMaterial, terrainChunkPrefab, treePrefab));
                 }
             }
         }
@@ -119,6 +119,7 @@ public class EndlessTerrain : MonoBehaviour
         Bounds bounds;
 
         // Trees
+        Transform treeChild;
         GameObject treePrefab;
         bool hasTrees = false;
 
@@ -178,6 +179,7 @@ public class EndlessTerrain : MonoBehaviour
             collisionLODMesh = lodMeshes[0];
 
             this.treePrefab = treePrefab;
+            treeChild = terrainChunk.transform.GetChild(4);
 
             // Request the mapData and increase the counter used to determine the TerrainGeneration progress
             chunksWaitingForMapDataCount++;
@@ -209,7 +211,8 @@ public class EndlessTerrain : MonoBehaviour
             {
                 if (!hasTrees)
                 {
-                    TreeObjGenerator.InstantiateTrees(mapData.map, terrainChunk.transform, treePrefab);
+                    TreeObjGenerator.InstantiateTrees(mapData.map, treeChild, treePrefab);
+                    hasTrees = true;
                 }
 
                 riverMeshFilter.mesh = RiverMeshGenerator.GenerateRiverMesh(mapData.rivers, 241);
