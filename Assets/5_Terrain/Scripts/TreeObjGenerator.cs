@@ -9,14 +9,10 @@ public static class TreeObjGenerator
         {
             GameObject newObj = GameObject.Instantiate(prefab, parent);
 
-            try
-            {
-                newObj.transform.localPosition = new(tree.pos.x, map.map[Mathf.RoundToInt(tree.pos.x), Mathf.RoundToInt(tree.pos.y)].height, tree.pos.y);
-            }
-            catch (Exception)
-            {
-                Debug.LogError(new Vector2(Mathf.RoundToInt(tree.pos.x), Mathf.RoundToInt(tree.pos.y)));
-            }
+            newObj.transform.localPosition = new(tree.pos.x, map.map[Mathf.RoundToInt(tree.pos.x), Mathf.RoundToInt(tree.pos.y)].height - 0.3f, tree.pos.y);
+
+            System.Random rnd = new((int)tree.pos.x * (int)tree.pos.y ^ 2);
+            newObj.transform.rotation = Quaternion.Euler(0, rnd.Next(-180, 180), 0);
         }
     }
 }
