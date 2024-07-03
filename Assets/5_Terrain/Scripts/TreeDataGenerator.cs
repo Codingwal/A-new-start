@@ -15,13 +15,13 @@ public static class TreeDataGenerator
         const float propabilityLerpMaxSlope = 0.8f;
         const float maxPositioningOffset = 0.5f;
         const int minTreeDistance = 2;
-        const float minProbability = 0f;
+        // const float treeGenerationTolerance = 0f;
 
         List<Vector2Int> pointsToGenerate = GetPointsToGenerate(seed, chunkCenter, chunkSize, minTreeDistance);
 
         foreach (Vector2Int point in pointsToGenerate)
         {
-            Vector2 pos = point + chunkCenter - new Vector2(chunkSize / 2, chunkSize / 2);
+            Vector2Int pos = point + chunkCenter - new Vector2Int(chunkSize / 2, chunkSize / 2);
             float probability = Mathf.PerlinNoise((seed + pos.x) / perlinNoiseScale, (seed + pos.y) / perlinNoiseScale);
 
             // Limit the probability to 1 so that exceeding the maxHeight or maxSlope garantuees that a tree isn't generated
@@ -33,9 +33,11 @@ public static class TreeDataGenerator
             probability -= Mathf.InverseLerp(propabilityLerpMinHeightEnd, propabilityLerpMinHeightBegin, map.map[point.x, point.y].height);
             probability -= Mathf.InverseLerp(propabilityLerpMinSlope, propabilityLerpMaxSlope, Slope(map.map, point.x, point.y));
 
-            if (!(probability > minProbability)) continue;
+            System.Random rnd = new(seed + 100 + pos.x * pos.y ^ 2);
 
-            System.Random rnd = new(seed + 100 + point.x * point.y ^ 2);
+            if (rnd.NextDouble() > probability) continue;
+            // Debug.Log(probability);
+
             Vector2 localPos = point;
             localPos += 2 * maxPositioningOffset * new Vector2((float)rnd.NextDouble() - 0.5f, (float)rnd.NextDouble() - 0.5f);
             map.trees.Add(new(localPos, 1));
