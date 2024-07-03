@@ -75,13 +75,7 @@ public struct VertexData
 {
     public float height;
     public float waterAmount;
-    public Vector2 waterVelocity;
-    public VertexData(float height, float waterAmount, Vector2 waterVelocity)
-    {
-        this.height = height;
-        this.waterAmount = waterAmount;
-        this.waterVelocity = waterVelocity;
-    }
+    public uint tree;
 }
 [Serializable]
 public class ChunkData

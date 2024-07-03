@@ -130,7 +130,7 @@ public class MapGenerator : Singleton<MapGenerator>
 }
 public struct MapData
 {
-    public VertexData[,] map { get; private set; }
+    public VertexData[,] map;
     public List<List<Vector3>> rivers;
 
     public MapData(VertexData[,] map, List<List<Vector3>> rivers)

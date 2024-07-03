@@ -4,6 +4,7 @@ using UnityEngine;
 public class EndlessTerrain : MonoBehaviour
 {
     public GameObject terrainChunkPrefab;
+    public GameObject treePrefab;
 
     // Reduces the amount of chunk updates through a threshhold that the player needs to move
     const float viewerMoveThresholdForChunkUpdate = 25f;
@@ -104,7 +105,7 @@ public class EndlessTerrain : MonoBehaviour
                 }
                 else
                 {
-                    terrainChunkDictonary.Add(chunkPos, new TerrainChunk(chunkPos, chunkSize, detailLevels, transform, mapMaterial, terrainChunkPrefab));
+                    terrainChunkDictonary.Add(chunkPos, new TerrainChunk(chunkPos, chunkSize, detailLevels, transform, mapMaterial, terrainChunkPrefab, treePrefab));
                 }
             }
         }
@@ -116,6 +117,10 @@ public class EndlessTerrain : MonoBehaviour
         GameObject terrainChunk;
         Vector2Int position;
         Bounds bounds;
+
+        // Trees
+        GameObject treePrefab;
+        bool hasTrees = false;
 
         // River mesh
         Transform riverMeshChild;
@@ -135,7 +140,7 @@ public class EndlessTerrain : MonoBehaviour
         bool mapDataReceived;
         int previousLODIndex = -1;
 
-        public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject terrainChunkPrefab)
+        public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject terrainChunkPrefab, GameObject treePrefab)
         {
             this.detailLevels = detailLevels;
 
@@ -172,6 +177,8 @@ public class EndlessTerrain : MonoBehaviour
             }
             collisionLODMesh = lodMeshes[0];
 
+            this.treePrefab = treePrefab;
+
             // Request the mapData and increase the counter used to determine the TerrainGeneration progress
             chunksWaitingForMapDataCount++;
             MapGenerator.Instance.RequestMapData(position, OnMapDataReceived);
@@ -200,6 +207,11 @@ public class EndlessTerrain : MonoBehaviour
 
             if (visible)
             {
+                if (!hasTrees)
+                {
+                    TreeObjGenerator.InstantiateTrees(mapData.map, terrainChunk.transform, treePrefab);
+                }
+
                 riverMeshFilter.mesh = RiverMeshGenerator.GenerateRiverMesh(mapData.rivers, 241);
 
                 // Get the current detaillevel

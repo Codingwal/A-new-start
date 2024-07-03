@@ -26,7 +26,6 @@ public static class MapDataGenerator
             {
                 // For each point...
 
-
                 // Estimate the biomeSettings by lerping between the bottom and top value for this column
                 BiomeSettings biomeSettings = BiomeSettings.Lerp(biomeSettings0, biomeSettingsY, (float)y / (chunkSize - 1) / terrainScale);
 
@@ -95,6 +94,8 @@ public static class MapDataGenerator
             }
             rivers.Add(riverPoints);
         }
+
+        TreeDataGenerator.GenerateTrees(map, terrainSettings, seed);
 
         return new(map, rivers);
     }

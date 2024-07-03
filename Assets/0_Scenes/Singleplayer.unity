@@ -2000,6 +2000,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrainChunkPrefab: {fileID: 610096790558363399, guid: 0edc36ea1fadfc14d95f44d240d20224,
     type: 3}
+  treePrefab: {fileID: 321861348722951787, guid: 3a7ea91ab789e5f419fac148339831c6,
+    type: 3}
   detailLevels:
   - lod: 0
     visibleDistanceThreshold: 100
