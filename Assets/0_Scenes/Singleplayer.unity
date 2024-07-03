@@ -2000,13 +2000,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrainChunkPrefab: {fileID: 610096790558363399, guid: 0edc36ea1fadfc14d95f44d240d20224,
     type: 3}
-  treePrefab: {fileID: 5399116903921604262, guid: d454c676b2de9e14984577f493188352,
+  treePrefab: {fileID: 299712424454941021, guid: 7083ed9bebdc68d4f8ab7e0a777ef936,
     type: 3}
   detailLevels:
   - lod: 0
     visibleDistanceThreshold: 100
   - lod: 1
     visibleDistanceThreshold: 300
+  - lod: 3
+    visibleDistanceThreshold: 800
   viewer: {fileID: 965662050}
   mapMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
 --- !u!114 &1146475735
