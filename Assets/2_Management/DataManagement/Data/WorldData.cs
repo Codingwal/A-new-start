@@ -75,17 +75,18 @@ public struct VertexData
 {
     public float height;
     public float waterAmount;
-    public uint tree;
 }
 [Serializable]
 public class ChunkData
 {
     public List<ListWrapper<VertexData>> map;
     public List<ListWrapper<Vector3>> rivers;
-    public ChunkData(List<ListWrapper<VertexData>> map, List<ListWrapper<Vector3>> rivers)
+    public List<TreeData> trees;
+    public ChunkData(List<ListWrapper<VertexData>> map, List<ListWrapper<Vector3>> rivers, List<TreeData> trees)
     {
         this.map = map;
         this.rivers = rivers;
+        this.trees = trees;
     }
 }
 public class SectorData
@@ -106,5 +107,15 @@ public class RiverPoint
         this.pos = pos;
         this.height = height;
         this.waterAmount = waterAmount;
+    }
+}
+public struct TreeData
+{
+    public Vector2 pos;
+    public uint type;
+    public TreeData(Vector2 pos, uint type)
+    {
+        this.pos = pos;
+        this.type = type;
     }
 }

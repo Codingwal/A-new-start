@@ -2,8 +2,11 @@ TODO:
 
 FOR NEXT BUILD:
 
-- Improve rivers
-- Cleanup & improve TerrainSettings
+- Trees
+    - Random offsets
+    - Biomes
+    - Add to FileDataHandler.cs
+    - Cleanup & document tree code
 
 FUTURE PLANS:
 

@@ -1,18 +1,21 @@
+using System;
 using UnityEngine;
 
 public static class TreeObjGenerator
 {
-    public static void InstantiateTrees(VertexData[,] map, Transform parent, GameObject prefab)
+    public static void InstantiateTrees(MapData map, Transform parent, GameObject prefab)
     {
-        for (int x = 0; x < map.GetLength(0); x += 5)
+        foreach (TreeData tree in map.trees)
         {
-            for (int y = 0; y < map.GetLength(1); y += 5)
+            GameObject newObj = GameObject.Instantiate(prefab, parent);
+
+            try
             {
-                if (map[x, y].tree == 0) continue;
-
-                GameObject newObj = GameObject.Instantiate(prefab, parent);
-
-                newObj.transform.localPosition = new(x, map[x, y].height, y);
+                newObj.transform.localPosition = new(tree.pos.x, map.map[Mathf.RoundToInt(tree.pos.x), Mathf.RoundToInt(tree.pos.y)].height, tree.pos.y);
+            }
+            catch (Exception)
+            {
+                Debug.LogError(new Vector2(Mathf.RoundToInt(tree.pos.x), Mathf.RoundToInt(tree.pos.y)));
             }
         }
     }

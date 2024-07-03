@@ -286,7 +286,7 @@ public class FileDataHandler
                 readData = br.ReadSingle();
             }
 
-            chunks.TryAdd(key, new(map, rivers));
+            chunks.TryAdd(key, new(map, rivers, new()));
             readData = br.ReadSingle();
         }
 

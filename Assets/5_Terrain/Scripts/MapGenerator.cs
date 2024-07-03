@@ -87,7 +87,7 @@ public class MapGenerator : Singleton<MapGenerator>
 
         if (MapDataHandler.chunks.ContainsKey(center))
         {
-            return new(MapDataHandler.chunks[center].map, MapDataHandler.chunks[center].rivers);
+            return new(MapDataHandler.chunks[center].map, MapDataHandler.chunks[center].rivers, MapDataHandler.chunks[center].trees);
         }
         int sectorSize = chunksPerSector1D * chunkSize;
 
@@ -111,8 +111,9 @@ public class MapGenerator : Singleton<MapGenerator>
             }
         }
         MapData map = MapDataGenerator.GenerateMapData(center, chunkSize, MapDataHandler.worldData.terrainData.seed, terrainSettings, sectorData, vertexIncrement);
+        TreeDataGenerator.GenerateTrees(map, terrainSettings, MapDataHandler.worldData.terrainData.seed, center, chunkSize);
 
-        mapDataHandler.AddChunk(center, map.map, map.rivers);
+        mapDataHandler.AddChunk(center, map.map, map.rivers, map.trees);
 
         return map;
     }
@@ -132,14 +133,16 @@ public struct MapData
 {
     public VertexData[,] map;
     public List<List<Vector3>> rivers;
+    public List<TreeData> trees;
 
     public MapData(VertexData[,] map, List<List<Vector3>> rivers)
     {
         this.map = map;
         this.rivers = rivers;
+        trees = new();
     }
 
-    public MapData(List<ListWrapper<VertexData>> map, List<ListWrapper<Vector3>> rivers)
+    public MapData(List<ListWrapper<VertexData>> map, List<ListWrapper<Vector3>> rivers, List<TreeData> trees)
     {
         this.map = new VertexData[MapGenerator.Instance.chunkSize, MapGenerator.Instance.chunkSize];
         for (int x = 0; x < MapGenerator.Instance.chunkSize; x++)
@@ -155,5 +158,7 @@ public struct MapData
         {
             this.rivers.Add(river.list);
         }
+
+        this.trees = trees;
     }
 }

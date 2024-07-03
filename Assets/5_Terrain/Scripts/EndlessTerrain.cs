@@ -211,7 +211,7 @@ public class EndlessTerrain : MonoBehaviour
             {
                 if (!hasTrees)
                 {
-                    TreeObjGenerator.InstantiateTrees(mapData.map, treeChild, treePrefab);
+                    TreeObjGenerator.InstantiateTrees(mapData, treeChild, treePrefab);
                     hasTrees = true;
                 }
 

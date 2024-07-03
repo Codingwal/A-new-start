@@ -38,7 +38,7 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
     }
 
     // EndlessTerrain uses this to add chunks
-    public void AddChunk(Vector2 center, VertexData[,] map, List<List<Vector3>> rivers)
+    public void AddChunk(Vector2 center, VertexData[,] map, List<List<Vector3>> rivers, List<TreeData> trees)
     {
         List<ListWrapper<VertexData>> tempMap = new();
         for (int x = 0; x < map.GetLength(0); x++)
@@ -55,7 +55,7 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
         {
             tempRivers.Add(new(river));
         }
-        chunks[center] = new(tempMap, tempRivers);
+        chunks[center] = new(tempMap, tempRivers, trees);
     }
     int GenerateSeed(TerrainSettings terrainSettings)
     {

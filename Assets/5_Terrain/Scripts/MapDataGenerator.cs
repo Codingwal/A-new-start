@@ -95,8 +95,6 @@ public static class MapDataGenerator
             rivers.Add(riverPoints);
         }
 
-        TreeDataGenerator.GenerateTrees(map, terrainSettings, seed, center, chunkSize);
-
         return new(map, rivers);
     }
     static void AddIndent(Vector2Int pos, float height, VertexData[,] map, Dictionary<Vector2Int, float> pointsToChange, int riverRange)
