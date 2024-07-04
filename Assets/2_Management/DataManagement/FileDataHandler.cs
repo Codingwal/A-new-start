@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
+using UnityEngine.SocialPlatforms.GameCenter;
 
 public class FileDataHandler
 {
@@ -114,14 +115,13 @@ public class FileDataHandler
         Write(bw, playerData.rotation);
 
         TerrainSettings terrainSettings = data.terrainSettings;
-        // foreach (KeyValuePair<float, BiomeSettings> biome in terrainSettings.biomes)
-        // {
-        //     bw.Write(biome.Key);
+        foreach (Biome biome in terrainSettings.biomes)
+        {
+            Write(bw, biome.bounds);
 
-        //     bw.Write(biome.Value.heightMultiplier);
-        //     bw.Write(biome.Value.slopeImpact);
-        //     bw.Write(biome.Value.heightOffset);
-        // }
+            BiomeSettings biomeSettings = biome.biomeSettings;
+            Write(bw, biomeSettings);
+        }
         WriteClose(bw);
 
         bw.Write(terrainSettings.biomeScale);
@@ -148,13 +148,18 @@ public class FileDataHandler
         foreach (KeyValuePair<Vector2, ChunkData> pair in terrainData.chunks)
         {
             Write(bw, pair.Key);
+
+            Write(bw, pair.Value.bottomLeft);
+            Write(bw, pair.Value.bottomRight);
+            Write(bw, pair.Value.topLeft);
+            Write(bw, pair.Value.topRight);
+
             foreach (ListWrapper<VertexData> element in pair.Value.map)
             {
                 foreach (VertexData vertexData in element.list)
                 {
                     bw.Write(vertexData.height);
                     // bw.Write(vertexData.waterAmount);
-                    // Write(bw, vertexData.waterVelocity);
                 }
                 WriteClose(bw);
             }
@@ -165,11 +170,12 @@ public class FileDataHandler
                 {
                     Write(bw, point);
                     // bw.Write(vertexData.waterAmount);
-                    // Write(bw, vertexData.waterVelocity);
                 }
                 WriteClose(bw);
             }
             WriteClose(bw);
+
+            // TODO: Trees
         }
         WriteClose(bw);
 
@@ -199,18 +205,20 @@ public class FileDataHandler
         data.playerData.rotation = Read<Vector3>(br);
 
         float readData = br.ReadSingle();
-        // while (readData != 2.1059140958881314e+37)
-        // {
-        //     float key = readData;
-        //     BiomeSettings biomeSettings = new()
-        //     {
-        //         heightMultiplier = br.ReadSingle(),
-        //         slopeImpact = br.ReadSingle(),
-        //         heightOffset = br.ReadSingle()
-        //     };
-        //     data.terrainSettings.biomes[key] = biomeSettings;
-        //     readData = br.ReadSingle();
-        // }
+        while (readData != 2.1059140958881314e+37)
+        {
+            Biome biome = new()
+            {
+                bounds = new Bounds()
+                {
+                    center = new(readData, br.ReadSingle(), br.ReadSingle()),
+                    extents = Read<Vector3>(br)
+                },
+                biomeSettings = Read<BiomeSettings>(br)
+            };
+            data.terrainSettings.biomes.Add(biome);
+            readData = br.ReadSingle();
+        }
 
         data.terrainSettings.biomeScale = br.ReadSingle();
 
@@ -239,10 +247,20 @@ public class FileDataHandler
         {
             SerializableDictonary<Vector2, ChunkData> chunks = new();
 
-            Vector2 key;
-            key.x = readData;
-            readData = br.ReadSingle();
-            key.y = readData;
+            Vector2 key = new()
+            {
+                x = readData,
+                y = br.ReadSingle()
+            };
+
+            ChunkData chunkData = new()
+            {
+                bottomLeft = Read<BiomeSettings>(br),
+                bottomRight = Read<BiomeSettings>(br),
+                topLeft = Read<BiomeSettings>(br),
+                topRight = Read<BiomeSettings>(br),
+            };
+
             readData = br.ReadSingle();
 
             // heightMapList
@@ -257,7 +275,6 @@ public class FileDataHandler
                     {
                         height = readData,
                         // waterAmount = br.ReadSingle(),
-                        // waterVelocity = Read<Vector2>(br)
                     };
                     list2.Add(vertexData);
                     readData = br.ReadSingle();
@@ -265,6 +282,7 @@ public class FileDataHandler
                 map.Add(new(list2));
                 readData = br.ReadSingle();
             }
+            chunkData.map = map;
 
             List<ListWrapper<Vector3>> rivers = new();
             while (readData != 2.1059140958881314e+37)
@@ -285,8 +303,12 @@ public class FileDataHandler
                 rivers.Add(new(river));
                 readData = br.ReadSingle();
             }
+            chunkData.rivers = rivers;
 
-            chunks.TryAdd(key, new(map, rivers, new()));
+            // TODO: Trees
+            chunkData.trees = new();
+
+            chunks.TryAdd(key, chunkData);
             readData = br.ReadSingle();
         }
 
@@ -312,6 +334,19 @@ public class FileDataHandler
         bw.Write(vec2.x);
         bw.Write(vec2.y);
     }
+    void Write(BinaryWriter bw, Bounds bounds)
+    {
+        Write(bw, bounds.center);
+        Write(bw, bounds.extents);
+    }
+    void Write(BinaryWriter bw, BiomeSettings biomeSettings)
+    {
+        bw.Write(biomeSettings.heightMultiplier);
+        bw.Write(biomeSettings.slopeImpact);
+        bw.Write(biomeSettings.heightOffset);
+        bw.Write(biomeSettings.minTreeSpacing);
+        // TODO: Trees
+    }
     T Read<T>(BinaryReader br)
     {
         if (typeof(T) == typeof(Vector3))
@@ -328,6 +363,18 @@ public class FileDataHandler
             vec2.x = br.ReadSingle();
             vec2.y = br.ReadSingle();
             return (T)(object)vec2;
+        }
+        if (typeof(T) == typeof(BiomeSettings))
+        {
+            BiomeSettings biomeSettings = new()
+            {
+                heightMultiplier = br.ReadSingle(),
+                slopeImpact = br.ReadSingle(),
+                heightOffset = br.ReadSingle(),
+                minTreeSpacing = br.ReadSingle(),
+                // TODO: Trees
+            };
+            return (T)(object)biomeSettings;
         }
         throw new();
     }

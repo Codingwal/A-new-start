@@ -86,6 +86,7 @@ public class ChunkData
     public List<ListWrapper<VertexData>> map;
     public List<ListWrapper<Vector3>> rivers;
     public List<TreeData> trees;
+    public ChunkData() { }
     public ChunkData(List<ListWrapper<VertexData>> map, List<ListWrapper<Vector3>> rivers, List<TreeData> trees)
     {
         this.map = map;

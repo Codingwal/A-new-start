@@ -66,7 +66,7 @@ public class TerrainSettings
     public float riverDirectionImpact;
     public TerrainSettings()
     {
-
+        
     }
     public TerrainSettings(TerrainSettingsObject obj)
     {

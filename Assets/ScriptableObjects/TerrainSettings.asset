@@ -18,7 +18,7 @@ MonoBehaviour:
       m_Extent: {x: 0, y: 0.5, z: 0.5}
     biomeSettings:
       heightMultiplier: 100
-      slopeImpact: 1
+      slopeImpact: 0
       heightOffset: -150
       minTreeSpacing: 0
       trees:
@@ -36,12 +36,34 @@ MonoBehaviour:
         keys: []
         values: []
   - bounds:
-      m_Center: {x: 0.7, y: 0.5, z: 0.5}
-      m_Extent: {x: 0.2, y: 0.5, z: 0.5}
+      m_Center: {x: 0.5, y: 0.5, z: 0.5}
+      m_Extent: {x: 0, y: 0.5, z: 0.5}
     biomeSettings:
-      heightMultiplier: 100
+      heightMultiplier: 50
       slopeImpact: 0
       heightOffset: 50
+      minTreeSpacing: 0
+      trees:
+        keys: []
+        values: []
+  - bounds:
+      m_Center: {x: 0.7, y: 0.5, z: 0.5}
+      m_Extent: {x: 0, y: 0.5, z: 0.5}
+    biomeSettings:
+      heightMultiplier: 150
+      slopeImpact: 1
+      heightOffset: 100
+      minTreeSpacing: 0
+      trees:
+        keys: []
+        values: []
+  - bounds:
+      m_Center: {x: 0.9, y: 0.5, z: 0.5}
+      m_Extent: {x: 0, y: 0.5, z: 0.5}
+    biomeSettings:
+      heightMultiplier: 300
+      slopeImpact: 1
+      heightOffset: 200
       minTreeSpacing: 0
       trees:
         keys: []

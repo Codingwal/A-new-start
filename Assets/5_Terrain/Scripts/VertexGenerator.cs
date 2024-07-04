@@ -5,7 +5,6 @@ public static class VertexGenerator
 {
     public static float GenerateVertexData(Vector2 pos, int seed, TerrainSettings terrainSettings, float terrainScale, int octaves = 0)
     {
-        Vector2[] biomeOctaveOffsets = GenerateOctaveOffsets(seed, 5);
         BiomeSettings biomeSettings = GetBiomeSettings(new Vector2(pos.x, pos.y) / terrainScale, terrainSettings, seed);
 
         return GenerateVertexData(pos, seed, biomeSettings, terrainSettings, terrainScale, octaves);
@@ -52,34 +51,43 @@ public static class VertexGenerator
     }
     public static BiomeSettings GetBiomeSettings(Vector2 pos, TerrainSettings terrainSettings, int seed)
     {
-        Vector2[] biomeOctaveOffsets = GenerateOctaveOffsets(seed + 10, 2);
-        float height = Mathf.Clamp01(Noise.GenerateNoise(pos / terrainSettings.terrainScale, biomeOctaveOffsets, terrainSettings.biomeScale, 0.5f, 2, 0, 1.5f));
+        Vector2[] biomeOctaveOffsets = GenerateOctaveOffsets(seed + 10, 1);
+        float height = Mathf.Clamp01(Noise.GenerateNoise(pos / terrainSettings.terrainScale, biomeOctaveOffsets, terrainSettings.biomeScale, 0.5f, 2, 0, 1));
 
-        biomeOctaveOffsets = GenerateOctaveOffsets(seed + 20, 2);
-        float temperature = Mathf.Clamp01(Noise.GenerateNoise(pos / terrainSettings.terrainScale, biomeOctaveOffsets, terrainSettings.biomeScale, 0.5f, 2, 0, 1.5f));
+        biomeOctaveOffsets = GenerateOctaveOffsets(seed + 20, 1);
+        float temperature = Mathf.Clamp01(Noise.GenerateNoise(pos / terrainSettings.terrainScale, biomeOctaveOffsets, terrainSettings.biomeScale, 0.5f, 2, 0, 1));
 
-        biomeOctaveOffsets = GenerateOctaveOffsets(seed + 30, 2);
-        float humidity = Mathf.Clamp01(Noise.GenerateNoise(pos / terrainSettings.terrainScale, biomeOctaveOffsets, terrainSettings.biomeScale, 0.5f, 2, 0, 1.5f));
+        biomeOctaveOffsets = GenerateOctaveOffsets(seed + 30, 1);
+        float humidity = Mathf.Clamp01(Noise.GenerateNoise(pos / terrainSettings.terrainScale, biomeOctaveOffsets, terrainSettings.biomeScale, 0.5f, 2, 0, 1));
 
 
         // Get the biomes with a value directly above and below the received noise value
         KeyValuePair<float, BiomeSettings> closestBiome = new(float.PositiveInfinity, null);
-        KeyValuePair<float, BiomeSettings> secondClosestBiome = new(float.NegativeInfinity, null);
+        KeyValuePair<float, BiomeSettings> secondClosestBiome = new(float.PositiveInfinity, null);
         foreach (Biome biome in terrainSettings.biomes)
         {
             float sqrDistance = biome.bounds.SqrDistance(new(height, temperature, humidity));
 
             if (sqrDistance < closestBiome.Key)
+            {
+                secondClosestBiome = closestBiome;
                 closestBiome = new(sqrDistance, biome.biomeSettings);
+            }
             else if (sqrDistance < secondClosestBiome.Key)
+            {
                 secondClosestBiome = new(sqrDistance, biome.biomeSettings);
+            }
         }
 
         Debug.Assert(closestBiome.Value != null, $"Couldn't find closestBiome! There are {terrainSettings.biomes.Count} biomes");
         Debug.Assert(secondClosestBiome.Value != null, $"Couldn't find secondClosestBiome! There are {terrainSettings.biomes.Count} biomes");
+        Debug.Assert(closestBiome.Value != secondClosestBiome.Value, "Biomes are identical");
 
-        // Calculate the biomeSettings of this chunk by lerping between the higher and the lower biomeSetting
-        float t = closestBiome.Key / (closestBiome.Key + secondClosestBiome.Key);
+        // Minimum of 0.01f to prevent divisionByZero errors if the point lies inside a biome bound (distance calculation returns 0 in this case)
+        float t = closestBiome.Key / Mathf.Max(closestBiome.Key + secondClosestBiome.Key, 0.01f);
+
+        Debug.LogWarning($"({closestBiome.Value.heightOffset}, {secondClosestBiome.Value.heightOffset}, {t}) -> {BiomeSettings.Lerp(closestBiome.Value, secondClosestBiome.Value, t).heightOffset}");
+
         return BiomeSettings.Lerp(closestBiome.Value, secondClosestBiome.Value, t);
     }
 }
