@@ -34,6 +34,7 @@ public class BiomeSettings
             heightMultiplier = Mathf.Lerp(a.heightMultiplier, b.heightMultiplier, t),
             slopeImpact = Mathf.Lerp(a.slopeImpact, b.slopeImpact, t),
             heightOffset = Mathf.Lerp(a.heightOffset, b.heightOffset, t),
+            minTreeSpacing = Mathf.Lerp(a.minTreeSpacing, b.minTreeSpacing, t),
         };
 
     }

@@ -12,7 +12,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8792bc8b81bd9b0458b2897f9b0c8abc, type: 3}
   m_Name: TerrainSettings
   m_EditorClassIdentifier: 
-  biomes: []
+  biomes:
+  - bounds:
+      m_Center: {x: 0.1, y: 0.5, z: 0.5}
+      m_Extent: {x: 0, y: 0.5, z: 0.5}
+    biomeSettings:
+      heightMultiplier: 100
+      slopeImpact: 1
+      heightOffset: -150
+      minTreeSpacing: 0
+      trees:
+        keys: []
+        values: []
+  - bounds:
+      m_Center: {x: 0.3, y: 0.5, z: 0.5}
+      m_Extent: {x: 0, y: 0.5, z: 0.5}
+    biomeSettings:
+      heightMultiplier: 50
+      slopeImpact: 0
+      heightOffset: 0
+      minTreeSpacing: 0
+      trees:
+        keys: []
+        values: []
+  - bounds:
+      m_Center: {x: 0.7, y: 0.5, z: 0.5}
+      m_Extent: {x: 0.2, y: 0.5, z: 0.5}
+    biomeSettings:
+      heightMultiplier: 100
+      slopeImpact: 0
+      heightOffset: 50
+      minTreeSpacing: 0
+      trees:
+        keys: []
+        values: []
   biomeScale: 5000
   uniformScale: 1
   terrainScale: 1

@@ -75,6 +75,9 @@ public static class VertexGenerator
                 secondClosestBiome = new(sqrDistance, biome.biomeSettings);
         }
 
+        Debug.Assert(closestBiome.Value != null, $"Couldn't find closestBiome! There are {terrainSettings.biomes.Count} biomes");
+        Debug.Assert(secondClosestBiome.Value != null, $"Couldn't find secondClosestBiome! There are {terrainSettings.biomes.Count} biomes");
+
         // Calculate the biomeSettings of this chunk by lerping between the higher and the lower biomeSetting
         float t = closestBiome.Key / (closestBiome.Key + secondClosestBiome.Key);
         return BiomeSettings.Lerp(closestBiome.Value, secondClosestBiome.Value, t);
