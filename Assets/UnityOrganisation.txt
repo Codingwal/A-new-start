@@ -3,7 +3,6 @@ TODO:
 FOR NEXT BUILD:
 
 - Trees
-    - Random offsets
     - Biomes
     - Add to FileDataHandler.cs
     - Cleanup & document tree code
@@ -70,3 +69,10 @@ LoadWorld
 
 COOL SEEDS:
 -105729 (Big island)
+-9699 (Mountains)
+
+BIOMES:
+([Height], [temperature], [humidity]) [Name] -> ([HeightMultiplier], [SlopeImpact], [HeightOffset], [MinTreeSpacing])
+(0-0.75, 0-1, 0-1) Deep ocean -> (100, 0, -150, 0)
+(0.15-0.2, 0-1, 0-1) Beach -> (50, 0, 0, 0)
+(0, 0-1, 0-1) Plains -> (100, 0, -150, 0)

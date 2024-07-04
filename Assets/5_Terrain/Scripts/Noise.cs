@@ -14,6 +14,8 @@ public static class Noise
         Local,
         Global
     }
+    /// <param name="maxPossibleHeight">The theoretical maximum height. Can be calculated with the persistance and the octave count</param>
+    /// <returns>A value between 0 and 1</returns>
     public static float GenerateNoise(Vector2 pos, Vector2[] octaveOffsets, float scale, float persistance, float lacunarity, float slopeImpact, float maxPossibleHeight)
     {
         if (scale <= 0)
@@ -52,11 +54,10 @@ public static class Noise
             // This result in a value between 0 and 1, a higher slopesSum results in a lower value -> less impact
             float layerInfluence = 1 / (1 + slopesSum * slopeImpact);
 
-            // Add the perlin value times the vertical scale factor (amplitude) to the total height of the point
-
             if (i != 0)
                 perlinValue = perlinValue * 2 - 1;
 
+            // Add the perlin value times the vertical scale factor (amplitude) to the total height of the point
             noiseHeight += perlinValue * amplitude * layerInfluence;
 
             amplitude *= persistance;
@@ -66,8 +67,6 @@ public static class Noise
         // Calculate the normalized height (range 0 to 1) by using 0 and maxPossibleHeight
         float normalizedHeight = noiseHeight / maxPossibleHeight;
 
-        // Clamp to prevent errors in edge cases
-        // return Mathf.Clamp(normalizedHeight, 0, 1);
         return normalizedHeight;
     }
 }

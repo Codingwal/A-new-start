@@ -79,6 +79,10 @@ public struct VertexData
 [Serializable]
 public class ChunkData
 {
+    public BiomeSettings bottomLeft;
+    public BiomeSettings bottomRight;
+    public BiomeSettings topLeft;
+    public BiomeSettings topRight;
     public List<ListWrapper<VertexData>> map;
     public List<ListWrapper<Vector3>> rivers;
     public List<TreeData> trees;

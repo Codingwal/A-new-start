@@ -19,9 +19,14 @@ public class PlayerSettings
 [Serializable]
 public class BiomeSettings
 {
+    // Terrain
     public float heightMultiplier;
     public float slopeImpact;
     public float heightOffset;
+
+    [Header("Trees")]
+    public float minTreeSpacing;
+    public SerializableDictonary<float, TreeType> trees;
     public static BiomeSettings Lerp(BiomeSettings a, BiomeSettings b, float t)
     {
         return new()
@@ -37,7 +42,7 @@ public class BiomeSettings
 public class TerrainSettings
 {
     // Biomes
-    public SerializableDictonary<float, BiomeSettings> biomes = new();
+    public List<Biome> biomes = new();
     public float biomeScale;
 
     // Scale
@@ -64,10 +69,7 @@ public class TerrainSettings
     }
     public TerrainSettings(TerrainSettingsObject obj)
     {
-        foreach (BiomeWrapper biome in obj.biomes)
-        {
-            biomes[biome.height] = biome.biomeSettings;
-        }
+        biomes = obj.biomes;
         biomeScale = obj.biomeScale;
         uniformScale = obj.uniformScale;
         terrainScale = obj.terrainScale;
@@ -87,9 +89,9 @@ public class TerrainSettings
     }
 }
 [Serializable]
-public class BiomeWrapper
+public class Biome
 {
-    [Range(0, 1)]
-    public float height = 0;
-    public BiomeSettings biomeSettings = new();
+    [Header("[Height, Temperature, Humidity]")]
+    public Bounds bounds;
+    public BiomeSettings biomeSettings;
 }

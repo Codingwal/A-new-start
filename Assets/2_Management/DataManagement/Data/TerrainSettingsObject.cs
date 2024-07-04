@@ -7,7 +7,7 @@ using UnityEngine;
 public class TerrainSettingsObject : ScriptableObject
 {
     [Header("Biomes")]
-    public List<BiomeWrapper> biomes = new() { new() };
+    public List<Biome> biomes = new() { new() };
     public float biomeScale;
 
     [Header("Scale")]

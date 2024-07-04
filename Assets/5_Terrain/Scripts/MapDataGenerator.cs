@@ -11,11 +11,10 @@ public static class MapDataGenerator
         // Generate map data
         float terrainScale = terrainSettings.terrainScale;
 
-        Vector2[] biomeOctaveOffsets = VertexGenerator.GenerateOctaveOffsets(seed, 5);
-        BiomeSettings biomeSettings00 = VertexGenerator.GetBiomeSettings(new Vector2(center.x - chunkSize / 2, center.y - chunkSize / 2) / terrainScale, biomeOctaveOffsets, terrainSettings);
-        BiomeSettings biomeSettingsX0 = VertexGenerator.GetBiomeSettings(new Vector2(center.x + chunkSize / 2, center.y - chunkSize / 2) / terrainScale, biomeOctaveOffsets, terrainSettings);
-        BiomeSettings biomeSettings0Y = VertexGenerator.GetBiomeSettings(new Vector2(center.x - chunkSize / 2, center.y + chunkSize / 2) / terrainScale, biomeOctaveOffsets, terrainSettings);
-        BiomeSettings biomeSettingsXY = VertexGenerator.GetBiomeSettings(new Vector2(center.x + chunkSize / 2, center.y + chunkSize / 2) / terrainScale, biomeOctaveOffsets, terrainSettings);
+        BiomeSettings biomeSettings00 = VertexGenerator.GetBiomeSettings(new Vector2(center.x - chunkSize / 2, center.y - chunkSize / 2) / terrainScale, terrainSettings, seed);
+        BiomeSettings biomeSettingsX0 = VertexGenerator.GetBiomeSettings(new Vector2(center.x + chunkSize / 2, center.y - chunkSize / 2) / terrainScale, terrainSettings, seed);
+        BiomeSettings biomeSettings0Y = VertexGenerator.GetBiomeSettings(new Vector2(center.x - chunkSize / 2, center.y + chunkSize / 2) / terrainScale, terrainSettings, seed);
+        BiomeSettings biomeSettingsXY = VertexGenerator.GetBiomeSettings(new Vector2(center.x + chunkSize / 2, center.y + chunkSize / 2) / terrainScale, terrainSettings, seed);
 
         VertexData[,] map = new VertexData[(chunkSize - 1) / vertexIncrement + 1, (chunkSize - 1) / vertexIncrement + 1];
         for (int x = 0; x < chunkSize; x += vertexIncrement)
@@ -95,7 +94,7 @@ public static class MapDataGenerator
             rivers.Add(riverPoints);
         }
 
-        return new(map, rivers);
+        return new(map, rivers, biomeSettings00, biomeSettingsX0, biomeSettings0Y, biomeSettingsXY);
     }
     static void AddIndent(Vector2Int pos, float height, VertexData[,] map, Dictionary<Vector2Int, float> pointsToChange, int riverRange)
     {

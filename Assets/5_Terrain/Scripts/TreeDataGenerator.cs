@@ -14,10 +14,9 @@ public static class TreeDataGenerator
         const float propabilityLerpMinSlope = 0.4f;
         const float propabilityLerpMaxSlope = 0.8f;
         const float maxPositioningOffset = 0.5f;
-        const int minTreeDistance = 2;
         // const float treeGenerationTolerance = 0f;
 
-        List<Vector2Int> pointsToGenerate = GetPointsToGenerate(seed, chunkCenter, chunkSize, minTreeDistance);
+        List<Vector2Int> pointsToGenerate = GetPointsToGenerate(map, chunkCenter, seed, chunkSize);
 
         foreach (Vector2Int point in pointsToGenerate)
         {
@@ -93,7 +92,7 @@ public static class TreeDataGenerator
         return Mathf.Abs(map[x, y].height - map[x - 1, y - 1].height);
 
     }
-    static List<Vector2Int> GetPointsToGenerate(int seed, Vector2Int chunkCenter, int chunkSize, int minTreeDistance)
+    static List<Vector2Int> GetPointsToGenerate(MapData chunk, Vector2Int chunkCenter, int seed, int chunkSize)
     {
         List<Vector2Int> pointsToGenerate = new();
 
@@ -108,9 +107,12 @@ public static class TreeDataGenerator
 
         for (int x = 0; x < chunkSize; x++)
         {
+            float minTreeSpacingTop = Mathf.Lerp(chunk.topLeft.minTreeSpacing, chunk.topRight.minTreeSpacing, x / chunkSize);
+            float minTreeSpacingBottom = Mathf.Lerp(chunk.bottomLeft.minTreeSpacing, chunk.bottomRight.minTreeSpacing, x / chunkSize);
             for (int y = 0; y < chunkSize; y++)
             {
-                if (ShouldGenerateTree(randomValues, x, y, seed, minTreeDistance))
+                float minTreeSpacing = Mathf.Lerp(minTreeSpacingBottom, minTreeSpacingTop, y / chunkSize);
+                if (ShouldGenerateTree(randomValues, x, y, seed, Mathf.RoundToInt(minTreeSpacing)))
                     pointsToGenerate.Add(new(x, y));
             }
         }

@@ -87,7 +87,7 @@ public class MapGenerator : Singleton<MapGenerator>
 
         if (MapDataHandler.chunks.ContainsKey(center))
         {
-            return new(MapDataHandler.chunks[center].map, MapDataHandler.chunks[center].rivers, MapDataHandler.chunks[center].trees);
+            return new(MapDataHandler.chunks[center]);
         }
         int sectorSize = chunksPerSector1D * chunkSize;
 
@@ -131,34 +131,48 @@ public class MapGenerator : Singleton<MapGenerator>
 }
 public struct MapData
 {
+    public BiomeSettings bottomLeft;
+    public BiomeSettings bottomRight;
+    public BiomeSettings topLeft;
+    public BiomeSettings topRight;
     public VertexData[,] map;
     public List<List<Vector3>> rivers;
     public List<TreeData> trees;
 
-    public MapData(VertexData[,] map, List<List<Vector3>> rivers)
+    public MapData(VertexData[,] map, List<List<Vector3>> rivers, BiomeSettings bottomLeft, BiomeSettings bottomRight, BiomeSettings topLeft, BiomeSettings topRight)
     {
         this.map = map;
         this.rivers = rivers;
         trees = new();
+
+        this.bottomLeft = bottomLeft;
+        this.bottomRight = bottomRight;
+        this.topLeft = topLeft;
+        this.topRight = topRight;
     }
 
-    public MapData(List<ListWrapper<VertexData>> map, List<ListWrapper<Vector3>> rivers, List<TreeData> trees)
+    public MapData(ChunkData data)
     {
-        this.map = new VertexData[MapGenerator.Instance.chunkSize, MapGenerator.Instance.chunkSize];
+        map = new VertexData[MapGenerator.Instance.chunkSize, MapGenerator.Instance.chunkSize];
         for (int x = 0; x < MapGenerator.Instance.chunkSize; x++)
         {
             for (int y = 0; y < MapGenerator.Instance.chunkSize; y++)
             {
-                this.map[x, y] = map[x].list[y];
+                map[x, y] = data.map[x].list[y];
             }
         }
 
-        this.rivers = new();
-        foreach (ListWrapper<Vector3> river in rivers)
+        rivers = new();
+        foreach (ListWrapper<Vector3> river in data.rivers)
         {
-            this.rivers.Add(river.list);
+            rivers.Add(river.list);
         }
 
-        this.trees = trees;
+        trees = data.trees;
+
+        bottomLeft = data.bottomLeft;
+        bottomRight = data.bottomRight;
+        topLeft = data.topLeft;
+        topRight = data.topRight;
     }
 }

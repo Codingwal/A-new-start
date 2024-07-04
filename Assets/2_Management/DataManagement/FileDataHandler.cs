@@ -114,14 +114,14 @@ public class FileDataHandler
         Write(bw, playerData.rotation);
 
         TerrainSettings terrainSettings = data.terrainSettings;
-        foreach (KeyValuePair<float, BiomeSettings> biome in terrainSettings.biomes)
-        {
-            bw.Write(biome.Key);
+        // foreach (KeyValuePair<float, BiomeSettings> biome in terrainSettings.biomes)
+        // {
+        //     bw.Write(biome.Key);
 
-            bw.Write(biome.Value.heightMultiplier);
-            bw.Write(biome.Value.slopeImpact);
-            bw.Write(biome.Value.heightOffset);
-        }
+        //     bw.Write(biome.Value.heightMultiplier);
+        //     bw.Write(biome.Value.slopeImpact);
+        //     bw.Write(biome.Value.heightOffset);
+        // }
         WriteClose(bw);
 
         bw.Write(terrainSettings.biomeScale);
@@ -199,18 +199,18 @@ public class FileDataHandler
         data.playerData.rotation = Read<Vector3>(br);
 
         float readData = br.ReadSingle();
-        while (readData != 2.1059140958881314e+37)
-        {
-            float key = readData;
-            BiomeSettings biomeSettings = new()
-            {
-                heightMultiplier = br.ReadSingle(),
-                slopeImpact = br.ReadSingle(),
-                heightOffset = br.ReadSingle()
-            };
-            data.terrainSettings.biomes[key] = biomeSettings;
-            readData = br.ReadSingle();
-        }
+        // while (readData != 2.1059140958881314e+37)
+        // {
+        //     float key = readData;
+        //     BiomeSettings biomeSettings = new()
+        //     {
+        //         heightMultiplier = br.ReadSingle(),
+        //         slopeImpact = br.ReadSingle(),
+        //         heightOffset = br.ReadSingle()
+        //     };
+        //     data.terrainSettings.biomes[key] = biomeSettings;
+        //     readData = br.ReadSingle();
+        // }
 
         data.terrainSettings.biomeScale = br.ReadSingle();
 

@@ -6,7 +6,7 @@ public static class VertexGenerator
     public static float GenerateVertexData(Vector2 pos, int seed, TerrainSettings terrainSettings, float terrainScale, int octaves = 0)
     {
         Vector2[] biomeOctaveOffsets = GenerateOctaveOffsets(seed, 5);
-        BiomeSettings biomeSettings = GetBiomeSettings(new Vector2(pos.x, pos.y) / terrainScale, biomeOctaveOffsets, terrainSettings);
+        BiomeSettings biomeSettings = GetBiomeSettings(new Vector2(pos.x, pos.y) / terrainScale, terrainSettings, seed);
 
         return GenerateVertexData(pos, seed, biomeSettings, terrainSettings, terrainScale, octaves);
     }
@@ -50,31 +50,33 @@ public static class VertexGenerator
         }
         return octaveOffsets;
     }
-    public static BiomeSettings GetBiomeSettings(Vector2 pos, Vector2[] biomeOctaveOffsets, TerrainSettings terrainSettings)
+    public static BiomeSettings GetBiomeSettings(Vector2 pos, TerrainSettings terrainSettings, int seed)
     {
-        float biomeValue = Mathf.Clamp01(Noise.GenerateNoise(pos / terrainSettings.terrainScale, biomeOctaveOffsets, terrainSettings.biomeScale, 0.5f, 2, 0, 1.5f));
+        Vector2[] biomeOctaveOffsets = GenerateOctaveOffsets(seed + 10, 2);
+        float height = Mathf.Clamp01(Noise.GenerateNoise(pos / terrainSettings.terrainScale, biomeOctaveOffsets, terrainSettings.biomeScale, 0.5f, 2, 0, 1.5f));
+
+        biomeOctaveOffsets = GenerateOctaveOffsets(seed + 20, 2);
+        float temperature = Mathf.Clamp01(Noise.GenerateNoise(pos / terrainSettings.terrainScale, biomeOctaveOffsets, terrainSettings.biomeScale, 0.5f, 2, 0, 1.5f));
+
+        biomeOctaveOffsets = GenerateOctaveOffsets(seed + 30, 2);
+        float humidity = Mathf.Clamp01(Noise.GenerateNoise(pos / terrainSettings.terrainScale, biomeOctaveOffsets, terrainSettings.biomeScale, 0.5f, 2, 0, 1.5f));
+
 
         // Get the biomes with a value directly above and below the received noise value
-        KeyValuePair<float, BiomeSettings> biomeLowerValue = new(float.PositiveInfinity, new());
-        KeyValuePair<float, BiomeSettings> biomeHigherValue = new(float.NegativeInfinity, new());
-        foreach (KeyValuePair<float, BiomeSettings> biome in terrainSettings.biomes)
+        KeyValuePair<float, BiomeSettings> closestBiome = new(float.PositiveInfinity, null);
+        KeyValuePair<float, BiomeSettings> secondClosestBiome = new(float.NegativeInfinity, null);
+        foreach (Biome biome in terrainSettings.biomes)
         {
-            // biomeHeight must be higher, currentLowerBiome height must be lower (greater distance)
-            if (biomeValue >= biome.Key && biome.Key < biomeLowerValue.Key)
-            {
-                biomeLowerValue = biome;
-            }
+            float sqrDistance = biome.bounds.SqrDistance(new(height, temperature, humidity));
 
-            // biomeHeight must be lower, currentHigherBiome height must be higher (greater distance)   
-            if (biomeValue <= biome.Key && biome.Key > biomeHigherValue.Key)
-            {
-                biomeHigherValue = biome;
-            }
+            if (sqrDistance < closestBiome.Key)
+                closestBiome = new(sqrDistance, biome.biomeSettings);
+            else if (sqrDistance < secondClosestBiome.Key)
+                secondClosestBiome = new(sqrDistance, biome.biomeSettings);
         }
-        Debug.Assert(biomeLowerValue.Key != float.PositiveInfinity, $"No biome with a lower height found (height = {biomeValue})");
-        Debug.Assert(biomeHigherValue.Key != float.NegativeInfinity, $"No biome with a higher height found (height = {biomeValue})");
 
         // Calculate the biomeSettings of this chunk by lerping between the higher and the lower biomeSetting
-        return BiomeSettings.Lerp(biomeLowerValue.Value, biomeHigherValue.Value, Mathf.InverseLerp(biomeLowerValue.Key, biomeHigherValue.Key, biomeValue));
+        float t = closestBiome.Key / (closestBiome.Key + secondClosestBiome.Key);
+        return BiomeSettings.Lerp(closestBiome.Value, secondClosestBiome.Value, t);
     }
 }

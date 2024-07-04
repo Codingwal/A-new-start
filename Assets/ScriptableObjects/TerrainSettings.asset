@@ -12,27 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8792bc8b81bd9b0458b2897f9b0c8abc, type: 3}
   m_Name: TerrainSettings
   m_EditorClassIdentifier: 
-  biomes:
-  - height: 0
-    biomeSettings:
-      heightMultiplier: 150
-      slopeImpact: 1
-      heightOffset: -150
-  - height: 0.1
-    biomeSettings:
-      heightMultiplier: 50
-      slopeImpact: 1
-      heightOffset: 0
-  - height: 0.2
-    biomeSettings:
-      heightMultiplier: 100
-      slopeImpact: 1
-      heightOffset: 50
-  - height: 1
-    biomeSettings:
-      heightMultiplier: 300
-      slopeImpact: 1
-      heightOffset: 200
+  biomes: []
   biomeScale: 5000
   uniformScale: 1
   terrainScale: 1
@@ -40,8 +20,6 @@ MonoBehaviour:
   octaves: 8
   octaveFrequencyFactor: 2
   octaveAmplitudeFactor: 0.5
-  minHeight: 0
-  maxHeight: 150
   generateRivers: 0
   minWaterSourceHeight: 0.7
   riverWaterGain: 0.1
