@@ -13,61 +13,11 @@ MonoBehaviour:
   m_Name: TerrainSettings
   m_EditorClassIdentifier: 
   biomes:
-  - bounds:
-      m_Center: {x: 0.1, y: 0.5, z: 0.5}
-      m_Extent: {x: 0, y: 0.5, z: 0.5}
-    biomeSettings:
-      heightMultiplier: 100
-      slopeImpact: 0
-      heightOffset: -150
-      minTreeSpacing: 0
-      trees:
-        keys: []
-        values: []
-  - bounds:
-      m_Center: {x: 0.3, y: 0.5, z: 0.5}
-      m_Extent: {x: 0, y: 0.5, z: 0.5}
-    biomeSettings:
-      heightMultiplier: 50
-      slopeImpact: 0
-      heightOffset: 0
-      minTreeSpacing: 0
-      trees:
-        keys: []
-        values: []
-  - bounds:
-      m_Center: {x: 0.5, y: 0.5, z: 0.5}
-      m_Extent: {x: 0, y: 0.5, z: 0.5}
-    biomeSettings:
-      heightMultiplier: 50
-      slopeImpact: 0
-      heightOffset: 50
-      minTreeSpacing: 0
-      trees:
-        keys: []
-        values: []
-  - bounds:
-      m_Center: {x: 0.7, y: 0.5, z: 0.5}
-      m_Extent: {x: 0, y: 0.5, z: 0.5}
-    biomeSettings:
-      heightMultiplier: 150
-      slopeImpact: 1
-      heightOffset: 100
-      minTreeSpacing: 0
-      trees:
-        keys: []
-        values: []
-  - bounds:
-      m_Center: {x: 0.9, y: 0.5, z: 0.5}
-      m_Extent: {x: 0, y: 0.5, z: 0.5}
-    biomeSettings:
-      heightMultiplier: 300
-      slopeImpact: 1
-      heightOffset: 200
-      minTreeSpacing: 0
-      trees:
-        keys: []
-        values: []
+  - {fileID: 11400000, guid: 7553bd1b348218a43bbed7a569f86085, type: 2}
+  - {fileID: 11400000, guid: 01cacd1fb0811a74d8a7089053c19a3a, type: 2}
+  - {fileID: 11400000, guid: 1f8fa18ea113f7549bf03b742114fb7c, type: 2}
+  - {fileID: 11400000, guid: c3fc331ebcc695b489eb3788e00234b6, type: 2}
+  - {fileID: 11400000, guid: e3d899de400aec54985b7657e54cc61d, type: 2}
   biomeScale: 5000
   uniformScale: 1
   terrainScale: 1

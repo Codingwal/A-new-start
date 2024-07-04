@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu()]
+[CreateAssetMenu(menuName = "Terrain/TerrainSettingsObject")]
 [Serializable]
 public class TerrainSettingsObject : ScriptableObject
 {

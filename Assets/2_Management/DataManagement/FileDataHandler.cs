@@ -117,7 +117,7 @@ public class FileDataHandler
         TerrainSettings terrainSettings = data.terrainSettings;
         foreach (Biome biome in terrainSettings.biomes)
         {
-            Write(bw, biome.bounds);
+            Write(bw, biome.Bounds);
 
             BiomeSettings biomeSettings = biome.biomeSettings;
             Write(bw, biomeSettings);
@@ -207,15 +207,15 @@ public class FileDataHandler
         float readData = br.ReadSingle();
         while (readData != 2.1059140958881314e+37)
         {
-            Biome biome = new()
+            Biome biome = ScriptableObject.CreateInstance<Biome>();
+
+            biome.Bounds = new Bounds()
             {
-                bounds = new Bounds()
-                {
-                    center = new(readData, br.ReadSingle(), br.ReadSingle()),
-                    extents = Read<Vector3>(br)
-                },
-                biomeSettings = Read<BiomeSettings>(br)
+                center = new(readData, br.ReadSingle(), br.ReadSingle()),
+                extents = Read<Vector3>(br)
             };
+            biome.biomeSettings = Read<BiomeSettings>(br);
+
             data.terrainSettings.biomes.Add(biome);
             readData = br.ReadSingle();
         }

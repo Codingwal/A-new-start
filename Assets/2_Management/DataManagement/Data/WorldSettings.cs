@@ -89,10 +89,3 @@ public class TerrainSettings
         riverDirectionImpact = obj.riverDirectionImpact;
     }
 }
-[Serializable]
-public class Biome
-{
-    [Header("[Height, Temperature, Humidity]")]
-    public Bounds bounds;
-    public BiomeSettings biomeSettings;
-}
