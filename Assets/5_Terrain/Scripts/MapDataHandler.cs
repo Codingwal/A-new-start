@@ -38,24 +38,37 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
     }
 
     // EndlessTerrain uses this to add chunks
-    public void AddChunk(Vector2 center, VertexData[,] map, List<List<Vector3>> rivers, List<TreeData> trees)
+    public void AddChunk(Vector2 center, MapData mapData)
     {
-        List<ListWrapper<VertexData>> tempMap = new();
-        for (int x = 0; x < map.GetLength(0); x++)
+        ChunkData chunkData = new();
+
+        List<ListWrapper<VertexData>> map = new();
+        for (int x = 0; x < mapData.map.GetLength(0); x++)
         {
             ListWrapper<VertexData> temp = new();
-            for (int y = 0; y < map.GetLength(1); y++)
+            for (int y = 0; y < mapData.map.GetLength(1); y++)
             {
-                temp.list.Add(map[x, y]);
+                temp.list.Add(mapData.map[x, y]);
             }
-            tempMap.Add(temp);
+            map.Add(temp);
         }
-        List<ListWrapper<Vector3>> tempRivers = new();
-        foreach (List<Vector3> river in rivers)
+        chunkData.map = map;
+
+        List<ListWrapper<Vector3>> rivers = new();
+        foreach (List<Vector3> river in mapData.rivers)
         {
-            tempRivers.Add(new(river));
+            rivers.Add(new(river));
         }
-        chunks[center] = new(tempMap, tempRivers, trees);
+        chunkData.rivers = rivers;
+
+        chunkData.trees = mapData.trees;
+
+        chunkData.bottomLeft = mapData.bottomLeft;
+        chunkData.bottomRight = mapData.bottomRight;
+        chunkData.topLeft = mapData.topLeft;
+        chunkData.topRight = mapData.topRight;
+
+        chunks[center] = chunkData;
     }
     int GenerateSeed(TerrainSettings terrainSettings)
     {
