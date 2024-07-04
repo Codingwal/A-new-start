@@ -19,6 +19,4 @@ MonoBehaviour:
     slopeImpact: 0.5
     heightOffset: 100
     minTreeSpacing: 0
-    trees:
-      keys: []
-      values: []
+    trees: []

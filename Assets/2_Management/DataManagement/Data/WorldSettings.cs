@@ -26,7 +26,7 @@ public class BiomeSettings
 
     [Header("Trees")]
     public float minTreeSpacing;
-    public SerializableDictonary<float, TreeType> trees;
+    public List<BiomeTreeType> trees;
     public static BiomeSettings Lerp(BiomeSettings a, BiomeSettings b, float t)
     {
         return new()
@@ -38,6 +38,13 @@ public class BiomeSettings
         };
 
     }
+}
+[Serializable]
+public class BiomeTreeType
+{
+    [Range(0, 1)]
+    public float chance;
+    public TreeType treeType;
 }
 [Serializable]
 public class TerrainSettings
@@ -66,7 +73,7 @@ public class TerrainSettings
     public float riverDirectionImpact;
     public TerrainSettings()
     {
-        
+
     }
     public TerrainSettings(TerrainSettingsObject obj)
     {
