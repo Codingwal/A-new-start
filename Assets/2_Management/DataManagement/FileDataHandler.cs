@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using UnityEngine.SocialPlatforms.GameCenter;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 
 public class FileDataHandler
 {
@@ -386,7 +387,8 @@ public class FileDataHandler
             {
                 BiomeTreeType tree = new()
                 {
-                    chance = br.ReadSingle()
+                    chance = readData,
+                    treeType = ScriptableObject.CreateInstance<TreeType>()
                 };
                 tree.treeType.tree = (TreeTypes)br.ReadInt32();
                 tree.treeType.minDistance = br.ReadSingle();

@@ -58,7 +58,7 @@ public static class TreeDataGenerator
                 // TODO: Distance to next tree must be greater or equal to minDistance
                 type = treeType;
             }
-            if (type.tree != TreeTypes.None)
+            if (type != null)
                 map.trees.Add(new(localPos, type.tree));
         }
     }

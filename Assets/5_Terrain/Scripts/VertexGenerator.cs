@@ -85,6 +85,9 @@ public static class VertexGenerator
         // Minimum of 0.01f to prevent divisionByZero errors if the point lies inside a biome bound (distance calculation returns 0 in this case)
         float t = closestBiome.Key / Mathf.Max(closestBiome.Key + secondClosestBiome.Key, 0.01f);
 
+        Debug.Assert(closestBiome.Value.slopeImpact != -500, "Forest");
+        Debug.Log(humidity);
+
         return BiomeSettings.Lerp(closestBiome.Value, secondClosestBiome.Value, t);
     }
 }

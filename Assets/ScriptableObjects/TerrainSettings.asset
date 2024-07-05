@@ -18,6 +18,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1f8fa18ea113f7549bf03b742114fb7c, type: 2}
   - {fileID: 11400000, guid: c3fc331ebcc695b489eb3788e00234b6, type: 2}
   - {fileID: 11400000, guid: e3d899de400aec54985b7657e54cc61d, type: 2}
+  - {fileID: 11400000, guid: 601d9cdb010344e4cbcd00229874a634, type: 2}
   biomeScale: 5000
   uniformScale: 1
   terrainScale: 1

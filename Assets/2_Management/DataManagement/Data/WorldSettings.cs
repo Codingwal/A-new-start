@@ -62,6 +62,7 @@ public class BiomeTreeType
 
     public BiomeTreeType()
     {
+
     }
 
     public BiomeTreeType(float chance, TreeType treeType)
