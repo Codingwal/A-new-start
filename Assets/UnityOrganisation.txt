@@ -2,6 +2,7 @@ TODO:
 
 FOR NEXT BUILD:
 
+- Remove custom serializer
 - Trees
     - Biomes
     - Add to FileDataHandler.cs

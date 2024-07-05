@@ -47,6 +47,7 @@ public static class TreeDataGenerator
             TreeType type = null;
             foreach (BiomeTreeType biomeTreeType in treeTypes)
             {
+                Debug.Log("!");
                 if (val > biomeTreeType.chance)
                 {
                     val -= biomeTreeType.chance;

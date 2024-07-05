@@ -80,13 +80,14 @@ public static class VertexGenerator
 
         Debug.Assert(closestBiome.Value != null, $"Couldn't find closestBiome! There are {terrainSettings.biomes.Count} biomes");
         Debug.Assert(secondClosestBiome.Value != null, $"Couldn't find secondClosestBiome! There are {terrainSettings.biomes.Count} biomes");
-        Debug.Assert(closestBiome.Value.trees != null, "!");
 
         // Minimum of 0.01f to prevent divisionByZero errors if the point lies inside a biome bound (distance calculation returns 0 in this case)
         float t = closestBiome.Key / Mathf.Max(closestBiome.Key + secondClosestBiome.Key, 0.01f);
 
-        Debug.Assert(closestBiome.Value.slopeImpact != -500, "Forest");
-        Debug.Log(humidity);
+        Debug.Assert(closestBiome.Value.trees.Count == 0, "1");
+        Debug.Assert(closestBiome.Value.minTreeSpacing == 0, "2");
+        // Debug.Assert(secondClosestBiome.Value.trees.Count == 0, "Forest3");
+        // Debug.Assert(secondClosestBiome.Value.minTreeSpacing == 0, "Forest4");
 
         return BiomeSettings.Lerp(closestBiome.Value, secondClosestBiome.Value, t);
     }

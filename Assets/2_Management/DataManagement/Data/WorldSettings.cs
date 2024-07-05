@@ -42,6 +42,7 @@ public class BiomeSettings
     {
         List<BiomeTreeType> trees = new();
 
+        Debug.Assert(a.Count == 0 && b.Count == 0, "!!!");
         foreach (BiomeTreeType type in a)
         {
             trees.Add(new(type.chance * t, type.treeType));
