@@ -65,7 +65,7 @@ public static class VertexGenerator
         KeyValuePair<float, BiomeSettings> secondClosestBiome = new(float.PositiveInfinity, null);
         foreach (Biome biome in terrainSettings.biomes)
         {
-            float sqrDistance = biome.Bounds.SqrDistance(new(height, temperature, humidity));
+            float sqrDistance = biome.bounds.SqrDistance(new(height, temperature, humidity));
 
             if (sqrDistance < closestBiome.Key)
             {

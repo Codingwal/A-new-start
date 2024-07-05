@@ -10,10 +10,6 @@ public class PlayerSettings
     {
 
     }
-    public PlayerSettings(PlayerSettingsObject obj)
-    {
-
-    }
 }
 
 [Serializable]
@@ -100,25 +96,5 @@ public class TerrainSettings
     public TerrainSettings()
     {
 
-    }
-    public TerrainSettings(TerrainSettingsObject obj)
-    {
-        biomes = obj.biomes;
-        biomeScale = obj.biomeScale;
-        uniformScale = obj.uniformScale;
-        terrainScale = obj.terrainScale;
-
-        noiseScale = obj.noiseScale;
-        octaves = obj.octaves;
-        octaveFrequencyFactor = obj.octaveFrequencyFactor;
-        octaveAmplitudeFactor = obj.octaveAmplitudeFactor;
-
-        generateRivers = obj.generateRivers;
-        minWaterSourceHeight = obj.minWaterSourceHeight;
-        riverWaterGain = obj.riverWaterGain;
-        maxRiverCount = obj.maxRiverCount;
-        maxRiverGenerationTries = obj.maxRiverGenerationTries;
-        minRiverSlope = obj.minRiverSlope;
-        riverDirectionImpact = obj.riverDirectionImpact;
     }
 }

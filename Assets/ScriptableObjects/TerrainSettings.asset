@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   biomes:
   - {fileID: 11400000, guid: 7553bd1b348218a43bbed7a569f86085, type: 2}
-  - {fileID: 11400000, guid: 01cacd1fb0811a74d8a7089053c19a3a, type: 2}
-  - {fileID: 11400000, guid: 1f8fa18ea113f7549bf03b742114fb7c, type: 2}
-  - {fileID: 11400000, guid: c3fc331ebcc695b489eb3788e00234b6, type: 2}
-  - {fileID: 11400000, guid: e3d899de400aec54985b7657e54cc61d, type: 2}
-  - {fileID: 11400000, guid: 601d9cdb010344e4cbcd00229874a634, type: 2}
+  - {fileID: 11400000, guid: 1519bee188685c94dbacfc591549f430, type: 2}
+  - {fileID: 11400000, guid: 4a8b8c4d2a4a0954c966e32f0aa8a083, type: 2}
+  - {fileID: 11400000, guid: da537bcba09ddae4299f6e0c6aa8e9b4, type: 2}
+  - {fileID: 11400000, guid: 28351d793a9e9ba4883255734ee70cc4, type: 2}
+  - {fileID: 11400000, guid: c20901125e7933b44938371457960ac3, type: 2}
+  - {fileID: 11400000, guid: b1b29d1e9b0e49d4da36754f4c4de261, type: 2}
   biomeScale: 5000
   uniformScale: 1
   terrainScale: 1

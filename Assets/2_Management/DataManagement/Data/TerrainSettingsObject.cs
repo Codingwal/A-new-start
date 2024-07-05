@@ -7,7 +7,7 @@ using UnityEngine;
 public class TerrainSettingsObject : ScriptableObject
 {
     [Header("Biomes")]
-    public List<Biome> biomes;
+    public List<BiomeObject> biomes;
     public float biomeScale;
 
     [Header("Scale")]
@@ -28,4 +28,28 @@ public class TerrainSettingsObject : ScriptableObject
     public int maxRiverGenerationTries;
     public float minRiverSlope;
     public float riverDirectionImpact;
+
+    public static explicit operator TerrainSettings(TerrainSettingsObject obj)
+    {
+        return new()
+        {
+            biomes = BiomeObject.ToBiomeList(obj.biomes),
+            biomeScale = obj.biomeScale,
+            uniformScale = obj.uniformScale,
+            terrainScale = obj.terrainScale,
+
+            noiseScale = obj.noiseScale,
+            octaves = obj.octaves,
+            octaveFrequencyFactor = obj.octaveFrequencyFactor,
+            octaveAmplitudeFactor = obj.octaveAmplitudeFactor,
+
+            generateRivers = obj.generateRivers,
+            minWaterSourceHeight = obj.minWaterSourceHeight,
+            riverWaterGain = obj.riverWaterGain,
+            maxRiverCount = obj.maxRiverCount,
+            maxRiverGenerationTries = obj.maxRiverGenerationTries,
+            minRiverSlope = obj.minRiverSlope,
+            riverDirectionImpact = obj.riverDirectionImpact
+        };
+    }
 }

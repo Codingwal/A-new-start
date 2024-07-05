@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 379d802ebee7d354c8c6ca0c56d04aa0, type: 3}
-  m_Name: LowMountains
+  m_Name: Ocean
   m_EditorClassIdentifier: 
-  min: {x: 0.7, y: 0, z: 0}
-  max: {x: 0.7, y: 1, z: 1}
+  min: {x: 0.2, y: 0, z: 0}
+  max: {x: 0.2, y: 1, z: 1}
   biomeSettings:
-    heightMultiplier: 150
-    slopeImpact: 0.5
-    heightOffset: 100
+    heightMultiplier: 50
+    slopeImpact: 0
+    heightOffset: -50
     minTreeSpacing: 0
     trees: []
