@@ -3,10 +3,12 @@ using UnityEngine;
 
 public static class TreeObjGenerator
 {
-    public static void InstantiateTrees(MapData map, Transform parent, GameObject prefab)
+    public static void InstantiateTrees(MapData map, Transform parent, SerializableDictonary<TreeTypes, GameObject> treePrefabs)
     {
         foreach (TreeData tree in map.trees)
         {
+            GameObject prefab = treePrefabs[tree.type];
+
             GameObject newObj = GameObject.Instantiate(prefab, parent);
 
             newObj.transform.localPosition = new(tree.pos.x, map.map[Mathf.RoundToInt(tree.pos.x), Mathf.RoundToInt(tree.pos.y)].height - 0.3f, tree.pos.y);

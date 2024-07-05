@@ -1951,8 +1951,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrainSettings:
     biomes:
-      keys: []
-      values: []
+    - {fileID: 0}
+    - {fileID: 0}
     biomeScale: 5000
     uniformScale: 0
     terrainScale: 1
@@ -2000,8 +2000,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrainChunkPrefab: {fileID: 610096790558363399, guid: 0edc36ea1fadfc14d95f44d240d20224,
     type: 3}
-  treePrefab: {fileID: 299712424454941021, guid: 7083ed9bebdc68d4f8ab7e0a777ef936,
-    type: 3}
+  treePrefabs:
+  - Key: 1
+    Value: {fileID: 299712424454941021, guid: 73112d7b0cf402c43ac07b73de3b3351, type: 3}
+  - Key: 2
+    Value: {fileID: 5400752399725384465, guid: fe9903fa032b96449915ffbcfd9cbfc8, type: 3}
   detailLevels:
   - lod: 0
     visibleDistanceThreshold: 100

@@ -345,7 +345,14 @@ public class FileDataHandler
         bw.Write(biomeSettings.slopeImpact);
         bw.Write(biomeSettings.heightOffset);
         bw.Write(biomeSettings.minTreeSpacing);
-        // TODO: Trees
+
+        foreach (BiomeTreeType tree in biomeSettings.trees)
+        {
+            bw.Write(tree.chance);
+            bw.Write((int)tree.treeType.tree);
+            bw.Write(tree.treeType.minDistance);
+        }
+        WriteClose(bw);
     }
     T Read<T>(BinaryReader br)
     {
@@ -372,8 +379,19 @@ public class FileDataHandler
                 slopeImpact = br.ReadSingle(),
                 heightOffset = br.ReadSingle(),
                 minTreeSpacing = br.ReadSingle(),
-                // TODO: Trees
             };
+
+            float readData = br.ReadSingle();
+            while (readData != 2.1059140958881314e+37)
+            {
+                BiomeTreeType tree = new()
+                {
+                    chance = br.ReadSingle()
+                };
+                tree.treeType.tree = (TreeTypes)br.ReadInt32();
+                tree.treeType.minDistance = br.ReadSingle();
+                readData = br.ReadSingle();
+            }
             return (T)(object)biomeSettings;
         }
         throw new();

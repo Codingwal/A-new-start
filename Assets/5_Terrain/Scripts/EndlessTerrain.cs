@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EndlessTerrain : MonoBehaviour
 {
+    [Header("Prefabs")]
     public GameObject terrainChunkPrefab;
-    public GameObject treePrefab;
+    public List<SerializableKeyValuePair<TreeTypes, GameObject>> treePrefabs;
 
     // Reduces the amount of chunk updates through a threshhold that the player needs to move
     const float viewerMoveThresholdForChunkUpdate = 25f;
@@ -105,7 +107,8 @@ public class EndlessTerrain : MonoBehaviour
                 }
                 else
                 {
-                    terrainChunkDictonary.Add(chunkPos, new TerrainChunk(chunkPos, (int)chunkSize, detailLevels, transform, mapMaterial, terrainChunkPrefab, treePrefab));
+                    terrainChunkDictonary.Add(chunkPos, new TerrainChunk(chunkPos, chunkSize, detailLevels, transform, mapMaterial, terrainChunkPrefab,
+                                                                        SerializableKeyValuePair<TreeTypes, GameObject>.ToSerializableDictionary(treePrefabs)));
                 }
             }
         }
@@ -120,7 +123,7 @@ public class EndlessTerrain : MonoBehaviour
 
         // Trees
         Transform treeChild;
-        GameObject treePrefab;
+        SerializableDictonary<TreeTypes, GameObject> treePrefabs;
         bool hasTrees = false;
 
         // River mesh
@@ -141,7 +144,7 @@ public class EndlessTerrain : MonoBehaviour
         bool mapDataReceived;
         int previousLODIndex = -1;
 
-        public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject terrainChunkPrefab, GameObject treePrefab)
+        public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject terrainChunkPrefab, SerializableDictonary<TreeTypes, GameObject> treePrefabs)
         {
             this.detailLevels = detailLevels;
 
@@ -178,7 +181,7 @@ public class EndlessTerrain : MonoBehaviour
             }
             collisionLODMesh = lodMeshes[0];
 
-            this.treePrefab = treePrefab;
+            this.treePrefabs = treePrefabs;
             treeChild = terrainChunk.transform.GetChild(4);
 
             // Request the mapData and increase the counter used to determine the TerrainGeneration progress
@@ -211,7 +214,7 @@ public class EndlessTerrain : MonoBehaviour
             {
                 if (!hasTrees)
                 {
-                    TreeObjGenerator.InstantiateTrees(mapData, treeChild, treePrefab);
+                    TreeObjGenerator.InstantiateTrees(mapData, treeChild, treePrefabs);
                     hasTrees = true;
                 }
 

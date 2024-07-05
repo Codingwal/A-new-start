@@ -117,8 +117,8 @@ public class RiverPoint
 public struct TreeData
 {
     public Vector2 pos;
-    public uint type;
-    public TreeData(Vector2 pos, uint type)
+    public TreeTypes type;
+    public TreeData(Vector2 pos, TreeTypes type)
     {
         this.pos = pos;
         this.type = type;

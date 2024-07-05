@@ -6,6 +6,7 @@ FOR NEXT BUILD:
     - Biomes
     - Add to FileDataHandler.cs
     - Cleanup & document tree code
+    - Fix naming of tree2, this is not oak!
 - USE GITHUB RELEASE FUNCTIONALITY
 
 FUTURE PLANS:

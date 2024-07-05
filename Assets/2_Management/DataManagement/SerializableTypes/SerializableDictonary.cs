@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Net.Sockets;
 
 [Serializable]
 public class SerializableDictonary<TKey, TValue> : ConcurrentDictionary<TKey, TValue>, ISerializationCallbackReceiver
@@ -36,5 +37,26 @@ public class SerializableDictonary<TKey, TValue> : ConcurrentDictionary<TKey, TV
             keys.Add(pair.Key);
             values.Add(pair.Value);
         }
+    }
+}
+[Serializable]
+public class SerializableKeyValuePair<TKey, TValue>
+{
+    public TKey Key;
+    public TValue Value;
+    public SerializableKeyValuePair(TKey key, TValue value)
+    {
+        Key = key;
+        Value = value;
+    }
+    public static SerializableDictonary<TKey, TValue> ToSerializableDictionary(List<SerializableKeyValuePair<TKey, TValue>> list)
+    {
+        SerializableDictonary<TKey, TValue> dict = new();
+        foreach (SerializableKeyValuePair<TKey, TValue> pair in list)
+        {
+            if (!dict.TryAdd(pair.Key, pair.Value))
+                Debug.LogError($"Key {pair.Key} (Element {dict.Count} in the list) is already present in the dictionary!");
+        }
+        return dict;
     }
 }

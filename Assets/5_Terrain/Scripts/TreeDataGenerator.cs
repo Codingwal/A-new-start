@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using UnityEditor;
 using UnityEngine;
 
 public static class TreeDataGenerator
@@ -25,7 +26,6 @@ public static class TreeDataGenerator
 
             // Limit the probability to 1 so that exceeding the maxHeight or maxSlope garantuees that a tree isn't generated
             probability = Mathf.Min(probability, 1);
-            // Debug.LogWarning(probability);
 
             // Reduce the propability for steep and/or high vertices
             probability -= Mathf.InverseLerp(propabilityLerpMaxHeightBegin, propabilityLerpMaxHeightEnd, map.map[point.x, point.y].height);
@@ -35,53 +35,32 @@ public static class TreeDataGenerator
             System.Random rnd = new(seed + 100 + pos.x * pos.y ^ 2);
 
             if (rnd.NextDouble() > probability) continue;
-            // Debug.Log(probability);
 
             Vector2 localPos = point;
             localPos += 2 * maxPositioningOffset * new Vector2((float)rnd.NextDouble() - 0.5f, (float)rnd.NextDouble() - 0.5f);
-            map.trees.Add(new(localPos, 1));
+
+            // Select a treeType
+            List<BiomeTreeType> treeTypes = BiomeSettings.LerpTrees(BiomeSettings.LerpTrees(map.bottomLeft.trees, map.bottomRight.trees, point.x / chunkSize),
+                                                                   BiomeSettings.LerpTrees(map.topLeft.trees, map.topRight.trees, point.x / chunkSize), point.y / chunkSize);
+
+            float val = (float)rnd.NextDouble();
+            TreeType type = null;
+            foreach (BiomeTreeType biomeTreeType in treeTypes)
+            {
+                if (val > biomeTreeType.chance)
+                {
+                    val -= biomeTreeType.chance;
+                    continue;
+                }
+
+                TreeType treeType = biomeTreeType.treeType;
+
+                // TODO: Distance to next tree must be greater or equal to minDistance
+                type = treeType;
+            }
+            if (type.tree != TreeTypes.None)
+                map.trees.Add(new(localPos, type.tree));
         }
-
-        // float[,] propabilityMap = new float[chunkSize, chunkSize];
-        // for (int x = 0; x < chunkSize; x += 7)
-        // {
-        //     for (int y = 0; y < chunkSize; y += 7)
-        //     {
-        //         Vector2 pos = new Vector2(x, y) + chunkCenter - new Vector2(chunkSize / 2, chunkSize / 2);
-        //         float probability = Mathf.PerlinNoise((seed + pos.x) / perlinNoiseScale, (seed + pos.y) / perlinNoiseScale);
-
-        //         // Limit the probability to 1 so that exceeding the maxHeight or maxSlope garantuees that a tree isn't generated
-        //         probability = Mathf.Min(probability, 1);
-        //         // Debug.LogWarning(probability);
-
-        //         // Reduce the propability for steep and/or high vertices
-        //         probability -= Mathf.InverseLerp(propabilityLerpMaxHeightBegin, propabilityLerpMaxHeightEnd, map.map[x, y].height);
-        //         probability -= Mathf.InverseLerp(propabilityLerpMinHeightEnd, propabilityLerpMinHeightBegin, map.map[x, y].height);
-        //         probability -= Mathf.InverseLerp(propabilityLerpMinSlope, propabilityLerpMaxSlope, Slope(map.map, x, y));
-
-        //         propabilityMap[x, y] = probability;
-        //     }
-        // }
-
-        // for (int x = 0; x < chunkSize; x++)
-        // {
-        //     for (int y = 0; y < chunkSize; y++)
-        //     {
-        //         // Generate a deterministic, position and seed dependent random value between 0 and 1
-        //         System.Random rnd = new(seed + 879 * x * y ^ 2);
-        //         float value = (float)rnd.NextDouble();
-
-        //         // The greater the propability, the likelier it is for a tree to be generated
-        //         if (!(value < propabilityMap[x, y])) continue;
-
-        //         Vector2 pos = new(x, y);
-        //         pos += 2 * maxPositioningOffset * new Vector2((float)rnd.NextDouble() - 0.5f, (float)rnd.NextDouble() - 0.5f);
-
-        //         pos = new Vector2(Mathf.Clamp(pos.x, 0, chunkSize - 1), Mathf.Clamp(pos.y, 0, chunkSize - 1));
-
-        //         map.trees.Add(new(pos, 1));
-        //     }
-        // }
     }
     static float Slope(VertexData[,] map, int x, int y)
     {
