@@ -45,9 +45,10 @@ public static class TreeDataGenerator
 
             float val = (float)rnd.NextDouble();
             TreeType type = null;
+            // Debug.Log("!");
             foreach (BiomeTreeType biomeTreeType in treeTypes)
             {
-                Debug.Log("!");
+                // Debug.Log("!!!");
                 if (val > biomeTreeType.chance)
                 {
                     val -= biomeTreeType.chance;
