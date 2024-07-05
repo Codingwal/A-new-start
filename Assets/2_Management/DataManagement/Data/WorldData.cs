@@ -114,6 +114,7 @@ public class RiverPoint
         this.waterAmount = waterAmount;
     }
 }
+[Serializable]
 public struct TreeData
 {
     public Vector2 pos;

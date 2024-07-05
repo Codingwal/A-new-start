@@ -4,15 +4,12 @@ using System;
 using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
-using UnityEngine.SocialPlatforms.GameCenter;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 
 public class FileDataHandler
 {
     public static readonly string SaveFolder = $"{Application.dataPath}/Data/";
 
     BinaryFormatter formatter = new();
-    SurrogateSelector surrogateSelector = new();
 
     public FileDataHandler()
     {
@@ -30,14 +27,16 @@ public class FileDataHandler
             Directory.CreateDirectory(SaveFolder + "Worlds/");
         }
 
-        Vector3SerializationSurrogate v3ss = new();
-        surrogateSelector.AddSurrogate(typeof(Vector3), new StreamingContext(StreamingContextStates.All), v3ss);
+        SurrogateSelector surrogateSelector = new();
 
-        Vector2SerializationSurrogate v2ss = new();
-        surrogateSelector.AddSurrogate(typeof(Vector2), new StreamingContext(StreamingContextStates.All), v2ss);
+        Vector3SerializationSurrogate vector3Surrogate = new();
+        surrogateSelector.AddSurrogate(typeof(Vector3), new StreamingContext(StreamingContextStates.All), vector3Surrogate);
+        Vector2SerializationSurrogate vector2Surrogate = new();
+        surrogateSelector.AddSurrogate(typeof(Vector2), new StreamingContext(StreamingContextStates.All), vector2Surrogate);
+        BoundsSerializationSurrogate boundsSurrogate = new();
+        surrogateSelector.AddSurrogate(typeof(Bounds), new StreamingContext(StreamingContextStates.All), boundsSurrogate);
 
         formatter.SurrogateSelector = surrogateSelector;
-
     }
     public List<string> ListAllFilesInDirectory(string folder)
     {

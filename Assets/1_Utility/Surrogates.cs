@@ -3,7 +3,6 @@ using System.Runtime.Serialization;
 
 public class Vector3SerializationSurrogate : ISerializationSurrogate
 {
-
     // Method called to serialize a Vector3 object
     public void GetObjectData(object obj, SerializationInfo info, StreamingContext context)
     {
@@ -24,7 +23,6 @@ public class Vector3SerializationSurrogate : ISerializationSurrogate
         return obj;
     }
 }
-
 public class Vector2SerializationSurrogate : ISerializationSurrogate
 {
 
@@ -43,6 +41,26 @@ public class Vector2SerializationSurrogate : ISerializationSurrogate
         v2.x = (float)info.GetValue("x", typeof(float));
         v2.y = (float)info.GetValue("y", typeof(float));
         obj = v2;
+        return obj;
+    }
+}
+public class BoundsSerializationSurrogate : ISerializationSurrogate
+{
+    // Method called to serialize a Vector2 object
+    public void GetObjectData(object obj, SerializationInfo info, StreamingContext context)
+    {
+        Bounds bounds = (Bounds)obj;
+        info.AddValue("center", bounds.center);
+        info.AddValue("extents", bounds.extents);
+    }
+
+    // Method called to deserialize a Vector2 object
+    public object SetObjectData(object obj, SerializationInfo info, StreamingContext context, ISurrogateSelector selector)
+    {
+        Bounds bounds = (Bounds)obj;
+        bounds.center = (Vector3)info.GetValue("center", typeof(Vector3));
+        bounds.extents = (Vector3)info.GetValue("extents", typeof(Vector3));
+        obj = bounds;
         return obj;
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using UnityEngine;
 
 [Serializable]
@@ -38,7 +37,6 @@ public class BiomeSettings
     {
         List<BiomeTreeType> trees = new();
 
-        Debug.Assert(a.Count == 0 && b.Count == 0, "!!!");
         foreach (BiomeTreeType type in a)
         {
             trees.Add(new(type.chance * t, type.treeType));
@@ -97,4 +95,16 @@ public class TerrainSettings
     {
 
     }
+}
+[Serializable]
+public class TreeType
+{
+    public TreeTypes tree;
+    public float minDistance;
+}
+public enum TreeTypes
+{
+    None = 0,
+    Maple,
+    Oak
 }

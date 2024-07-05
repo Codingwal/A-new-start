@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7eb757bc49a4eef489a96dcb5ce8c9f6, type: 3}
   m_Name: Maple
   m_EditorClassIdentifier: 
-  prefab: {fileID: 299712424454941021, guid: 7083ed9bebdc68d4f8ab7e0a777ef936, type: 3}
+  tree: 1
   minDistance: 2
