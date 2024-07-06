@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 379d802ebee7d354c8c6ca0c56d04aa0, type: 3}
   m_Name: SnowyMountains
   m_EditorClassIdentifier: 
+  name: 6
   min: {x: 0.9, y: 0, z: 0}
   max: {x: 0.9, y: 1, z: 1}
   biomeSettings:
     heightMultiplier: 300
     slopeImpact: 1
     heightOffset: 200
-    minTreeSpacing: 0
+    minTreeSpacing: 2
     trees: []

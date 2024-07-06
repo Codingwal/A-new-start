@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Oak
   m_EditorClassIdentifier: 
   tree: 2
-  minDistance: 0
+  minDistance: 2

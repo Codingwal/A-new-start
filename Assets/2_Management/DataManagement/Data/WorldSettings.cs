@@ -108,3 +108,13 @@ public enum TreeTypes
     Maple,
     Oak
 }
+public enum Biomes
+{
+    DeepOcean,
+    Ocean,
+    Beach,
+    Plains,
+    Forest,
+    LowMountains,
+    SnowyMountains
+}

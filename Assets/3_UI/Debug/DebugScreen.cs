@@ -7,6 +7,8 @@ public class DebugScreen : MonoBehaviour
 {
     [SerializeField] TMP_Text seedText;
     [SerializeField] TMP_Text positionText;
+    [SerializeField] TMP_Text chunkText;
+    [SerializeField] TMP_Text biomeText;
     [SerializeField] TMP_Text fpsText;
     [SerializeField] TMP_Text devSprintEnabledText;
 
@@ -42,7 +44,7 @@ public class DebugScreen : MonoBehaviour
         InputManager.DevJump -= DevJump;
 
         SceneManager.sceneUnloaded -= OnSceneUnloaded;
-    } 
+    }
     void ToggleDebug()
     {
         transform.gameObject.SetActive(!transform.gameObject.activeSelf);
@@ -58,7 +60,7 @@ public class DebugScreen : MonoBehaviour
     }
     void DevJump()
     {
-        player.position = new(player.position.x, 200, player.position.z);
+        player.position = new(player.position.x, 500, player.position.z);
     }
     void Update()
     {
@@ -68,7 +70,20 @@ public class DebugScreen : MonoBehaviour
         Vector3 position = player.position;
         positionText.text = $"Position: {position}";
 
+        int chunkSize = MapGenerator.Instance.chunkSize - 1;
+        Vector2Int chunk = new Vector2Int(Mathf.RoundToInt(position.x / chunkSize), Mathf.RoundToInt(position.y / chunkSize)) * chunkSize;
+        chunkText.text = $"Chunk: {chunk}";
+
         UpdateFPS();
+
+        ChunkData chunkData = MapDataHandler.chunks[chunk];
+
+        List<KeyValuePair<float, Biomes>> biomeNames = VertexGenerator.GetBiomeNames(new(position.x, position.z), MapDataHandler.worldData.terrainSettings, seed);
+        biomeText.text = $"Biomes:\n";
+        foreach (KeyValuePair<float, Biomes> biome in biomeNames)
+        {
+            biomeText.text += $"{Mathf.RoundToInt(biome.Key * 100)}% {biome.Value}\n";
+        }
 
         devSprintEnabledText.text = $"Developer sprint is {(devSprintEnabled ? "enabled" : "disabled")}";
     }

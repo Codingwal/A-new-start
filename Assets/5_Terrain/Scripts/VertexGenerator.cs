@@ -84,11 +84,41 @@ public static class VertexGenerator
         // Minimum of 0.01f to prevent divisionByZero errors if the point lies inside a biome bound (distance calculation returns 0 in this case)
         float t = closestBiome.Key / Mathf.Max(closestBiome.Key + secondClosestBiome.Key, 0.01f);
 
-        Debug.Assert(closestBiome.Value.trees.Count == 0, "1");
-        Debug.Assert(closestBiome.Value.minTreeSpacing == 0, "2");
-        // Debug.Assert(secondClosestBiome.Value.trees.Count == 0, "Forest3");
-        // Debug.Assert(secondClosestBiome.Value.minTreeSpacing == 0, "Forest4");
-
         return BiomeSettings.Lerp(closestBiome.Value, secondClosestBiome.Value, t);
+    }
+
+    public static List<KeyValuePair<float, Biomes>> GetBiomeNames(Vector2 pos, TerrainSettings terrainSettings, int seed)
+    {
+        Vector2[] biomeOctaveOffsets = GenerateOctaveOffsets(seed + 10, 1);
+        float height = Noise.GenerateNoise(pos / terrainSettings.terrainScale, biomeOctaveOffsets, terrainSettings.biomeScale, 0.5f, 2, 0, 1);
+
+        biomeOctaveOffsets = GenerateOctaveOffsets(seed + 20, 1);
+        float temperature = Noise.GenerateNoise(pos / terrainSettings.terrainScale, biomeOctaveOffsets, terrainSettings.biomeScale, 0.5f, 2, 0, 1);
+
+        biomeOctaveOffsets = GenerateOctaveOffsets(seed + 30, 1);
+        float humidity = Noise.GenerateNoise(pos / terrainSettings.terrainScale, biomeOctaveOffsets, terrainSettings.biomeScale, 0.5f, 2, 0, 1);
+
+        // Get the biomes with a value directly above and below the received noise value
+        KeyValuePair<float, Biomes> closestBiome = new(float.PositiveInfinity, Biomes.DeepOcean);
+        KeyValuePair<float, Biomes> secondClosestBiome = new(float.PositiveInfinity, Biomes.DeepOcean);
+        foreach (Biome biome in terrainSettings.biomes)
+        {
+            float sqrDistance = biome.bounds.SqrDistance(new(height, temperature, humidity));
+
+            if (sqrDistance < closestBiome.Key)
+            {
+                secondClosestBiome = closestBiome;
+                closestBiome = new(sqrDistance, biome.name);
+            }
+            else if (sqrDistance < secondClosestBiome.Key)
+            {
+                secondClosestBiome = new(sqrDistance, biome.name);
+            }
+        }
+
+        // Minimum of 0.01f to prevent divisionByZero errors if the point lies inside a biome bound (distance calculation returns 0 in this case)
+        float t = closestBiome.Key / Mathf.Max(closestBiome.Key + secondClosestBiome.Key, 0.01f);
+
+        return new() { new(1 - t, closestBiome.Value), new(t, secondClosestBiome.Value) };
     }
 }
