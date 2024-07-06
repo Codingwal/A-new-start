@@ -8,6 +8,7 @@ public static class MainSystem
     public static event Action<GameState> GameStateChanged;
     public static event Action LoadWorld;
     public static event Action StartGame;
+    public static bool startedGame = false;
     public static event Action Pause;
     public static event Action Continue;
 
@@ -48,6 +49,7 @@ public static class MainSystem
     }
     public static void StartGameplay()
     {
+        startedGame = true;
         StartGame?.Invoke();
     }
 }

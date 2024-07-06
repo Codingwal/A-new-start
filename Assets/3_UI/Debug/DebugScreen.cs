@@ -47,6 +47,10 @@ public class DebugScreen : MonoBehaviour
     }
     void ToggleDebug()
     {
+        // If the debug screen is opened but the game isn't started, abort
+        if (!transform.gameObject.activeSelf && !MainSystem.startedGame) return;
+
+        // Toggle the debug to the opposite state of the current state (off->on & on->off)
         transform.gameObject.SetActive(!transform.gameObject.activeSelf);
     }
     void ToggleDevSprint()
