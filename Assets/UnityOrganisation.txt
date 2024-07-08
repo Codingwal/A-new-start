@@ -2,7 +2,6 @@ TODO:
 
 FOR NEXT BUILD:
 
-- Cleanup Management/DataManagement/Data/
 - DebugScreen
     - Show actual biomes (Lerp between chunk corners) (?)
 - Trees

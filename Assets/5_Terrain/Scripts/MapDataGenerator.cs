@@ -20,7 +20,7 @@ public static class MapDataGenerator
         for (int x = 0; x < chunkSize; x += vertexIncrement)
         {
             BiomeSettings biomeSettings0 = BiomeSettings.LerpTerrain(biomeSettings00, biomeSettingsX0, (float)x / (chunkSize - 1) / terrainScale);
-            BiomeSettings biomeSettingsY = BiomeSettings.LerpTerrain(biomeSettings0Y, biomeSettingsXY, (float)x / (chunkSize - 1) / terrainScale);
+            BiomeSettings biomeSettingsY = BiomeSettings.LerpTerrain(biomeSettings0Y, biomeSettingsXY, (float)x / (chunkSize - 1) / terrainScale);  
             for (int y = 0; y < chunkSize; y += vertexIncrement)
             {
                 // For each point...

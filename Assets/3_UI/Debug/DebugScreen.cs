@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -82,7 +83,7 @@ public class DebugScreen : MonoBehaviour
 
         ChunkData chunkData = MapDataHandler.chunks[chunk];
 
-        UpdateBiomes(position, seed);
+        UpdateBiomes(position, chunk, seed, chunkSize);
 
         devSprintEnabledText.text = $"Developer sprint is {(devSprintEnabled ? "enabled" : "disabled")}";
     }
@@ -106,13 +107,45 @@ public class DebugScreen : MonoBehaviour
         lastTimes.Add(Time.deltaTime);
         counter--;
     }
-    void UpdateBiomes(Vector3 position, int seed)
+    void UpdateBiomes(Vector3 pos, Vector2Int chunk, int seed, int chunkSize)
     {
-        List<KeyValuePair<float, Biomes>> biomeNames = VertexGenerator.GetBiomeNames(new Vector2(position.x, position.z), MapDataHandler.worldData.terrainSettings, seed);
+        int halfChunkSize = chunkSize / 2;
+        TerrainSettings terrainSettings = MapDataHandler.worldData.terrainSettings;
+
+        List<KeyValuePair<float, Biomes>> bottomLeft = VertexGenerator.GetBiomeNames(chunk + new Vector2Int(-halfChunkSize, -halfChunkSize), terrainSettings, seed);
+        List<KeyValuePair<float, Biomes>> bottomRight = VertexGenerator.GetBiomeNames(chunk + new Vector2Int(halfChunkSize, -halfChunkSize), terrainSettings, seed);
+        List<KeyValuePair<float, Biomes>> topLeft = VertexGenerator.GetBiomeNames(chunk + new Vector2Int(-halfChunkSize, halfChunkSize), terrainSettings, seed);
+        List<KeyValuePair<float, Biomes>> topRight = VertexGenerator.GetBiomeNames(chunk + new Vector2Int(halfChunkSize, halfChunkSize), terrainSettings, seed);
+
+        // Lerp between the biome names
+        Dictionary<Biomes, float> biomeNames = new();
+
+        float px = Mathf.InverseLerp(chunk.x - halfChunkSize, chunk.x + halfChunkSize, pos.x);
+        float py = Mathf.InverseLerp(chunk.y - halfChunkSize, chunk.y + halfChunkSize, pos.y);
+        AddNames(bottomLeft, (1 - px) * (1 - py));
+        AddNames(bottomRight, px * (1 - py));
+        AddNames(topLeft, (1 - px) * py);//
+        AddNames(topRight, px * py);
+
         biomeText.text = $"Biomes:\n";
-        foreach (KeyValuePair<float, Biomes> biome in biomeNames)
+        foreach (KeyValuePair<Biomes, float> biome in biomeNames)
         {
-            biomeText.text += $"{Mathf.RoundToInt(biome.Key * 100)}% {biome.Value}\n";
+            biomeText.text += $"{Mathf.RoundToInt(biome.Value * 100)}% {biome.Key}\n";
+        }
+
+        // The function used to add all biomeNames
+        // As this function isn't used anywhere else, it is declared as a local function
+        void AddNames(List<KeyValuePair<float, Biomes>> namesToAdd, float relevance)
+        {
+            foreach (KeyValuePair<float, Biomes> pair in namesToAdd)
+            {
+                float percentage = pair.Key * relevance;
+
+                // If the biome wasn't already added to the dict, add it with the corresponding percentage
+                // Else, add the percentage to the current percentage for that biome
+                if (!biomeNames.TryAdd(pair.Value, percentage))
+                    biomeNames[pair.Value] += percentage;
+            }
         }
     }
 }
