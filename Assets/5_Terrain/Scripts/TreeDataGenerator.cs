@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class TreeDataGenerator
 {
-    public static void GenerateTrees(MapData map, TerrainSettings terrainSettings, int seed, Vector2Int chunkCenter, int chunkSize)
+    public static void GenerateTrees(ChunkData map, TerrainSettings terrainSettings, int seed, Vector2Int chunkCenter, int chunkSize)
     {
         const float perlinNoiseScale = 100;
         const float propabilityLerpMaxHeightBegin = 70;
@@ -73,7 +73,7 @@ public static class TreeDataGenerator
         return Mathf.Abs(map[x, y].height - map[x - 1, y - 1].height);
 
     }
-    static List<Vector2Int> GetPointsToGenerate(MapData chunk, Vector2Int chunkCenter, int seed, int chunkSize)
+    static List<Vector2Int> GetPointsToGenerate(ChunkData chunk, Vector2Int chunkCenter, int seed, int chunkSize)
     {
         List<Vector2Int> pointsToGenerate = new();
 

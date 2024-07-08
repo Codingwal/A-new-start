@@ -13,7 +13,7 @@ public class MapGenerator : Singleton<MapGenerator>
     public int chunksPerSector1D;
     public int vertexIncrement;
 
-    Queue<MapThreadInfo<MapData>> mapDataThreadInfoQueue = new();
+    Queue<MapThreadInfo<ChunkData>> mapDataThreadInfoQueue = new();
     Queue<MapThreadInfo<MeshData>> meshDataThreadInfoQueue = new();
     protected override void SingletonAwake()
     {
@@ -29,7 +29,7 @@ public class MapGenerator : Singleton<MapGenerator>
 
     }
 
-    public void RequestMapData(Vector2Int center, Action<MapData> callback)
+    public void RequestMapData(Vector2Int center, Action<ChunkData> callback)
     {
         ThreadStart threadStart = delegate
         {
@@ -37,15 +37,15 @@ public class MapGenerator : Singleton<MapGenerator>
         };
         new Thread(threadStart).Start();
     }
-    void MapDataThread(Vector2Int center, Action<MapData> callback)
+    void MapDataThread(Vector2Int center, Action<ChunkData> callback)
     {
-        MapData mapData = GenerateMapData(center);
+        ChunkData mapData = GenerateMapData(center);
         lock (mapDataThreadInfoQueue)
         {
             mapDataThreadInfoQueue.Enqueue(new(callback, mapData));
         }
     }
-    public void RequestMeshData(MapData mapData, int lod, Action<MeshData> callback)
+    public void RequestMeshData(ChunkData mapData, int lod, Action<MeshData> callback)
     {
         ThreadStart threadStart = delegate
         {
@@ -53,7 +53,7 @@ public class MapGenerator : Singleton<MapGenerator>
         };
         new Thread(threadStart).Start();
     }
-    void MeshDataThread(MapData mapData, int lod, Action<MeshData> callback)
+    void MeshDataThread(ChunkData mapData, int lod, Action<MeshData> callback)
     {
         MeshData meshData = MeshGenerator.GenerateTerrainMesh(mapData.map, lod);
         lock (meshDataThreadInfoQueue)
@@ -68,7 +68,7 @@ public class MapGenerator : Singleton<MapGenerator>
         {
             for (int i = 0; i < mapDataThreadInfoQueue.Count; i++)
             {
-                MapThreadInfo<MapData> threadInfo = mapDataThreadInfoQueue.Dequeue();
+                MapThreadInfo<ChunkData> threadInfo = mapDataThreadInfoQueue.Dequeue();
                 threadInfo.callBack(threadInfo.parameter);
             }
         }
@@ -81,13 +81,13 @@ public class MapGenerator : Singleton<MapGenerator>
             }
         }
     }
-    private MapData GenerateMapData(Vector2Int center)
+    private ChunkData GenerateMapData(Vector2Int center)
     {
         MapDataHandler mapDataHandler = MapDataHandler.Instance;
 
         if (MapDataHandler.chunks.ContainsKey(center))
         {
-            return new(MapDataHandler.chunks[center]);
+            return MapDataHandler.chunks[center];
         }
         int sectorSize = chunksPerSector1D * chunkSize;
 
@@ -110,7 +110,7 @@ public class MapGenerator : Singleton<MapGenerator>
                 mapDataHandler.sectors[sectorCenter] = sectorData;
             }
         }
-        MapData map = MapDataGenerator.GenerateMapData(center, chunkSize, MapDataHandler.worldData.terrainData.seed, terrainSettings, sectorData, vertexIncrement);
+        ChunkData map = MapDataGenerator.GenerateMapData(center, chunkSize, MapDataHandler.worldData.terrainData.seed, terrainSettings, sectorData, vertexIncrement);
         TreeDataGenerator.GenerateTrees(map, terrainSettings, MapDataHandler.worldData.terrainData.seed, center, chunkSize);
 
         mapDataHandler.AddChunk(center, map);
@@ -128,51 +128,4 @@ public class MapGenerator : Singleton<MapGenerator>
         }
     }
 
-}
-public struct MapData
-{
-    public BiomeSettings bottomLeft;
-    public BiomeSettings bottomRight;
-    public BiomeSettings topLeft;
-    public BiomeSettings topRight;
-    public VertexData[,] map;
-    public List<List<Vector3>> rivers;
-    public List<TreeData> trees;
-
-    public MapData(VertexData[,] map, List<List<Vector3>> rivers, BiomeSettings bottomLeft, BiomeSettings bottomRight, BiomeSettings topLeft, BiomeSettings topRight)
-    {
-        this.map = map;
-        this.rivers = rivers;
-        trees = new();
-
-        this.bottomLeft = bottomLeft;
-        this.bottomRight = bottomRight;
-        this.topLeft = topLeft;
-        this.topRight = topRight;
-    }
-
-    public MapData(ChunkData data)
-    {
-        map = new VertexData[MapGenerator.Instance.chunkSize, MapGenerator.Instance.chunkSize];
-        for (int x = 0; x < MapGenerator.Instance.chunkSize; x++)
-        {
-            for (int y = 0; y < MapGenerator.Instance.chunkSize; y++)
-            {
-                map[x, y] = data.map[x].list[y];
-            }
-        }
-
-        rivers = new();
-        foreach (ListWrapper<Vector3> river in data.rivers)
-        {
-            rivers.Add(river.list);
-        }
-
-        trees = data.trees;
-
-        bottomLeft = data.bottomLeft;
-        bottomRight = data.bottomRight;
-        topLeft = data.topLeft;
-        topRight = data.topRight;
-    }
 }

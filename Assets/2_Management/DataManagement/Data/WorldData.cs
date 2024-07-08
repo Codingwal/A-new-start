@@ -57,7 +57,7 @@ public class PlayerData
 public class TerrainData
 {
     public int seed;
-    [SerializeField] public SerializableDictonary<Vector2, ChunkData> chunks;
+    [SerializeField] public Dictionary<Vector2, ChunkData> chunks;
 
     public static TerrainData Default(int seed)
     {
@@ -83,15 +83,20 @@ public class ChunkData
     public BiomeSettings bottomRight;
     public BiomeSettings topLeft;
     public BiomeSettings topRight;
-    public List<ListWrapper<VertexData>> map;
-    public List<ListWrapper<Vector3>> rivers;
+    public VertexData[,] map;
+    public List<List<Vector3>> rivers;
     public List<TreeData> trees;
     public ChunkData() { }
-    public ChunkData(List<ListWrapper<VertexData>> map, List<ListWrapper<Vector3>> rivers, List<TreeData> trees)
+    public ChunkData(VertexData[,] map, List<List<Vector3>> rivers, BiomeSettings bottomLeft, BiomeSettings bottomRight, BiomeSettings topLeft, BiomeSettings topRight)
     {
         this.map = map;
         this.rivers = rivers;
-        this.trees = trees;
+        trees = new();
+
+        this.bottomLeft = bottomLeft;
+        this.bottomRight = bottomRight;
+        this.topLeft = topLeft;
+        this.topRight = topRight;
     }
 }
 public class SectorData

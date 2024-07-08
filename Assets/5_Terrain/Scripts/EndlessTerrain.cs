@@ -140,7 +140,7 @@ public class EndlessTerrain : MonoBehaviour
         LODMesh[] lodMeshes;
         LODMesh collisionLODMesh;
 
-        MapData mapData;
+        ChunkData mapData;
         bool mapDataReceived;
         int previousLODIndex = -1;
 
@@ -188,7 +188,7 @@ public class EndlessTerrain : MonoBehaviour
             chunksWaitingForMapDataCount++;
             MapGenerator.Instance.RequestMapData(position, OnMapDataReceived);
         }
-        void OnMapDataReceived(MapData mapData)
+        void OnMapDataReceived(ChunkData mapData)
         {
             this.mapData = mapData;
             mapDataReceived = true;
@@ -293,7 +293,7 @@ public class EndlessTerrain : MonoBehaviour
 
             updateCallback();
         }
-        public void RequestMesh(MapData mapData)
+        public void RequestMesh(ChunkData mapData)
         {
             hasRequestedMesh = true;
             MapGenerator.Instance.RequestMeshData(mapData, lod, OnMeshDataReceived);

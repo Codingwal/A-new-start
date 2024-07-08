@@ -2,14 +2,12 @@ using System.Collections.Generic;
 using System.IO;
 using System;
 using UnityEngine;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 public class FileDataHandler
 {
     public static readonly string SaveFolder = $"{Application.dataPath}/Data/";
-
-    BinaryFormatter formatter = new();
 
     public FileDataHandler()
     {
@@ -36,7 +34,7 @@ public class FileDataHandler
         BoundsSerializationSurrogate boundsSurrogate = new();
         surrogateSelector.AddSurrogate(typeof(Bounds), new StreamingContext(StreamingContextStates.All), boundsSurrogate);
 
-        formatter.SurrogateSelector = surrogateSelector;
+        // formatter.SurrogateSelector = surrogateSelector;
     }
     public List<string> ListAllFilesInDirectory(string folder)
     {
@@ -56,13 +54,16 @@ public class FileDataHandler
     {
         FileStream saveFile = File.Create($"{SaveFolder}{folder}/{fileName}.bin");
 
-        formatter.Serialize(saveFile, data);
+        if (typeof(T) == typeof(WorldData))
+            Serializer.Serialize(saveFile, (WorldData)(object)data);
+        else
+            Debug.LogError($"ERROR SAVING DATA: Can't save object of type {typeof(T)}");
 
         saveFile.Close();
     }
     public T Load<T>(string folder, string fileName, bool forceReturn = false)
     {
-        T data;
+        T data = default;
 
         try
         {
@@ -70,7 +71,10 @@ public class FileDataHandler
 
             try
             {
-                data = (T)formatter.Deserialize(saveFile);
+                if (typeof(T) == typeof(WorldData))
+                    data = (T)(object)Deserializer.Deserialize(saveFile);
+                else
+                    Debug.LogError($"ERROR LOADING DATA: Can't load object of type {typeof(T)}");
             }
             catch (Exception exception)
             {

@@ -24,51 +24,23 @@ public class MapDataHandler : Singleton<MapDataHandler>, IDataCallbackReceiver
         if (worldData.terrainData.seed == 0)
             worldData.terrainData.seed = GenerateSeed(worldData.terrainSettings);
 
-        chunks = worldData.terrainData.chunks;
+        chunks = new ConcurrentDictionary<Vector2, ChunkData>(worldData.terrainData.chunks);
         sectors = new();
 
         Debug.Log($"Loaded {chunks.Count} chunks");
     }
     public void SaveData(WorldData _worldData)
     {
-        _worldData.terrainData.chunks = (SerializableDictonary<Vector2, ChunkData>)chunks;
+        _worldData.terrainData.chunks = new Dictionary<Vector2, ChunkData>(chunks);
         _worldData.terrainData.seed = worldData.terrainData.seed;
 
         Debug.Log($"Saved {_worldData.terrainData.chunks.Count} chunks");
     }
 
     // EndlessTerrain uses this to add chunks
-    public void AddChunk(Vector2 center, MapData mapData)
+    public void AddChunk(Vector2 center, ChunkData mapData)
     {
-        ChunkData chunkData = new();
-
-        List<ListWrapper<VertexData>> map = new();
-        for (int x = 0; x < mapData.map.GetLength(0); x++)
-        {
-            ListWrapper<VertexData> temp = new();
-            for (int y = 0; y < mapData.map.GetLength(1); y++)
-            {
-                temp.list.Add(mapData.map[x, y]);
-            }
-            map.Add(temp);
-        }
-        chunkData.map = map;
-
-        List<ListWrapper<Vector3>> rivers = new();
-        foreach (List<Vector3> river in mapData.rivers)
-        {
-            rivers.Add(new(river));
-        }
-        chunkData.rivers = rivers;
-
-        chunkData.trees = mapData.trees;
-
-        chunkData.bottomLeft = mapData.bottomLeft;
-        chunkData.bottomRight = mapData.bottomRight;
-        chunkData.topLeft = mapData.topLeft;
-        chunkData.topRight = mapData.topRight;
-
-        chunks[center] = chunkData;
+        chunks[center] = mapData;
     }
     int GenerateSeed(TerrainSettings terrainSettings)
     {

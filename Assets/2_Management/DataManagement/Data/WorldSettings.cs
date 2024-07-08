@@ -51,7 +51,6 @@ public class BiomeSettings
 [Serializable]
 public class BiomeTreeType
 {
-    [Range(0, 1)]
     public float chance;
     public TreeType treeType;
 

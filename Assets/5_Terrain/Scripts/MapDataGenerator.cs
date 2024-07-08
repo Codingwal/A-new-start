@@ -6,7 +6,7 @@ public static class MapDataGenerator
 {
     static ConcurrentDictionary<Vector2Int, List<VertexToCalcInfo>> transferredWaterDict = new();
 
-    public static MapData GenerateMapData(Vector2Int center, int chunkSize, int seed, TerrainSettings terrainSettings, SectorData sectorData, int vertexIncrement)
+    public static ChunkData GenerateMapData(Vector2Int center, int chunkSize, int seed, TerrainSettings terrainSettings, SectorData sectorData, int vertexIncrement)
     {
         // Generate map data
         float terrainScale = terrainSettings.terrainScale;

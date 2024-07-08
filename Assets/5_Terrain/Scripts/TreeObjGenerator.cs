@@ -3,7 +3,7 @@ using UnityEngine;
 
 public static class TreeObjGenerator
 {
-    public static void InstantiateTrees(MapData map, Transform parent, SerializableDictonary<TreeTypes, GameObject> treePrefabs)
+    public static void InstantiateTrees(ChunkData map, Transform parent, SerializableDictonary<TreeTypes, GameObject> treePrefabs)
     {
         foreach (TreeData tree in map.trees)
         {
