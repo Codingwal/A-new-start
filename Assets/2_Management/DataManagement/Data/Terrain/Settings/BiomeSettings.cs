@@ -56,11 +56,11 @@ public class BiomeSettings
 
         foreach (BiomeTreeType type in a)
         {
-            trees.Add(new(type.chance * t, type.treeType));
+            trees.Add(new(type.chance * (1 - t), type.treeType));
         }
         foreach (BiomeTreeType type in b)
         {
-            trees.Add(new(type.chance * (1 - t), type.treeType));
+            trees.Add(new(type.chance * t, type.treeType));
         }
         return trees;
     }

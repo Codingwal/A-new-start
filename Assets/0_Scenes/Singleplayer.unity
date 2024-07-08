@@ -1953,42 +1953,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 888815b657ee7e546886ebcd2973d750, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrainSettings:
-    biomes:
-    - name: 0
-      bounds:
-        m_Center: {x: 0, y: 0, z: 0}
-        m_Extent: {x: 0, y: 0, z: 0}
-      biomeSettings:
-        heightMultiplier: 0
-        slopeImpact: 0
-        heightOffset: 0
-        minTreeSpacing: 0
-        trees: []
-    - name: 0
-      bounds:
-        m_Center: {x: 0, y: 0, z: 0}
-        m_Extent: {x: 0, y: 0, z: 0}
-      biomeSettings:
-        heightMultiplier: 0
-        slopeImpact: 0
-        heightOffset: 0
-        minTreeSpacing: 0
-        trees: []
-    biomeScale: 5000
-    uniformScale: 0
-    terrainScale: 1
-    noiseScale: 0
-    octaves: 0
-    octaveFrequencyFactor: 0
-    octaveAmplitudeFactor: 0
-    generateRivers: 0
-    minWaterSourceHeight: 0.7
-    riverWaterGain: 0.01
-    maxRiverCount: 10
-    maxRiverGenerationTries: 15
-    minRiverSlope: 0
-    riverDirectionImpact: 0
   terrainMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
   chunkSize: 241
   chunksPerSector1D: 9

@@ -7,6 +7,8 @@ public static class TreeDataGenerator
 {
     public static void GenerateTrees(ChunkData map, TerrainSettings terrainSettings, int seed, Vector2Int chunkCenter, int chunkSize)
     {
+        int halfChunkSize = chunkSize / 2;
+
         const float perlinNoiseScale = 100;
         const float propabilityLerpMaxHeightBegin = 70;
         const float propabilityLerpMaxHeightEnd = 100;
@@ -26,9 +28,9 @@ public static class TreeDataGenerator
             float probability = 0.5f + Mathf.PerlinNoise((seed + pos.x) / perlinNoiseScale, (seed + pos.y) / perlinNoiseScale) * 0.5f;
 
             // Reduce the propability at steep and high or low vertices
-            probability -= Mathf.InverseLerp(propabilityLerpMaxHeightBegin, propabilityLerpMaxHeightEnd, map.map[point.x, point.y].height);
-            probability -= Mathf.InverseLerp(propabilityLerpMinHeightEnd, propabilityLerpMinHeightBegin, map.map[point.x, point.y].height);
-            probability -= Mathf.InverseLerp(propabilityLerpMinSlope, propabilityLerpMaxSlope, Slope(map.map, point.x, point.y));
+            probability -= Mathf.InverseLerp(propabilityLerpMaxHeightBegin, propabilityLerpMaxHeightEnd, map.map[point.x + halfChunkSize, point.y + halfChunkSize].height);
+            probability -= Mathf.InverseLerp(propabilityLerpMinHeightEnd, propabilityLerpMinHeightBegin, map.map[point.x + halfChunkSize, point.y + halfChunkSize].height);
+            probability -= Mathf.InverseLerp(propabilityLerpMinSlope, propabilityLerpMaxSlope, Slope(map.map, point.x + halfChunkSize, point.y + halfChunkSize));
 
             System.Random rnd = new(seed + 100 + pos.x * pos.y ^ 2);
 
@@ -38,8 +40,8 @@ public static class TreeDataGenerator
             localPos += 2 * maxPositioningOffset * new Vector2((float)rnd.NextDouble() - 0.5f, (float)rnd.NextDouble() - 0.5f);
 
             // Select a treeType
-            List<BiomeTreeType> treeTypes = BiomeSettings.LerpTrees(BiomeSettings.LerpTrees(map.bottomLeft.trees, map.bottomRight.trees, point.x / chunkSize),
-                                                                   BiomeSettings.LerpTrees(map.topLeft.trees, map.topRight.trees, point.x / chunkSize), point.y / chunkSize);
+            List<BiomeTreeType> treeTypes = BiomeSettings.LerpTrees(BiomeSettings.LerpTrees(map.bottomLeft.trees, map.bottomRight.trees, point.x / (float)chunkSize),
+                                                                   BiomeSettings.LerpTrees(map.topLeft.trees, map.topRight.trees, point.x / (float)chunkSize), point.y / (float)chunkSize);
 
             float val = (float)rnd.NextDouble();
             TreeType type = null;
@@ -71,6 +73,8 @@ public static class TreeDataGenerator
     }
     static List<Vector2Int> GetPointsToGenerate(ChunkData chunk, Vector2Int chunkCenter, int seed, int chunkSize)
     {
+        int halfChunkSize = chunkSize / 2;
+
         List<Vector2Int> pointsToGenerate = new();
 
         float[,] randomValues = new float[chunkSize, chunkSize];
@@ -78,7 +82,7 @@ public static class TreeDataGenerator
         {
             for (int y = 0; y < chunkSize; y++)
             {
-                randomValues[x, y] = GetRandomValue(seed, x + chunkCenter.x, y + chunkCenter.y);
+                randomValues[x, y] = GetRandomValue(seed, x + chunkCenter.x - halfChunkSize, y + chunkCenter.y - halfChunkSize);
             }
         }
 
@@ -89,8 +93,8 @@ public static class TreeDataGenerator
             for (int y = 0; y < chunkSize; y++)
             {
                 float minTreeSpacing = Mathf.Lerp(minTreeSpacingBottom, minTreeSpacingTop, y / chunkSize);
-                if (ShouldGenerateTree(randomValues, x, y, seed, Mathf.RoundToInt(minTreeSpacing)))
-                    pointsToGenerate.Add(new(x, y));
+                if (ShouldGenerateTree(randomValues, x - halfChunkSize, y - halfChunkSize, seed, Mathf.RoundToInt(minTreeSpacing)))
+                    pointsToGenerate.Add(new(x - halfChunkSize, y - halfChunkSize));
             }
         }
         return pointsToGenerate;
