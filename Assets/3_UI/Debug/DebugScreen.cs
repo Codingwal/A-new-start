@@ -75,19 +75,14 @@ public class DebugScreen : MonoBehaviour
         positionText.text = $"Position: {position}";
 
         int chunkSize = MapGenerator.Instance.chunkSize - 1;
-        Vector2Int chunk = new Vector2Int(Mathf.RoundToInt(position.x / chunkSize), Mathf.RoundToInt(position.y / chunkSize)) * chunkSize;
+        Vector2Int chunk = new Vector2Int(Mathf.RoundToInt(position.x / chunkSize), Mathf.RoundToInt(position.z / chunkSize)) * chunkSize;
         chunkText.text = $"Chunk: {chunk}";
 
         UpdateFPS();
 
         ChunkData chunkData = MapDataHandler.chunks[chunk];
 
-        List<KeyValuePair<float, Biomes>> biomeNames = VertexGenerator.GetBiomeNames(new(position.x, position.z), MapDataHandler.worldData.terrainSettings, seed);
-        biomeText.text = $"Biomes:\n";
-        foreach (KeyValuePair<float, Biomes> biome in biomeNames)
-        {
-            biomeText.text += $"{Mathf.RoundToInt(biome.Key * 100)}% {biome.Value}\n";
-        }
+        UpdateBiomes(position, seed);
 
         devSprintEnabledText.text = $"Developer sprint is {(devSprintEnabled ? "enabled" : "disabled")}";
     }
@@ -110,5 +105,14 @@ public class DebugScreen : MonoBehaviour
         }
         lastTimes.Add(Time.deltaTime);
         counter--;
+    }
+    void UpdateBiomes(Vector3 position, int seed)
+    {
+        List<KeyValuePair<float, Biomes>> biomeNames = VertexGenerator.GetBiomeNames(new Vector2(position.x, position.z), MapDataHandler.worldData.terrainSettings, seed);
+        biomeText.text = $"Biomes:\n";
+        foreach (KeyValuePair<float, Biomes> biome in biomeNames)
+        {
+            biomeText.text += $"{Mathf.RoundToInt(biome.Key * 100)}% {biome.Value}\n";
+        }
     }
 }

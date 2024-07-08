@@ -2,9 +2,7 @@ TODO:
 
 FOR NEXT BUILD:
 
-- Remove custom serializer
 - Trees
-    - Biomes
     - Add to FileDataHandler.cs
     - Cleanup & document tree code
     - Fix naming of tree2, this is not oak!
