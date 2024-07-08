@@ -5,7 +5,8 @@
 
 # !!! This is not generated but added intentionally
 # World data gets big really fast and isn't needed on github
-Data/
+/Data/Worlds/
+CoolVirus_BurstDebugInformation_DoNotShip/
 
 
 /[Ll]ibrary/
