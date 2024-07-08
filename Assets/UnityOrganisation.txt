@@ -1,17 +1,15 @@
 TODO:
 
-FOR NEXT BUILD:
+FOR v0.2:
 
-- DebugScreen
-    - Show actual biomes (Lerp between chunk corners) (?)
+- Fix slow loading of Singleplayer scene
 - Trees
-    - Fix visible chunk edges
-    - Cleanup & document tree code
     - Select tree type using distance to next tree [Bookmark]
     - Fix naming of tree2, this is not oak!
     - Add collider
-    - Improve performance (LODsystem, GPU instancing, ...)
+    - Improve performance (LODsystem, GPU instancing, culling, ...)
     - Bookmarks
+- More vegetation (?)
 - USE GITHUB RELEASE FUNCTIONALITY
 
 FUTURE PLANS:
