@@ -62,7 +62,6 @@ public class BiomeSettingsObject
 [Serializable]
 public class BiomeTreeTypeObject
 {
-    [Range(0, 1)]
     public float chance;
     public TreeTypeObject treeType;
 

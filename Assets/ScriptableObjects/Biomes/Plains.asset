@@ -20,4 +20,8 @@ MonoBehaviour:
     slopeImpact: 0
     heightOffset: 50
     minTreeSpacing: 4
-    trees: []
+    trees:
+    - chance: 0.08
+      treeType: {fileID: 11400000, guid: 7bb0931a03572c34d89a2751107ba0f7, type: 2}
+    - chance: 0.08
+      treeType: {fileID: 11400000, guid: 6f05329752a44f443a40ac92d009cef1, type: 2}
