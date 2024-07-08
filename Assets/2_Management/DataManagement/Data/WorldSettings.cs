@@ -19,9 +19,13 @@ public class BiomeSettings
     public float slopeImpact;
     public float heightOffset;
 
-    [Header("Trees")]
+    // Trees
     public float minTreeSpacing;
     public List<BiomeTreeType> trees = new();
+
+    /// <summary>
+    /// Lerps all settings.
+    /// </summary>
     public static BiomeSettings Lerp(BiomeSettings a, BiomeSettings b, float t)
     {
         return new()
@@ -33,6 +37,24 @@ public class BiomeSettings
             trees = LerpTrees(a.trees, b.trees, t)
         };
     }
+
+    /// <summary>
+    /// <para>Lerps all settings relevant for terrain generation.</para>
+    /// All other settings are set to default and should not be used!
+    /// </summary>
+    public static BiomeSettings LerpTerrain(BiomeSettings a, BiomeSettings b, float t)
+    {
+        return new()
+        {
+            heightMultiplier = Mathf.Lerp(a.heightMultiplier, b.heightMultiplier, t),
+            slopeImpact = Mathf.Lerp(a.slopeImpact, b.slopeImpact, t),
+            heightOffset = Mathf.Lerp(a.heightOffset, b.heightOffset, t)
+        };
+    }
+    /// <summary>
+    /// Lerps between all trees
+    /// </summary>
+    /// <returns>A list containing all treeTypes and their chance so that the total chance is equal to one</returns>
     public static List<BiomeTreeType> LerpTrees(List<BiomeTreeType> a, List<BiomeTreeType> b, float t)
     {
         List<BiomeTreeType> trees = new();

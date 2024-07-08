@@ -2,10 +2,17 @@ TODO:
 
 FOR NEXT BUILD:
 
+- Cleanup Management/DataManagement/Data/
+- DebugScreen
+    - Show actual biomes (Lerp between chunk corners) (?)
 - Trees
-    - Add to FileDataHandler.cs
+    - Fix visible chunk edges
     - Cleanup & document tree code
+    - Select tree type using distance to next tree [Bookmark]
     - Fix naming of tree2, this is not oak!
+    - Add collider
+    - Improve performance (LODsystem, GPU instancing, ...)
+    - Bookmarks
 - USE GITHUB RELEASE FUNCTIONALITY
 
 FUTURE PLANS:

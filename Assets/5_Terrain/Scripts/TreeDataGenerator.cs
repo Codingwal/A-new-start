@@ -22,12 +22,10 @@ public static class TreeDataGenerator
         foreach (Vector2Int point in pointsToGenerate)
         {
             Vector2Int pos = point + chunkCenter - new Vector2Int(chunkSize / 2, chunkSize / 2);
-            float probability = Mathf.PerlinNoise((seed + pos.x) / perlinNoiseScale, (seed + pos.y) / perlinNoiseScale);
 
-            // Limit the probability to 1 so that exceeding the maxHeight or maxSlope garantuees that a tree isn't generated
-            probability = Mathf.Min(probability, 1);
+            float probability = 0.5f + Mathf.PerlinNoise((seed + pos.x) / perlinNoiseScale, (seed + pos.y) / perlinNoiseScale) * 0.5f;
 
-            // Reduce the propability for steep and/or high vertices
+            // Reduce the propability at steep and high or low vertices
             probability -= Mathf.InverseLerp(propabilityLerpMaxHeightBegin, propabilityLerpMaxHeightEnd, map.map[point.x, point.y].height);
             probability -= Mathf.InverseLerp(propabilityLerpMinHeightEnd, propabilityLerpMinHeightBegin, map.map[point.x, point.y].height);
             probability -= Mathf.InverseLerp(propabilityLerpMinSlope, propabilityLerpMaxSlope, Slope(map.map, point.x, point.y));
@@ -45,10 +43,8 @@ public static class TreeDataGenerator
 
             float val = (float)rnd.NextDouble();
             TreeType type = null;
-            // Debug.Log("!");
             foreach (BiomeTreeType biomeTreeType in treeTypes)
             {
-                // Debug.Log("!!!");
                 if (val > biomeTreeType.chance)
                 {
                     val -= biomeTreeType.chance;

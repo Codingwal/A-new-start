@@ -19,14 +19,14 @@ public static class MapDataGenerator
         VertexData[,] map = new VertexData[(chunkSize - 1) / vertexIncrement + 1, (chunkSize - 1) / vertexIncrement + 1];
         for (int x = 0; x < chunkSize; x += vertexIncrement)
         {
-            BiomeSettings biomeSettings0 = BiomeSettings.Lerp(biomeSettings00, biomeSettingsX0, (float)x / (chunkSize - 1) / terrainScale);
-            BiomeSettings biomeSettingsY = BiomeSettings.Lerp(biomeSettings0Y, biomeSettingsXY, (float)x / (chunkSize - 1) / terrainScale);
+            BiomeSettings biomeSettings0 = BiomeSettings.LerpTerrain(biomeSettings00, biomeSettingsX0, (float)x / (chunkSize - 1) / terrainScale);
+            BiomeSettings biomeSettingsY = BiomeSettings.LerpTerrain(biomeSettings0Y, biomeSettingsXY, (float)x / (chunkSize - 1) / terrainScale);
             for (int y = 0; y < chunkSize; y += vertexIncrement)
             {
                 // For each point...
 
                 // Estimate the biomeSettings by lerping between the bottom and top value for this column
-                BiomeSettings biomeSettings = BiomeSettings.Lerp(biomeSettings0, biomeSettingsY, (float)y / (chunkSize - 1) / terrainScale);
+                BiomeSettings biomeSettings = BiomeSettings.LerpTerrain(biomeSettings0, biomeSettingsY, (float)y / (chunkSize - 1) / terrainScale);
 
                 // Calculate the height using the biomeSettings
                 map[x / vertexIncrement, y / vertexIncrement].height = VertexGenerator.GenerateVertexData(new Vector2(x + center.x - chunkSize / 2, y + center.y - chunkSize / 2), seed, biomeSettings, terrainSettings, terrainScale);
