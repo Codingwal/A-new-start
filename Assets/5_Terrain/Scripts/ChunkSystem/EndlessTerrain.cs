@@ -5,7 +5,7 @@ public class EndlessTerrain : MonoBehaviour
 {
     [Header("Prefabs")]
     public GameObject terrainChunkPrefab;
-    public List<SerializableKeyValuePair<TreeTypes, GameObject>> treePrefabs;
+    public EditorTreeMeshes treeMeshes;
 
     // Reduces the amount of chunk updates through a threshhold that the player needs to move
     const float viewerMoveThresholdForChunkUpdate = 25f;
@@ -106,8 +106,7 @@ public class EndlessTerrain : MonoBehaviour
                 }
                 else
                 {
-                    terrainChunkDictonary.Add(chunkPos, new TerrainChunk(chunkPos, chunkSize, detailLevels, transform, mapMaterial, terrainChunkPrefab,
-                                                                        SerializableKeyValuePair<TreeTypes, GameObject>.ToSerializableDictionary(treePrefabs)));
+                    terrainChunkDictonary.Add(chunkPos, new TerrainChunk(chunkPos, chunkSize, detailLevels, transform, mapMaterial, terrainChunkPrefab, (TreeMeshes)treeMeshes));
                 }
             }
         }

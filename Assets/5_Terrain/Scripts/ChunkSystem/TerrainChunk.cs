@@ -9,10 +9,10 @@ public class TerrainChunk
     Bounds bounds;
 
     // Trees
-    Transform treeChild;
-    SerializableDictonary<TreeTypes, GameObject> treePrefabs;
-    bool hasTrees = false;
-    List<GameObject> trees;
+    Transform treeMeshChild;
+    MeshFilter treeMeshFilter;
+    MeshRenderer treeMeshRenderer;
+    TreeMeshes treeMeshes;
 
     // River mesh
     Transform riverMeshChild;
@@ -32,7 +32,7 @@ public class TerrainChunk
     bool mapDataReceived;
     int previousLODIndex = -1;
 
-    public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject terrainChunkPrefab, SerializableDictonary<TreeTypes, GameObject> treePrefabs)
+    public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject terrainChunkPrefab, TreeMeshes treeMeshes)
     {
         this.detailLevels = detailLevels;
 
@@ -69,8 +69,11 @@ public class TerrainChunk
         }
         collisionLODMesh = lodMeshes[0];
 
-        this.treePrefabs = treePrefabs;
-        treeChild = terrainChunk.transform.GetChild(4);
+        // Initialize tree stuff
+        this.treeMeshes = treeMeshes;
+        treeMeshChild = terrainChunk.transform.GetChild(4);
+        treeMeshFilter = treeMeshChild.GetComponent<MeshFilter>();
+        treeMeshRenderer = treeMeshChild.GetComponent<MeshRenderer>();
 
         // Request the mapData and increase the counter used to determine the TerrainGeneration progress
         EndlessTerrain.chunksWaitingForMapDataCount++;
@@ -100,12 +103,6 @@ public class TerrainChunk
 
         if (visible)
         {
-            if (!hasTrees)
-            {
-                trees = TreeObjGenerator.InstantiateTrees(mapData, treeChild, treePrefabs);
-                hasTrees = true;
-            }
-
             riverMeshFilter.mesh = RiverMeshGenerator.GenerateRiverMesh(mapData.rivers, 241);
 
             // Get the current detaillevel
@@ -124,11 +121,12 @@ public class TerrainChunk
                 if (lodMesh.hasMesh)
                 {
                     previousLODIndex = lodIndex;
-                    meshFilter.mesh = lodMesh.mesh;
+                    meshFilter.mesh = lodMesh.terrainMesh;
+                    treeMeshFilter.mesh = lodMesh.treeMesh;
                 }
                 else if (!lodMesh.hasRequestedMesh)
                 {
-                    lodMesh.RequestMesh(mapData);
+                    lodMesh.RequestMesh(mapData, treeMeshes);
                 }
 
                 // If the chunk has the lowest detaillevel...
@@ -137,11 +135,11 @@ public class TerrainChunk
                     // If the collisionMesh already exists, use this mesh, else, if the mesh hasn't been requested, do so
                     if (collisionLODMesh.hasMesh)
                     {
-                        meshCollider.sharedMesh = collisionLODMesh.mesh;
+                        meshCollider.sharedMesh = collisionLODMesh.terrainMesh;
                     }
                     else if (!collisionLODMesh.hasRequestedMesh)
                     {
-                        collisionLODMesh.RequestMesh(mapData);
+                        collisionLODMesh.RequestMesh(mapData, treeMeshes);
                     }
                 }
             }
@@ -163,7 +161,8 @@ public class TerrainChunk
 [System.Serializable]
 class LODMesh
 {
-    public Mesh mesh;
+    public Mesh terrainMesh;
+    public Mesh treeMesh;
     public bool hasRequestedMesh;
     public bool hasMesh;
     readonly int lod; // Level of detail
@@ -174,17 +173,18 @@ class LODMesh
         this.lod = lod;
         this.updateCallback = updateCallback;
     }
-    void OnMeshDataReceived(MeshData meshData)
+    void OnMeshDataReceived(MeshData terrainMeshData)
     {
-        mesh = meshData.CreateMesh();
+        terrainMesh = terrainMeshData.CreateMesh();
         hasMesh = true;
 
         updateCallback();
     }
-    public void RequestMesh(ChunkData mapData)
+    public void RequestMesh(ChunkData mapData, TreeMeshes treeMeshes)
     {
         hasRequestedMesh = true;
         MapGenerator.Instance.RequestMeshData(mapData, lod, OnMeshDataReceived);
+        treeMesh = TreeMeshGenerator.CreateTreeMesh(mapData, lod, treeMeshes);
     }
 }
 [System.Serializable]

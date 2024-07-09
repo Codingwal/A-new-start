@@ -1986,18 +1986,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrainChunkPrefab: {fileID: 610096790558363399, guid: 0edc36ea1fadfc14d95f44d240d20224,
     type: 3}
-  treePrefabs:
-  - Key: 1
-    Value: {fileID: 299712424454941021, guid: 73112d7b0cf402c43ac07b73de3b3351, type: 3}
-  - Key: 2
-    Value: {fileID: 5400752399725384465, guid: fe9903fa032b96449915ffbcfd9cbfc8, type: 3}
+  treeMeshes:
+    treeMeshes:
+      data:
+      - Key: 1
+        Value:
+        - {fileID: 2382598983503447226, guid: eb2b6e65321492b4db38138852771286, type: 3}
+        - {fileID: 13864149661187147, guid: 822c03741cf305c448a583ba4bb324b3, type: 3}
+        - {fileID: 91218278702364970, guid: 8bba8b001e765af48af592d6ab2b3e6a, type: 3}
+        - {fileID: 3559535700302865799, guid: a6ea688235cfe2e4b88b9061f688b587, type: 3}
+      - Key: 2
+        Value:
+        - {fileID: -2700909530332876597, guid: 9e7bbd50f7b9cb44cb788d8d4014d385, type: 3}
+        - {fileID: 563796149901405832, guid: 142392a335b208541b7fcc86769b4c5a, type: 3}
+        - {fileID: -6720105191339349091, guid: 94a71cc9ce1b5e644a95fb03762f91b8, type: 3}
+        - {fileID: 799021023404360440, guid: 8c91bda8055786c4f9b58abdae79e824, type: 3}
   detailLevels:
   - lod: 0
     visibleDistanceThreshold: 100
-  - lod: 1
-    visibleDistanceThreshold: 300
-  - lod: 3
-    visibleDistanceThreshold: 800
+    treeLOD: 1
   viewer: {fileID: 965662050}
   mapMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
 --- !u!114 &1146475735

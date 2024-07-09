@@ -4,10 +4,10 @@ FOR v0.2:
 
 - Fix slow loading of Singleplayer scene
 - Trees
+    - Improve performance (LODsystem, GPU instancing, culling, ...)
     - Select tree type using distance to next tree [Bookmark]
     - Fix naming of tree2, this is not oak!
     - Add collider
-    - Improve performance (LODsystem, GPU instancing, culling, ...)
     - Bookmarks
 - More vegetation (?)
 - USE GITHUB RELEASE FUNCTIONALITY
