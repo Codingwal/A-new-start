@@ -192,4 +192,6 @@ public struct LODInfo
 {
     public int lod;
     public float visibleDistanceThreshold;
+    [Header("Use -1 if no trees should be visible")]
+    public int treeLOD;
 }

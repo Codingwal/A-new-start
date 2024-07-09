@@ -3,6 +3,9 @@ using System;
 using System.Threading;
 using UnityEngine;
 
+/// <summary>
+/// The MapGenerator handles threading for the terrainData generation and calls the different functions needed to generate the terrain in the GenerateMapData function
+/// </summary>
 public class MapGenerator : Singleton<MapGenerator>
 {
     // This is set by the MapDataHandler script
@@ -13,21 +16,8 @@ public class MapGenerator : Singleton<MapGenerator>
     public int chunksPerSector1D;
     public int vertexIncrement;
 
-    Queue<MapThreadInfo<ChunkData>> mapDataThreadInfoQueue = new();
-    Queue<MapThreadInfo<MeshData>> meshDataThreadInfoQueue = new();
-    protected override void SingletonAwake()
-    {
-        MainSystem.LoadWorld += LoadWorld;
-    }
-    private void OnDisable()
-    {
-        MainSystem.LoadWorld -= LoadWorld;
-    }
-    private void LoadWorld()
-    {
-        // Update the map
-
-    }
+    readonly Queue<MapThreadInfo<ChunkData>> mapDataThreadInfoQueue = new();
+    readonly Queue<MapThreadInfo<MeshData>> meshDataThreadInfoQueue = new();
 
     public void RequestMapData(Vector2Int center, Action<ChunkData> callback)
     {
@@ -64,22 +54,18 @@ public class MapGenerator : Singleton<MapGenerator>
 
     private void Update()
     {
-        if (mapDataThreadInfoQueue.Count > 0)
+        for (int i = 0; i < mapDataThreadInfoQueue.Count; i++)
         {
-            for (int i = 0; i < mapDataThreadInfoQueue.Count; i++)
-            {
-                MapThreadInfo<ChunkData> threadInfo = mapDataThreadInfoQueue.Dequeue();
-                threadInfo.callBack(threadInfo.parameter);
-            }
+            MapThreadInfo<ChunkData> threadInfo = mapDataThreadInfoQueue.Dequeue();
+            threadInfo.callBack(threadInfo.parameter);
         }
-        if (meshDataThreadInfoQueue.Count > 0)
+
+        for (int i = 0; i < meshDataThreadInfoQueue.Count; i++)
         {
-            for (int i = 0; i < meshDataThreadInfoQueue.Count; i++)
-            {
-                MapThreadInfo<MeshData> threadInfo = meshDataThreadInfoQueue.Dequeue();
-                threadInfo.callBack(threadInfo.parameter);
-            }
+            MapThreadInfo<MeshData> threadInfo = meshDataThreadInfoQueue.Dequeue();
+            threadInfo.callBack(threadInfo.parameter);
         }
+
     }
     private ChunkData GenerateMapData(Vector2Int center)
     {
@@ -117,7 +103,8 @@ public class MapGenerator : Singleton<MapGenerator>
 
         return map;
     }
-    struct MapThreadInfo<T>
+
+    readonly struct MapThreadInfo<T>
     {
         public readonly Action<T> callBack;
         public readonly T parameter;
