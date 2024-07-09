@@ -1,12 +1,14 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class TreeObjGenerator
 {
-    public static void InstantiateTrees(ChunkData map, Transform parent, SerializableDictonary<TreeTypes, GameObject> treePrefabs)
+    public static List<GameObject> InstantiateTrees(ChunkData map, Transform parent, SerializableDictonary<TreeTypes, GameObject> treePrefabs)
     {
         int halfChunkSize = MapGenerator.Instance.chunkSize / 2;
 
+        List<GameObject> trees = new(map.trees.Count);
         foreach (TreeData tree in map.trees)
         {
             GameObject prefab = treePrefabs[tree.type];
@@ -19,6 +21,9 @@ public static class TreeObjGenerator
 
             // Gives the object a random rotation
             newObj.transform.rotation = Quaternion.Euler(0, rnd.Next(-180, 180), 0);
+
+            trees.Add(newObj);
         }
+        return trees;
     }
 }

@@ -31,10 +31,10 @@ public class MapGenerator : Singleton<MapGenerator>
 
     public void RequestMapData(Vector2Int center, Action<ChunkData> callback)
     {
-        ThreadStart threadStart = delegate
+        void threadStart()
         {
             MapDataThread(center, callback);
-        };
+        }
         new Thread(threadStart).Start();
     }
     void MapDataThread(Vector2Int center, Action<ChunkData> callback)
@@ -47,10 +47,10 @@ public class MapGenerator : Singleton<MapGenerator>
     }
     public void RequestMeshData(ChunkData mapData, int lod, Action<MeshData> callback)
     {
-        ThreadStart threadStart = delegate
+        void threadStart()
         {
             MeshDataThread(mapData, lod, callback);
-        };
+        }
         new Thread(threadStart).Start();
     }
     void MeshDataThread(ChunkData mapData, int lod, Action<MeshData> callback)
