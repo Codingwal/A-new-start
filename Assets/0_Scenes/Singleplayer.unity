@@ -1989,7 +1989,7 @@ MonoBehaviour:
   treeMeshes:
     treeMeshes:
       data:
-      - Key: 1
+      - Key: 0
         Value:
         - trunkMesh: {fileID: 4300000, guid: f26bb08513083e0468e66b3e7157add9, type: 2}
           leafMesh: {fileID: 4300000, guid: 04dad2f867db8da4db759bad699d541c, type: 2}
@@ -1999,7 +1999,7 @@ MonoBehaviour:
           leafMesh: {fileID: 4300000, guid: 46ea450db4e5f794ebdde6048ae6be32, type: 2}
         - trunkMesh: {fileID: 4300000, guid: 57de0a62c8043a64fbc8281f0c53f69f, type: 2}
           leafMesh: {fileID: 4300000, guid: 0d8df87d95be0364f8e95c532c673ac2, type: 2}
-      - Key: 2
+      - Key: 1
         Value:
         - trunkMesh: {fileID: 4300000, guid: f2ff136a9404e334ea10972660ca6b78, type: 2}
           leafMesh: {fileID: 4300000, guid: d3920d2d65eafe44badda2628f20dedc, type: 2}

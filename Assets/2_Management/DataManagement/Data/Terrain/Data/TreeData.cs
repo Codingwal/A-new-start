@@ -12,7 +12,6 @@ public struct TreeData
 }
 public enum TreeTypes
 {
-    None = 0,
     Maple,
     Oak
 }

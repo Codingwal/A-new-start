@@ -9,19 +9,14 @@ public static class Deserializer
     static BinaryReader br;
     public static WorldData Deserialize(FileStream fs)
     {
-        Debug.Log("Reading");
 
         br = new(fs);
 
         WorldData data = new();
 
-        Debug.Log("Reading playerSettings");
         Read(out data.playerSettings);
-        Debug.Log("Reading playerData");
         Read(out data.playerData);
-        Debug.Log("Reading terrainSettings");
         Read(out data.terrainSettings);
-        Debug.Log("Reading terrainData");
         Read(out data.terrainData);
 
 

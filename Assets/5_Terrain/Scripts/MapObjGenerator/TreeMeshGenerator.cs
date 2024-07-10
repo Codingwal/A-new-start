@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public static class TreeMeshGenerator
 {
@@ -8,14 +9,20 @@ public static class TreeMeshGenerator
     {
         int halfChunkSize = MapGenerator.Instance.chunkSize / 2;
 
-        CombineInstance[] trunks = new CombineInstance[map.trees.Count];
-        CombineInstance[] leafs = new CombineInstance[map.trees.Count];
+        // Create a list for each material (number of treeTypes * materials per treeType (trunk & leaf))
+        List<CombineInstance>[] meshes = new List<CombineInstance>[treeMeshes.treeMeshes.Count * 2];
+
+        // Intialize all lists
+        for (int i = 0; i < meshes.Length; i++)
+        {
+            meshes[i] = new();
+        }
+
+
+        // Foreach tree...
         for (int i = 0; i < map.trees.Count; i++)
         {
             TreeData tree = map.trees[i];
-
-            trunks[i].mesh = treeMeshes.GetMesh(tree.type, lod).trunkMesh;
-            leafs[i].mesh = treeMeshes.GetMesh(tree.type, lod).leafMesh;
 
             Vector3 localPosition = new(tree.pos.x, map.map[Mathf.RoundToInt(tree.pos.x + halfChunkSize), Mathf.RoundToInt(tree.pos.y + halfChunkSize)].height - 0.3f, tree.pos.y);
 
@@ -25,35 +32,42 @@ public static class TreeMeshGenerator
 
             Vector3 scale = new(2, 2, 2);
 
-            Matrix4x4 matrix = Matrix4x4.identity;
-            matrix.SetTRS(localPosition, rotation, scale);
-            trunks[i].transform = matrix;
-            leafs[i].transform = matrix;
-        }
+            Matrix4x4 transform = Matrix4x4.identity;
+            transform.SetTRS(localPosition, rotation, scale);
 
-        CombineInstance[] combineInstances = new CombineInstance[2];
+            CombineInstance trunkCombineInstance = new()
+            {
+                mesh = treeMeshes.GetMesh(tree.type, lod).trunkMesh,
+                transform = transform
+            };
+            CombineInstance leafCombineInstance = new()
+            {
+                mesh = treeMeshes.GetMesh(tree.type, lod).leafMesh,
+                transform = transform
+            };
+
+            // Index = treeTypeIndex * indicesPerTreeType [1 for trunk, 1 for leaf] + 1 if its the leafMesh
+            Debug.Assert(meshes[(int)tree.type * 2] != null, "1");
+            // Debug.Assert(trunkCombineInstance != null, "2");
+            meshes[(int)tree.type * 2].Add(trunkCombineInstance);
+            meshes[(int)tree.type * 2 + 1].Add(leafCombineInstance);
+        }
 
         // Generate a default Matrix which is needed for the CombineInstances of the trunkMesh & leafMesh
-        Matrix4x4 defaultMatrix = Matrix4x4.identity;
-        defaultMatrix.SetTRS(new(0, 0, 0), Quaternion.identity, new(1, 1, 1));
+        Matrix4x4 defaultTransform = Matrix4x4.identity;
+        defaultTransform.SetTRS(new(0, 0, 0), Quaternion.identity, new(1, 1, 1));
 
-        // Combine all trunkMeshes and add the result (trunkMesh) to the combineInstances array
+        // Combine all meshes into one mesh for each material
+        CombineInstance[] combineInstances = new CombineInstance[meshes.Length];
+        for (int i = 0; i < meshes.Length; i++)
         {
-            Mesh trunkMesh = new() { indexFormat = UnityEngine.Rendering.IndexFormat.UInt32 };
-            trunkMesh.CombineMeshes(trunks);
-            combineInstances[0].mesh = trunkMesh;
-            combineInstances[0].transform = defaultMatrix;
+            Mesh tmpMesh = new() { indexFormat = UnityEngine.Rendering.IndexFormat.UInt32 };
+            tmpMesh.CombineMeshes(meshes[i].ToArray());
+            combineInstances[i].mesh = tmpMesh;
+            combineInstances[i].transform = defaultTransform;
         }
 
-        // Combine all leafMeshes and add the result (leafMesh) to the combineInstances array
-        {
-            Mesh leafMesh = new() { indexFormat = UnityEngine.Rendering.IndexFormat.UInt32 };
-            leafMesh.CombineMeshes(leafs);
-            combineInstances[1].mesh = leafMesh;
-            combineInstances[1].transform = defaultMatrix;
-        }
-
-        // Combine the leafMesh and the trunkMesh into one mesh (keep them seperated using different subMeshes)
+        // Combine the different meshes (one for each material) into one mesh but keep them seperated using submeshes
         Mesh mesh = new() { indexFormat = UnityEngine.Rendering.IndexFormat.UInt32 };
         mesh.CombineMeshes(combineInstances, false);
 
