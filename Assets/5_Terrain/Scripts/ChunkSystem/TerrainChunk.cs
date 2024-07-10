@@ -65,7 +65,7 @@ public class TerrainChunk
         lodMeshes = new LODMesh[detailLevels.Length];
         for (int i = 0; i < detailLevels.Length; i++)
         {
-            lodMeshes[i] = new(detailLevels[i].lod, UpdateTerrainChunk);
+            lodMeshes[i] = new(detailLevels[i], UpdateTerrainChunk);
         }
         collisionLODMesh = lodMeshes[0];
 
@@ -165,12 +165,12 @@ class LODMesh
     public Mesh treeMesh;
     public bool hasRequestedMesh;
     public bool hasMesh;
-    readonly int lod; // Level of detail
+    readonly LODInfo lodInfo; // Level of detail
     readonly System.Action updateCallback;
 
-    public LODMesh(int lod, System.Action updateCallback)
+    public LODMesh(LODInfo lodInfo, System.Action updateCallback)
     {
-        this.lod = lod;
+        this.lodInfo = lodInfo;
         this.updateCallback = updateCallback;
     }
     void OnMeshDataReceived(MeshData terrainMeshData)
@@ -183,8 +183,8 @@ class LODMesh
     public void RequestMesh(ChunkData mapData, TreeMeshes treeMeshes)
     {
         hasRequestedMesh = true;
-        MapGenerator.Instance.RequestMeshData(mapData, lod, OnMeshDataReceived);
-        treeMesh = TreeMeshGenerator.CreateTreeMesh(mapData, lod, treeMeshes);
+        MapGenerator.Instance.RequestMeshData(mapData, lodInfo.lod, OnMeshDataReceived);
+        treeMesh = TreeMeshGenerator.CreateTreeMesh(mapData, lodInfo.treeLOD, treeMeshes);
     }
 }
 [System.Serializable]
