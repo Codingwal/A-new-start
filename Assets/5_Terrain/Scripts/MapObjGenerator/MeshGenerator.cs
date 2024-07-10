@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class MeshGenerator
@@ -50,43 +52,5 @@ public static class MeshGenerator
             }
         }
         return meshData;
-    }
-}
-
-public class MeshData
-{
-    public Vector3[] vertices;
-    public int[] triangles;
-    public Vector2[] uvs;
-
-    int triangleIndex;
-    public MeshData(int meshSize)
-    {
-        vertices = new Vector3[meshSize * meshSize];
-        uvs = new Vector2[meshSize * meshSize];
-        triangles = new int[(meshSize - 1) * (meshSize - 1) * 6];
-    }
-    public void AddTriangle(int a, int b, int c)
-    {
-        if (triangleIndex + 2 > triangles.Length)
-        {
-            return;
-        }
-        triangles[triangleIndex] = a;
-        triangles[triangleIndex + 1] = b;
-        triangles[triangleIndex + 2] = c;
-        triangleIndex += 3;
-
-    }
-    public Mesh CreateMesh()
-    {
-        Mesh mesh = new()
-        {
-            vertices = vertices,
-            triangles = triangles,
-            uv = uvs
-        };
-        mesh.RecalculateNormals();
-        return mesh;
     }
 }
