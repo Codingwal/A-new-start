@@ -3,6 +3,7 @@ TODO:
 FOR v0.2:
 
 - Fix slow loading of Singleplayer scene
+- Fix glitching through floor on game start (tree code too slow?)
 - Trees
     - Improve performance (LODsystem, GPU instancing, culling, ...)
     - Select tree type using distance to next tree [Bookmark]

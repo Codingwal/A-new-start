@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf2edee5c58d82540a51f03df9d42094, type: 3}
-  m_Name: URPSettings
+  m_Name: LowQuality
   m_EditorClassIdentifier: 
   k_AssetVersion: 11
   k_AssetPreviousVersion: 11
@@ -35,21 +35,21 @@ MonoBehaviour:
   m_ShEvalMode: 0
   m_MainLightRenderingMode: 1
   m_MainLightShadowsSupported: 1
-  m_MainLightShadowmapResolution: 4096
+  m_MainLightShadowmapResolution: 1024
   m_AdditionalLightsRenderingMode: 1
   m_AdditionalLightsPerObjectLimit: 4
   m_AdditionalLightShadowsSupported: 1
-  m_AdditionalLightsShadowmapResolution: 4096
+  m_AdditionalLightsShadowmapResolution: 1024
   m_AdditionalLightsShadowResolutionTierLow: 256
   m_AdditionalLightsShadowResolutionTierMedium: 512
   m_AdditionalLightsShadowResolutionTierHigh: 1024
   m_ReflectionProbeBlending: 0
   m_ReflectionProbeBoxProjection: 0
-  m_ShadowDistance: 34.8
-  m_ShadowCascadeCount: 4
+  m_ShadowDistance: 50
+  m_ShadowCascadeCount: 3
   m_Cascade2Split: 0.25
-  m_Cascade3Split: {x: 0.1, y: 0.3}
-  m_Cascade4Split: {x: 0.03735632, y: 0.10344824, z: 0.27586207}
+  m_Cascade3Split: {x: 0.07707737, y: 0.22994006}
+  m_Cascade4Split: {x: 0.041114613, y: 0.1091789, z: 0.44828802}
   m_CascadeBorder: 1
   m_ShadowDepthBias: 1.58
   m_ShadowNormalBias: 0
@@ -57,8 +57,8 @@ MonoBehaviour:
   m_SoftShadowsSupported: 1
   m_ConservativeEnclosingSphere: 1
   m_NumIterationsEnclosingSphere: 64
-  m_SoftShadowQuality: 2
-  m_AdditionalLightsCookieResolution: 2048
+  m_SoftShadowQuality: 1
+  m_AdditionalLightsCookieResolution: 1024
   m_AdditionalLightsCookieFormat: 3
   m_UseSRPBatcher: 1
   m_SupportsDynamicBatching: 0
