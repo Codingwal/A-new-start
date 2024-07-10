@@ -184,7 +184,12 @@ class LODMesh
     {
         hasRequestedMesh = true;
         MapGenerator.Instance.RequestMeshData(mapData, lodInfo.lod, OnMeshDataReceived);
-        treeMesh = TreeMeshGenerator.CreateTreeMesh(mapData, lodInfo.treeLOD, treeMeshes);
+
+        // A treeLOD of -1 means that a tree mesh shouldn't be generated
+        if (lodInfo.treeLOD == -1)
+            treeMesh = new();
+        else
+            treeMesh = TreeMeshGenerator.CreateTreeMesh(mapData, lodInfo.treeLOD, treeMeshes);
     }
 }
 [System.Serializable]

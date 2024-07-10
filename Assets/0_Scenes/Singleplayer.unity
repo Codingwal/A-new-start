@@ -2011,14 +2011,17 @@ MonoBehaviour:
           leafMesh: {fileID: 4300000, guid: f1020b20dd14fb943b165a05e65b93fe, type: 2}
   detailLevels:
   - lod: 0
-    visibleDistanceThreshold: 100
-    treeLOD: 0
+    visibleDistanceThreshold: 50
+    treeLOD: 1
   - lod: 1
-    visibleDistanceThreshold: 300
-    treeLOD: 0
+    visibleDistanceThreshold: 100
+    treeLOD: 3
   - lod: 3
+    visibleDistanceThreshold: 200
+    treeLOD: -1
+  - lod: 4
     visibleDistanceThreshold: 500
-    treeLOD: 0
+    treeLOD: -1
   viewer: {fileID: 965662050}
   mapMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
 --- !u!114 &1146475735
