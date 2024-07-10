@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 public static class TreeMeshGenerator
 {
@@ -17,7 +16,6 @@ public static class TreeMeshGenerator
         {
             meshes[i] = new();
         }
-
 
         // For each tree...
         for (int i = 0; i < map.trees.Count; i++)

@@ -2012,7 +2012,7 @@ MonoBehaviour:
   detailLevels:
   - lod: 0
     visibleDistanceThreshold: 50
-    treeLOD: 1
+    treeLOD: 0
   - lod: 1
     visibleDistanceThreshold: 100
     treeLOD: 3
