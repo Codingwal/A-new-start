@@ -1954,7 +1954,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrainMaterial: {fileID: 2100000, guid: 55073e5f816635e4a8141ea8f0247215, type: 2}
-  chunkSize: 241
+  chunkSize: 121
   chunksPerSector1D: 9
   vertexIncrement: 1
 --- !u!4 &1146475733
