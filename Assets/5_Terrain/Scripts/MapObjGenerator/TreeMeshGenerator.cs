@@ -31,33 +31,31 @@ public static class TreeMeshGenerator
             leafs[i].transform = matrix;
         }
 
-        CombineInstance[] combine = new CombineInstance[2];
+        CombineInstance[] combineInstances = new CombineInstance[2];
 
-        Mesh trunkMesh = new() { indexFormat = UnityEngine.Rendering.IndexFormat.UInt32 };
-        trunkMesh.CombineMeshes(trunks);
-        trunkMesh.RecalculateBounds();
-        combine[0].mesh = trunkMesh;
-        Matrix4x4 matrix2 = Matrix4x4.identity;
-        matrix2.SetTRS(new(0, 0, 0), Quaternion.identity, new(1, 1, 1));
-        combine[0].transform = matrix2;
+        // Generate a default Matrix which is needed for the CombineInstances of the trunkMesh & leafMesh
+        Matrix4x4 defaultMatrix = Matrix4x4.identity;
+        defaultMatrix.SetTRS(new(0, 0, 0), Quaternion.identity, new(1, 1, 1));
 
-        Mesh leafMesh = new() { indexFormat = UnityEngine.Rendering.IndexFormat.UInt32 };
-        leafMesh.CombineMeshes(leafs);
-        trunkMesh.RecalculateBounds();
-        combine[1].mesh = leafMesh;
-        combine[1].transform = matrix2;
-        Debug.Log($"{leafMesh.vertices[0]} {leafMesh.vertices[1]} {leafMesh.vertices[2]} {leafMesh.vertices[3]}");
+        // Combine all trunkMeshes and add the result (trunkMesh) to the combineInstances array
+        {
+            Mesh trunkMesh = new() { indexFormat = UnityEngine.Rendering.IndexFormat.UInt32 };
+            trunkMesh.CombineMeshes(trunks);
+            combineInstances[0].mesh = trunkMesh;
+            combineInstances[0].transform = defaultMatrix;
+        }
 
-        Debug.Log($"{combine[0].mesh.vertices[0]} {combine[0].mesh.vertices[1]} {combine[0].mesh.vertices[2]} {combine[0].mesh.vertices[3]}");
+        // Combine all leafMeshes and add the result (leafMesh) to the combineInstances array
+        {
+            Mesh leafMesh = new() { indexFormat = UnityEngine.Rendering.IndexFormat.UInt32 };
+            leafMesh.CombineMeshes(leafs);
+            combineInstances[1].mesh = leafMesh;
+            combineInstances[1].transform = defaultMatrix;
+        }
+
+        // Combine the leafMesh and the trunkMesh into one mesh (keep them seperated using different subMeshes)
         Mesh mesh = new() { indexFormat = UnityEngine.Rendering.IndexFormat.UInt32 };
-        mesh.CombineMeshes(combine, false);
-        // mesh.RecalculateBounds();
-        mesh.bounds = new(new(0, 0, 0), new(240, 500, 240));
-
-        Debug.Log($"{mesh.vertices[0]} {mesh.vertices[1]} {mesh.vertices[2]} {mesh.vertices[3]}");
-
-
-        Debug.Log($"{map.trees.Count}");
+        mesh.CombineMeshes(combineInstances, false);
 
         return mesh;
     }

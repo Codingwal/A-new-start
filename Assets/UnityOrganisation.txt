@@ -9,6 +9,11 @@ FOR v0.2:
     - Fix naming of tree2, this is not oak!
     - Add collider
     - Bookmarks
+- Improve UI
+    - Feedback from Nathan: Reposition "Create" button
+    - Reposition "Empty world name" message
+    - Fix rescaling problems (PauseScreen, DebugScreen)etting
+    - Sensitivity setting
 - More vegetation (?)
 - USE GITHUB RELEASE FUNCTIONALITY
 
