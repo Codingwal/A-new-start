@@ -30,7 +30,7 @@ public class PlayerDataHandler : MonoBehaviour, IDataCallbackReceiver
         Time.timeScale = 1;
 
         if (Mathf.Round(transform.position.y) == 200)
-            transform.position = new(0, MapDataHandler.chunks[new(0, 0)].map[120, 120].height + 2, 0);
+            transform.position = new(0, MapDataHandler.chunks[new(0, 0)].map[120, 120].height + 5, 0);
     }
 
     public void SaveData(WorldData worldData)

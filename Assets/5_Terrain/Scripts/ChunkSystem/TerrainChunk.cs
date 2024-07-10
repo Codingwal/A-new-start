@@ -11,7 +11,6 @@ public class TerrainChunk
     // Trees
     Transform treeMeshChild;
     MeshFilter treeMeshFilter;
-    MeshRenderer treeMeshRenderer;
     TreeMeshes treeMeshes;
 
     // River mesh
@@ -73,7 +72,6 @@ public class TerrainChunk
         this.treeMeshes = treeMeshes;
         treeMeshChild = terrainChunk.transform.GetChild(4);
         treeMeshFilter = treeMeshChild.GetComponent<MeshFilter>();
-        treeMeshRenderer = treeMeshChild.GetComponent<MeshRenderer>();
 
         // Request the mapData and increase the counter used to determine the TerrainGeneration progress
         EndlessTerrain.chunksWaitingForMapDataCount++;
@@ -84,10 +82,10 @@ public class TerrainChunk
         this.mapData = mapData;
         mapDataReceived = true;
 
+        UpdateTerrainChunk();
+
         // Decrease the counter used to determine the TerrainGeneration progress
         EndlessTerrain.chunksWaitingForMapDataCount--;
-
-        UpdateTerrainChunk();
     }
 
     public void UpdateTerrainChunk()
