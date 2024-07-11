@@ -2009,6 +2009,8 @@ MonoBehaviour:
           leafMesh: {fileID: 4300000, guid: 0095a1141ae254c4988d19e8888cf091, type: 2}
         - trunkMesh: {fileID: 4300000, guid: cb9e90b53960fdb43a6cff73095f794d, type: 2}
           leafMesh: {fileID: 4300000, guid: f1020b20dd14fb943b165a05e65b93fe, type: 2}
+  treeCollisionMeshPrefab: {fileID: 2646046986559549231, guid: 0ad91c23b7e3bf9409140a26d73fb52f,
+    type: 3}
   detailLevels:
   - lod: 0
     visibleDistanceThreshold: 50

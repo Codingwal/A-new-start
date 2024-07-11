@@ -64,6 +64,45 @@ public static class TreeMeshGenerator
 
         return mesh;
     }
+    public static Mesh CreateTreeColliderMesh(ChunkData map, Mesh colliderMesh)
+    {
+        int halfChunkSize = MapGenerator.Instance.chunkSize / 2;
+
+        CombineInstance[] meshes = new CombineInstance[map.trees.Count];
+
+        // For each tree...
+        for (int i = 0; i < map.trees.Count; i++)
+        {
+            TreeData tree = map.trees[i];
+
+            Vector3 localPosition = new(tree.pos.x, map.map[Mathf.RoundToInt(tree.pos.x + halfChunkSize), Mathf.RoundToInt(tree.pos.y + halfChunkSize)].height - 0.3f, tree.pos.y);
+
+            // Gives the object a random but deterministic rotation (This is the same rotation calculated by the CreateTreeMesh function)
+            System.Random rnd = new((int)tree.pos.x * (int)tree.pos.y ^ 2);
+            Quaternion rotation = Quaternion.Euler(0, rnd.Next(-180, 180), 0);
+
+            Vector3 scale = new(2, 2, 2);
+
+            Matrix4x4 transform = Matrix4x4.identity;
+            transform.SetTRS(localPosition, rotation, scale);
+
+            CombineInstance combineInstance = new()
+            {
+                mesh = colliderMesh,
+                transform = transform
+            };
+
+            meshes[i] = combineInstance;
+        }
+
+        // Combine the different meshes (one for each material) into one mesh but keep them seperated using submeshes
+        Mesh mesh = new() { indexFormat = UnityEngine.Rendering.IndexFormat.UInt32 };
+        mesh.CombineMeshes(meshes);
+
+        Debug.Log($"The tree collision mesh has {mesh.vertices.Length} vertices");
+
+        return mesh;
+    }
 }
 public class TreeMeshes
 {

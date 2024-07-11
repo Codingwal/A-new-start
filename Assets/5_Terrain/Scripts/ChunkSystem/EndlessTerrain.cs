@@ -4,8 +4,9 @@ using UnityEngine;
 public class EndlessTerrain : MonoBehaviour
 {
     [Header("Prefabs")]
-    public GameObject terrainChunkPrefab;
-    public EditorTreeMeshes treeMeshes;
+    [SerializeField] GameObject terrainChunkPrefab;
+    [SerializeField] EditorTreeMeshes treeMeshes;
+    [SerializeField] Mesh treeCollisionMeshPrefab;
 
     // Reduces the amount of chunk updates through a threshhold that the player needs to move
     const float viewerMoveThresholdForChunkUpdate = 25f;
@@ -109,7 +110,7 @@ public class EndlessTerrain : MonoBehaviour
                 }
                 else
                 {
-                    terrainChunkDictonary.Add(chunkPos, new TerrainChunk(chunkPos, chunkSize, detailLevels, transform, mapMaterial, terrainChunkPrefab, (TreeMeshes)treeMeshes));
+                    terrainChunkDictonary.Add(chunkPos, new TerrainChunk(chunkPos, chunkSize, detailLevels, transform, mapMaterial, terrainChunkPrefab, (TreeMeshes)treeMeshes, treeCollisionMeshPrefab));
                 }
             }
         }
