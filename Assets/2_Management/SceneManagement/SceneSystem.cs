@@ -13,6 +13,7 @@ public static class SceneSystem
 
     private static Action onLoaderCallback;
     public static int chunksWaitingForMapDataCount;
+    public static int chunksWaitingForMeshCount;
     public static void LoadSingleplayer()
     {
         onLoaderCallback = () =>
@@ -37,9 +38,16 @@ public static class SceneSystem
         while (chunksWaitingForMapDataCount != 0)
         {
             progress = (float)(49 - chunksWaitingForMapDataCount) / 49;
-            Loading?.Invoke(progress, "Generating Terrain");
+            Loading?.Invoke(progress, "Generating terrain data");
             yield return null;
         }
+        while (chunksWaitingForMeshCount != 0)
+        {
+            progress = (float)(49 - chunksWaitingForMeshCount) / 49;
+            Loading?.Invoke(progress, "Generating terrain");
+            yield return null;
+        }
+
         Loading?.Invoke(1, "Starting game");
         yield return null;
         SceneManager.UnloadSceneAsync(Scenes.Loading.ToString());

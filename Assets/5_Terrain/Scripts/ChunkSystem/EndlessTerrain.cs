@@ -27,8 +27,10 @@ public class EndlessTerrain : MonoBehaviour
     public static Dictionary<Vector2, TerrainChunk> terrainChunkDictonary = new();
     public static List<TerrainChunk> terrainChunksVisibleLastUpdate = new();
 
+    // Used for the loading screen
     bool startedGame = false;
     public static int chunksWaitingForMapDataCount = 0;
+    public static int chunksWaitingForMeshCount = 0;
 
     private void Awake()
     {
@@ -55,9 +57,10 @@ public class EndlessTerrain : MonoBehaviour
         {
             // This value is used by the SceneSystem to calculate the TerrainGeneration progress
             SceneSystem.chunksWaitingForMapDataCount = chunksWaitingForMapDataCount;
+            SceneSystem.chunksWaitingForMeshCount = chunksWaitingForMeshCount;
 
-            // If all chunks rendered at game start have their mapData, start the game
-            if (chunksWaitingForMapDataCount == 0)
+            // If all chunks rendered at game start have their mapData & their mesh, start the game
+            if (chunksWaitingForMapDataCount == 0 && chunksWaitingForMeshCount == 0)
             {
                 MainSystem.StartGameplay();
                 startedGame = true;

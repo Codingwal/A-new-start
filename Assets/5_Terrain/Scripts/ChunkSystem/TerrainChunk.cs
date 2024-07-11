@@ -73,7 +73,7 @@ public class TerrainChunk
         treeMeshChild = terrainChunk.transform.GetChild(4);
         treeMeshFilter = treeMeshChild.GetComponent<MeshFilter>();
 
-        // Request the mapData and increase the counter used to determine the TerrainGeneration progress
+        // Request the mapData and increase the counter used to determine the TerrainDataGeneration progress
         EndlessTerrain.chunksWaitingForMapDataCount++;
         MapGenerator.Instance.RequestMapData(position, OnMapDataReceived);
     }
@@ -84,7 +84,7 @@ public class TerrainChunk
 
         UpdateTerrainChunk();
 
-        // Decrease the counter used to determine the TerrainGeneration progress
+        // Decrease the counter used to determine the TerrainDataGeneration progress
         EndlessTerrain.chunksWaitingForMapDataCount--;
     }
 
@@ -176,10 +176,16 @@ class LODMesh
         terrainMesh = terrainMeshData.CreateMesh();
         hasMesh = true;
 
+        // Decrease the counter used to determine the TerrainGeneration progress
+        EndlessTerrain.chunksWaitingForMeshCount--;
+
         updateCallback();
     }
     public void RequestMesh(ChunkData mapData, TreeMeshes treeMeshes)
     {
+        // Incraese the counter used to determine the TerrainGeneration progress
+        EndlessTerrain.chunksWaitingForMeshCount++;
+
         hasRequestedMesh = true;
         MapGenerator.Instance.RequestMeshData(mapData, lodInfo.lod, OnMeshDataReceived);
 

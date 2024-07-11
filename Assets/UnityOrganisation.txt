@@ -2,10 +2,9 @@ TODO:
 
 FOR v0.2:
 
-- Fix slow loading of Singleplayer scene
-- Fix glitching through floor on game start (tree code too slow?)
 - Trees
-    - Improve performance (LODsystem, GPU instancing, culling, ...)
+    - Fix lag spikes (this happens because the tree mesh generation isn't threaded)
+    - Fix trunkMaterial on leaves bug (this happens because of missing submeshes)
     - Select tree type using distance to next tree [Bookmark]
     - Fix naming of tree2, this is not oak!
     - Add collider
@@ -13,9 +12,14 @@ FOR v0.2:
 - Improve UI
     - Feedback from Nathan: Reposition "Create" button
     - Reposition "Empty world name" message
-    - Fix rescaling problems (PauseScreen, DebugScreen)etting
+    - Fix rescaling problems (PauseScreen, DebugScreen)
     - Sensitivity setting
 - More vegetation (?)
+- SaveSystem
+    - Only save terrain that has been modified 
+        - if nothing has been changed, it can be regenerated next time
+        - the chunkData needs to contain a bool "hasBeenModified" (at runtime) 
+        - rivers should be always saved as they are calculated for a whole sector
 - USE GITHUB RELEASE FUNCTIONALITY
 
 FUTURE PLANS:
