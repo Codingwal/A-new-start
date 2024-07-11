@@ -30,7 +30,11 @@ public class PlayerDataHandler : MonoBehaviour, IDataCallbackReceiver
         Time.timeScale = 1;
 
         if (Mathf.Round(transform.position.y) == 200)
-            transform.position = new(0, MapDataHandler.chunks[new(0, 0)].map[120, 120].height + 5, 0);
+        {
+            int halfChunkSize = MapGenerator.Instance.chunkSize / 2;
+            transform.position = new(0, MapDataHandler.chunks[new(0, 0)].map[halfChunkSize, halfChunkSize].height + 1, 0);
+        }
+        Debug.Log(transform.position.y);
     }
 
     public void SaveData(WorldData worldData)
