@@ -7,7 +7,10 @@ FOR v0.2:
     - Fix trunkMaterial on leaves bug (this happens because of missing submeshes)
     - Select tree type using distance to next tree [Bookmark]
     - Fix naming of tree2, this is not oak!
-    - Add collider
+    - Improve collider
+        - More precise positioning
+        - Even less vertices (?)
+        - Seperate collider for Maple & Oak
     - Bookmarks
 - Improve UI
     - Feedback from Nathan: Reposition "Create" button
